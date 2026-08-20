@@ -11,7 +11,7 @@
     "shots": "bun run build && bun ./shot.ts"
   },
   "dependencies": {
-    "@dravensoft/arena-react": "10.0.0",
+    "@dravensoft/arena-react": "10.1.0",
     "@phosphor-icons/web": "^2.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

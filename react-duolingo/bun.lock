@@ -5,7 +5,7 @@
     "": {
       "name": "react-duolingo-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.0.0",
+        "@dravensoft/arena-react": "10.1.0",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -13,7 +13,7 @@
     },
   },
   "packages": {
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@10.0.0", "", { "peerDependencies": { "@phosphor-icons/web": "^2.1.2", "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-zZ6pIc0unusZ0K/lR4vkjwd0TXViqrGv9nTigwsuu0J0omPp6FBcEnExV1dy4rCliW9ohiJ9mHTDImeGR/zgIg=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@10.1.0", "", { "peerDependencies": { "@phosphor-icons/web": "^2.1.2", "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-iHWUZhVgqkbTHpd2646Gyo9OlX4/qvMlQ0bFj7V4fdTP1d++AqHoBgniHtF6XO5K3oJ80V3OdsAJJmrTmMVIew=="],
 
     "@phosphor-icons/web": ["@phosphor-icons/web@2.1.2", "", {}, "sha512-rPAR9o/bEcp4Cw4DEeZHXf+nlGCMNGkNDRizYHM47NLxz9vvEHp/Tt6FMK1NcWadzw/pFDPnRBGi/ofRya958A=="],
 
