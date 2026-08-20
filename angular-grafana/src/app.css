@@ -1,0 +1,93 @@
+@layer properties;
+@layer theme, base, components, utilities, arena-plugin;
+
+/* The bench's own markup: a rail, a board head, and the two grids the panels sit in. */
+
+.console {
+  display: grid;
+  grid-template-columns: var(--layout-sidebar) minmax(0, 1fr);
+  min-block-size: 100dvh;
+  background: var(--fill-page);
+  color: var(--ink-body);
+}
+
+.rail {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-inline-end: var(--bw-separator) solid var(--edge-separator);
+  background: var(--fill-surface-sunken);
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100dvh;
+}
+
+.rail__head { display: flex; align-items: center; gap: var(--sp-2); padding-inline: var(--sp-1); }
+.rail__glyph { color: var(--color-primary); font-size: var(--fs-md); }
+
+.rail__word {
+  font-family: var(--ff-heading);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-heading);
+  color: var(--ink-heading);
+}
+
+.board {
+  display: grid;
+  gap: var(--sp-4);
+  align-content: start;
+  padding: var(--sp-4) var(--gutter) var(--sp-10);
+  max-inline-size: var(--container-max);
+  min-inline-size: 0;
+}
+
+.board > * { min-inline-size: 0; }
+
+.board__head { display: grid; gap: var(--sp-1); }
+.board__title-row { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.board__gap { flex: 1; }
+
+.board__title {
+  margin: 0;
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-page);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  color: var(--ink-heading);
+}
+
+.board__sub { margin: 0; font-size: var(--dz-text-md); color: var(--ink-eyebrow); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--sp-24), 1fr));
+  gap: var(--sp-3);
+}
+
+/* A board of panels is a grid the design fixes rather than one the room decides: an operator
+   compares two panels side by side, and a count that changes with the window is a comparison
+   that changes with it. */
+.panels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+.panels > * { min-inline-size: 0; }
+.panels__wide { grid-column: span 3; min-inline-size: 0; }
+
+.alerts { display: grid; gap: var(--sp-2); }
+
+.alerts__title {
+  margin: 0;
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-section);
+  font-weight: var(--fw-heading);
+  color: var(--ink-heading);
+}
+
+@media (width < 90rem) {
+  .panels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .panels__wide { grid-column: span 2; }
+}

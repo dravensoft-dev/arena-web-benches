@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Instagram</title>
+    <!-- The wordmark face. Arena's config declares exactly three font roles, display, body
+         and mono, so a fourth face a brand needs has no home in arena.config.json. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        var DEFAULT = 'dark';
+        var PREFERS_LIGHT = 'light';
+        try {
+          var asked = new URLSearchParams(location.search).get('theme');
+          if (asked) localStorage.setItem('arena-theme', asked);
+          var name = localStorage.getItem('arena-theme');
+          if (!name && window.matchMedia('(prefers-color-scheme: light)').matches) name = PREFERS_LIGHT;
+          if (name && name !== DEFAULT && /^[a-z][a-z0-9-]*$/.test(name)) {
+            document.documentElement.classList.add('arena-' + name);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

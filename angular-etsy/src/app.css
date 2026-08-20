@@ -1,0 +1,297 @@
+@layer properties;
+@layer theme, base, components, utilities, arena-plugin;
+
+/* The bench's own markup: the shop furniture Arena does not ship. Tokens only, because what is
+   being measured here is the style plugin and a raw value would measure nothing. */
+
+/* ---- the bar ---- */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  text-decoration: none;
+  color: var(--ink-heading);
+}
+
+.brand__glyph { font-size: var(--fs-h3); color: var(--color-primary); }
+
+.brand__word {
+  font-family: var(--ff-heading);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-heading);
+  letter-spacing: var(--track-heading);
+  white-space: nowrap;
+}
+
+.search { inline-size: 100%; max-inline-size: calc(var(--sp-24) * 9); }
+
+.bar-actions { display: flex; align-items: center; gap: var(--sp-1); }
+
+/* ---- departments ---- */
+
+.cats {
+  border-block-end: var(--bw-separator) solid var(--edge-separator);
+  background: var(--fill-page);
+}
+
+.cats__list {
+  display: flex;
+  gap: var(--sp-6);
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-3) var(--gutter);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  overflow-x: auto;
+}
+
+.cats__link {
+  color: var(--ink-body);
+  text-decoration: none;
+  font-size: var(--dz-text-md);
+  white-space: nowrap;
+  padding-block: var(--sp-1);
+  border-block-end: var(--bw-strong) solid transparent;
+}
+
+.cats__link:hover { border-block-end-color: var(--color-primary); }
+
+/* ---- results ---- */
+
+.results { padding-block: var(--sp-8) var(--sp-16); display: grid; gap: var(--sp-6); }
+
+.results__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  align-items: end;
+  justify-content: space-between;
+}
+
+.results__title {
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-page);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--track-heading);
+  color: var(--ink-heading);
+  margin: 0;
+  max-inline-size: var(--measure-prose);
+}
+
+.results__sub {
+  margin: var(--sp-1) 0 0;
+  color: var(--ink-muted);
+  font-size: var(--dz-text-md);
+  line-height: var(--lh-prose);
+}
+
+.results__sort { display: flex; align-items: end; gap: var(--sp-4); flex-wrap: wrap; }
+
+.results__pages { display: flex; justify-content: center; padding-block-start: var(--sp-4); }
+
+/* ---- a listing card ---- */
+
+.card { position: relative; min-inline-size: 0; }
+
+.card__link {
+  display: grid;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: var(--ink-body);
+  border-radius: var(--r-media);
+}
+
+.card__link:focus-visible {
+  outline: var(--focus-width) solid var(--color-secondary);
+  outline-offset: var(--focus-offset);
+}
+
+.card__body { display: grid; gap: var(--sp-1); }
+
+.card__title {
+  font-size: var(--step-title-surface);
+  color: var(--ink-heading);
+  line-height: var(--lh-prose);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card__link:hover .card__title { text-decoration: underline; }
+
+.card__shop { font-size: var(--dz-text-2xs); color: var(--ink-muted); }
+
+.card__ship {
+  font-size: var(--dz-text-2xs);
+  font-weight: var(--fw-control);
+  color: var(--color-success);
+}
+
+/* A control laid over a picture nobody chose is markup of our own standing on the overlay role,
+   because a plugin selects by part and never by the value of a variant: the one Arena ships fills
+   with the accent in every product, and an accent circle on each of twenty cards is the register
+   this shop is not. */
+.save {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline-end: var(--sp-3);
+  display: grid;
+  place-items: center;
+  inline-size: var(--dz-ctl-h-sm);
+  block-size: var(--dz-ctl-h-sm);
+  padding: 0;
+  border-radius: var(--r-control);
+  border: var(--bw-control) solid var(--edge-control-quiet);
+  background: var(--overlay-media);
+  color: var(--ink-heading);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background var(--dur-hover) var(--ease-hover), transform var(--dur-state) var(--ease-state);
+}
+
+.save:hover { background: var(--fill-surface); }
+.save:active { transform: scale(var(--press-scale)); }
+.save[aria-pressed='true'] { color: var(--color-primary); }
+
+.save:focus-visible {
+  outline: var(--focus-width) solid var(--color-secondary);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- the marker, which is the one thing a shop has and a console does not ---- */
+
+.mark {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-marker);
+  border: var(--bw-marker) solid var(--edge-marker);
+  background: var(--fill-page);
+  color: var(--ink-heading);
+  font-family: var(--ff-eyebrow);
+  font-size: var(--step-eyebrow);
+  font-weight: var(--fw-eyebrow);
+  text-transform: var(--tt-eyebrow);
+  letter-spacing: var(--track-eyebrow);
+  line-height: var(--lh-heading);
+}
+
+.mark[data-kind='sale'] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-content);
+}
+
+.mark[data-kind='star-seller'] {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary-content);
+}
+
+/* ---- rating and price ---- */
+
+.stars { display: inline-flex; align-items: center; gap: var(--sp-1); }
+/* A rating is a value rather than a state, and no colour role names one: a status colour here
+   would say the rating IS a warning. The mark carries it instead, filled against outlined. */
+.stars__row { display: inline-flex; gap: calc(var(--sp-1) / 2); color: var(--ink-heading); font-size: var(--dz-text-2xs); }
+.stars__count { font-size: var(--dz-text-2xs); color: var(--ink-muted); }
+
+.price { display: flex; align-items: baseline; gap: var(--sp-2); flex-wrap: wrap; }
+
+.price__now {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-heading);
+  color: var(--ink-heading);
+}
+
+.price__now[data-cut='yes'] { color: var(--color-primary); }
+
+.price[data-size='lg'] .price__now { font-size: var(--fs-h2); line-height: var(--lh-heading); }
+
+.price__was { font-size: var(--dz-text-md); color: var(--ink-muted); }
+
+.price__off {
+  font-size: var(--dz-text-2xs);
+  font-weight: var(--fw-control);
+  color: var(--color-success);
+}
+
+/* ---- the listing page ---- */
+
+.listing { padding-block: var(--sp-6) var(--sp-16); display: grid; gap: var(--sp-6); }
+
+/* A grid item will not shrink under its content unless it is told to, and a sideways scroller
+   is exactly the content that makes that visible: without this the row sets the page's width. */
+.listing > * { min-inline-size: 0; }
+
+.listing__cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--sp-12);
+  align-items: start;
+}
+
+.listing__gallery { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--sp-4); }
+
+.thumbs { display: grid; gap: var(--sp-2); align-content: start; }
+
+.thumbs__one {
+  inline-size: var(--sp-20);
+  aspect-ratio: var(--aspect-media);
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--r-media);
+  border: var(--bw-strong) solid transparent;
+  background: var(--fill-surface-sunken);
+  cursor: pointer;
+}
+
+.thumbs__one[aria-current='true'] { border-color: var(--ink-heading); }
+
+.thumbs__one img { inline-size: 100%; block-size: 100%; object-fit: var(--fit-media); display: block; }
+
+.listing__shot { min-inline-size: 0; }
+
+.buy { align-content: start; }
+
+.buy__shop { display: flex; align-items: center; gap: var(--sp-2); }
+
+.buy__shop-name {
+  font-size: var(--dz-text-md);
+  font-weight: var(--fw-control);
+  color: var(--ink-heading);
+  text-decoration: underline;
+}
+
+.buy__title {
+  margin: 0;
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-section);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--track-heading);
+  color: var(--ink-heading);
+  max-inline-size: var(--measure-prose);
+}
+
+/* ---- footer and basket ---- */
+
+.foot { display: flex; align-items: center; gap: var(--sp-6); flex-wrap: wrap; }
+
+.foot__word {
+  font-family: var(--ff-heading);
+  font-weight: var(--fw-heading);
+  color: var(--ink-heading);
+}
+
+.foot__link { color: var(--ink-body); font-size: var(--dz-text-md); }
+
+.basket__empty { color: var(--ink-muted); line-height: var(--lh-prose); margin: 0; }
+
+/* ---- the phone ---- */
+
+@media (width < 60rem) {
+  .listing__cols { grid-template-columns: minmax(0, 1fr); }
+}

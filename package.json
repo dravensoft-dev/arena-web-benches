@@ -1,0 +1,8 @@
+{
+  "name": "arena-web-benches",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pack": "bun scripts/pack.ts"
+  }
+}

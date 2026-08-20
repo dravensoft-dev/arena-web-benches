@@ -1,0 +1,176 @@
+@layer properties;
+@layer theme, base, components, utilities, arena-plugin;
+
+/* The bench's own markup: the card the flow sits in, and the month picker Arena does not ship. */
+
+.page {
+  min-block-size: 100dvh;
+  background: var(--fill-page);
+  color: var(--ink-body);
+  padding: var(--sp-6) var(--gutter) var(--sp-16);
+}
+
+.page__bar {
+  display: flex;
+  justify-content: flex-end;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding-block-end: var(--sp-4);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  gap: 0;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  background: var(--fill-surface);
+  border: var(--bw-surface) solid var(--edge-surface);
+  border-radius: var(--r-surface);
+  box-shadow: var(--shadow-surface-rest);
+  overflow: hidden;
+}
+
+.card > * { min-inline-size: 0; }
+
+/* ---- who ---- */
+
+.who {
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+  padding: var(--pad-surface);
+  border-inline-end: var(--bw-separator) solid var(--edge-separator);
+}
+
+.who__name { margin: 0; font-size: var(--dz-text-md); color: var(--ink-eyebrow); }
+
+.who__title {
+  margin: 0;
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-page);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--track-heading);
+  color: var(--ink-heading);
+}
+
+.who__blurb {
+  margin: 0;
+  font-size: var(--dz-text);
+  line-height: var(--lh-prose);
+  color: var(--ink-body);
+  max-inline-size: var(--measure-prose);
+}
+
+/* ---- pick a time ---- */
+
+.when, .form { display: grid; gap: var(--sp-5); align-content: start; padding: var(--pad-surface); }
+
+.when__title, .form__title {
+  margin: 0;
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-section);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  color: var(--ink-heading);
+}
+
+.when__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 13rem); gap: var(--sp-6); }
+.when__cols > * { min-inline-size: 0; }
+.when__zone { max-inline-size: calc(var(--sp-24) * 3); }
+
+/* Arena ships a schedule on a time grid and no month picker, so the month is markup of our own
+   built from the field and control roles the rest of the flow already answers. */
+.cal { display: grid; gap: var(--sp-3); }
+
+.cal__head { display: flex; align-items: center; justify-content: space-between; }
+
+.cal__month {
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-surface);
+  font-weight: var(--fw-heading);
+  color: var(--ink-heading);
+}
+
+.cal__nav { display: flex; gap: var(--sp-1); }
+
+.cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--sp-1); }
+
+.cal__weekday {
+  text-align: center;
+  font-size: var(--step-eyebrow);
+  font-weight: var(--fw-eyebrow);
+  color: var(--ink-eyebrow);
+  padding-block: var(--sp-2);
+}
+
+.cal__day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: var(--bw-control) solid transparent;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--ink-body);
+  font: inherit;
+  font-size: var(--dz-text-md);
+  font-weight: var(--fw-control);
+  cursor: pointer;
+  transition: background var(--dur-hover) var(--ease-hover);
+}
+
+.cal__day[data-open='false'] { color: color-mix(in oklab, var(--ink-muted) 38%, transparent); cursor: default; }
+.cal__day[data-muted='yes'] { visibility: hidden; }
+.cal__day[data-open='true'] { background: var(--fill-hover); color: var(--color-primary); }
+.cal__day[data-open='true']:hover { border-color: var(--edge-control); }
+
+.cal__day[aria-pressed='true'] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-content);
+}
+
+.cal__day:focus-visible {
+  outline: var(--focus-width) solid var(--color-secondary);
+  outline-offset: var(--focus-offset);
+}
+
+.slots { display: grid; gap: var(--sp-3); align-content: start; }
+.slots__day { margin: 0; font-size: var(--dz-text-md); color: var(--ink-eyebrow); }
+.slots__grid { display: grid; gap: var(--sp-2); }
+
+/* ---- the form ---- */
+
+.form__back {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--color-primary);
+  font: inherit;
+  font-size: var(--dz-text-md);
+  font-weight: var(--fw-control);
+  cursor: pointer;
+}
+
+.form { max-inline-size: calc(var(--measure-prose) + var(--sp-16)); }
+
+.form__foot { display: grid; gap: var(--sp-3); justify-items: start; }
+
+.form__note {
+  margin: 0;
+  font-size: var(--step-eyebrow);
+  color: var(--ink-eyebrow);
+  line-height: var(--lh-prose);
+  max-inline-size: var(--measure-prose);
+}
+
+@media (width < 60rem) {
+  .card { grid-template-columns: minmax(0, 1fr); }
+  .who { border-inline-end: 0; border-block-end: var(--bw-separator) solid var(--edge-separator); }
+  .when__cols { grid-template-columns: minmax(0, 1fr); }
+}

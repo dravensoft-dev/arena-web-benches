@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ClickUp</title>
+    <script>
+      (function () {
+        var DEFAULT = 'light';
+        var PREFERS_DARK = 'dark';
+        try {
+          var asked = new URLSearchParams(location.search).get('theme');
+          if (asked) localStorage.setItem('arena-theme', asked);
+          var name = localStorage.getItem('arena-theme');
+          if (!name && window.matchMedia('(prefers-color-scheme: dark)').matches) name = PREFERS_DARK;
+          if (name && name !== DEFAULT && /^[a-z][a-z0-9-]*$/.test(name)) {
+            document.documentElement.classList.add('arena-' + name);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

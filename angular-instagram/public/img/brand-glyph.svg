@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132" width="132" height="132" role="img" aria-label="Glyph">
+  <g fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="13" y="13" width="106" height="106" rx="30"/>
+    <circle cx="66" cy="66" r="26"/>
+    <circle cx="98" cy="34" r="3" fill="currentColor"/>
+  </g>
+</svg>

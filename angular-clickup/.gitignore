@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.angular/
+src/arena.generated.css
+src/icons.generated.css
+src/plugin.generated.css

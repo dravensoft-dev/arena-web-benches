@@ -1,0 +1,436 @@
+@layer properties;
+@layer theme, base, components, utilities, arena-plugin;
+
+/* The bench's own layout. Tokens only: what is left here is the measurement. */
+
+.app {
+  display: grid;
+  grid-template-columns: var(--layout-sidebar) minmax(0, 1fr);
+  min-block-size: 100dvh;
+  background: var(--fill-page);
+  color: var(--ink-body);
+}
+
+/* ---- primary nav ---- */
+
+.nav {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  padding: var(--sp-5) var(--sp-3) var(--sp-5);
+  border-inline-end: var(--bw-separator) solid var(--edge-separator);
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100dvh;
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  text-decoration: none;
+}
+
+.nav__glyph { inline-size: var(--icon-xl); block-size: var(--icon-xl); }
+
+/* Grand Hotel is the wordmark face. Arena's config declares three font roles and this is a
+   fourth, so it is loaded in index.html and named here rather than in arena.config.json. */
+.nav__word {
+  font-family: 'Grand Hotel', cursive;
+  font-size: var(--fs-h3);
+  color: var(--ink-heading);
+  line-height: var(--lh-heading);
+}
+
+.nav__list { display: grid; gap: var(--sp-1); align-content: start; }
+
+.nav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  inline-size: 100%;
+  padding: var(--sp-3);
+  border: 0;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--ink-body);
+  font: inherit;
+  font-size: var(--fs-md);
+  cursor: pointer;
+  text-align: start;
+  transition: background var(--dur-hover) var(--ease-hover);
+}
+
+.nav__item:hover { background: var(--fill-surface-sunken); }
+.nav__item:active { transform: scale(var(--press-scale)); }
+.nav__item i { font-size: var(--fs-h3); }
+.nav__item[aria-current='page'] .nav__label { font-weight: var(--fw-bold); }
+
+.nav__foot { display: grid; gap: var(--sp-1); }
+
+/* ---- feed ---- */
+
+.main { min-inline-size: 0; }
+
+.feed {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--sp-24) * 3.4);
+  gap: var(--sp-16);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-6) var(--gutter) var(--sp-16);
+  align-items: start;
+}
+
+.feed__col { display: grid; gap: var(--sp-4); min-inline-size: 0; }
+.feed__col > * { min-inline-size: 0; }
+
+.rail {
+  padding-block: var(--sp-3);
+  border-block-end: var(--bw-separator) solid var(--edge-separator);
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+/* ---- story ring ---- */
+
+.story {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.story__ring {
+  display: grid;
+  place-items: center;
+  padding: var(--bw-marker);
+  border-radius: var(--r-pill);
+  background: linear-gradient(45deg, var(--color-cat-1), var(--color-cat-3), var(--color-cat-5), var(--color-cat-6));
+  position: relative;
+}
+
+.story[data-seen='yes'] .story__ring { background: var(--edge-separator); }
+
+.story__inner {
+  display: grid;
+  place-items: center;
+  padding: var(--bw-marker);
+  border-radius: var(--r-pill);
+  background: var(--fill-page);
+}
+
+.story__live {
+  position: absolute;
+  inset-block-end: calc(var(--sp-2) * -1);
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-marker);
+  background: var(--color-error);
+  color: var(--color-error-content);
+  font-size: var(--dz-text-2xs);
+  font-weight: var(--fw-bold);
+}
+
+.story__name {
+  max-inline-size: var(--sp-16);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--dz-text-2xs);
+  color: var(--ink-body);
+}
+
+.story__name:empty { display: none; }
+
+/* ---- post ---- */
+
+.post {
+  display: grid;
+  min-inline-size: 0;
+  border-block-end: var(--bw-separator) solid var(--edge-separator);
+  padding-block-end: var(--sp-4);
+}
+
+.post__head { display: flex; align-items: center; gap: var(--sp-3); padding-block: var(--sp-3); }
+.post__gap { flex: 1; }
+.post__who { display: grid; min-inline-size: 0; }
+.post__line { display: flex; align-items: center; gap: var(--sp-2); }
+.post__dot,
+.post__when { font-size: var(--dz-text-md); color: var(--mute); }
+.post__place { font-size: var(--dz-text-2xs); color: var(--ink-body); }
+
+.handle {
+  font-size: var(--dz-text); color: var(--ink-heading);
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+}
+.handle[data-bold='yes'] { font-weight: var(--fw-bold); }
+.handle__tick { color: var(--color-info); font-size: var(--icon-sm); }
+
+/* ---- carousel ---- */
+
+.carousel { display: grid; gap: var(--sp-2); }
+
+.carousel__frame {
+  position: relative;
+  aspect-ratio: var(--aspect-media);
+  border-radius: var(--r-media);
+  overflow: hidden;
+  background: var(--fill-surface-sunken);
+}
+
+.carousel__img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: var(--fit-media);
+  display: block;
+}
+
+.carousel__nav {
+  position: absolute;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  opacity: 0.86;
+}
+
+.carousel__nav--prev { inset-inline-start: var(--sp-2); }
+.carousel__nav--next { inset-inline-end: var(--sp-2); }
+
+.carousel__count {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline-end: var(--sp-3);
+  padding: var(--sp-0) var(--sp-2);
+  border-radius: var(--r-marker);
+  background: var(--overlay-media);
+  color: var(--ink-heading);
+  font-size: var(--dz-text-2xs);
+}
+
+.carousel__dots { display: flex; justify-content: center; gap: var(--sp-1); }
+
+.carousel__dot {
+  inline-size: var(--sp-2);
+  block-size: var(--sp-2);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--edge-separator);
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--dur-hover) var(--ease-hover);
+}
+
+.carousel__dot[aria-selected='true'] { background: var(--color-primary); }
+
+/* ---- post actions and body ---- */
+
+.post__actions { display: flex; align-items: center; gap: var(--sp-4); padding-block: var(--sp-3); }
+
+.act {
+  border: 0;
+  background: transparent;
+  color: var(--ink-heading);
+  font-size: var(--fs-h3);
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  transition: transform var(--dur-state) var(--ease-state), color var(--dur-hover) var(--ease-hover);
+}
+
+.act:active { transform: scale(var(--press-scale)); }
+.act[data-on='yes'] i.ph-heart { color: var(--color-error); }
+
+.post__body { display: grid; gap: var(--sp-2); }
+
+.post__likes,
+.post__caption,
+.post__comment {
+  font-size: var(--dz-text);
+  line-height: var(--lh-prose);
+  color: var(--ink-body);
+  max-inline-size: var(--measure-prose);
+}
+
+.post__more {
+  border: 0;
+  background: transparent;
+  color: var(--mute);
+  font: inherit;
+  font-size: var(--dz-text);
+  text-align: start;
+  padding: 0;
+  cursor: pointer;
+}
+
+.post__add {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-block-start: var(--sp-2);
+  border-block-start: var(--bw-separator) solid var(--edge-separator);
+}
+
+.post__input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--ink-body);
+  font: inherit;
+  font-size: var(--dz-text);
+  padding: var(--sp-2) 0;
+}
+
+.post__input:focus-visible { outline: none; }
+
+/* ---- aside ---- */
+
+.aside { display: grid; gap: var(--sp-4); align-content: start; padding-block-start: var(--sp-6); }
+
+.aside__me { display: flex; align-items: center; gap: var(--sp-3); }
+.aside__me-text { display: grid; flex: 1; min-inline-size: 0; }
+.aside__me-name { font-size: var(--dz-text-md); color: var(--mute); }
+
+.aside__head { display: flex; align-items: center; justify-content: space-between; }
+.aside__title { font-size: var(--dz-text-md); font-weight: var(--fw-bold); color: var(--mute); }
+
+.aside__legal { font-size: var(--dz-text-2xs); color: var(--mute-2-disabled); line-height: var(--lh-prose); }
+
+/* ---- profile ---- */
+
+.profile {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-8) var(--gutter) var(--sp-16);
+  display: grid;
+  gap: var(--sp-8);
+}
+
+.profile__head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--sp-16); align-items: start; }
+.profile__avatar { display: grid; place-items: center; padding-inline: var(--sp-8); }
+.profile__meta { display: grid; gap: var(--sp-5); }
+.profile__row { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.profile__row .handle { font-size: var(--fs-lg); }
+
+.profile__stats { display: flex; gap: var(--sp-8); font-size: var(--fs-md); color: var(--ink-body); }
+.profile__stats strong { font-weight: var(--fw-bold); }
+
+.profile__bio { display: grid; gap: var(--sp-1); max-inline-size: var(--measure-prose); }
+.profile__name { font-size: var(--dz-text); font-weight: var(--fw-bold); color: var(--ink-heading); }
+.profile__blurb { font-size: var(--dz-text); line-height: var(--lh-prose); color: var(--ink-body); }
+.profile__link { font-size: var(--dz-text); color: var(--color-info); font-weight: var(--fw-bold); text-decoration: none; }
+
+/* ---- highlights ---- */
+
+.hl { display: flex; gap: var(--sp-6); overflow-x: auto; padding-block: var(--sp-2); }
+
+.hl__item { display: grid; justify-items: center; gap: var(--sp-2); border: 0; background: transparent; font: inherit; cursor: pointer; }
+
+.hl__ring {
+  display: grid;
+  place-items: center;
+  inline-size: var(--sp-20);
+  block-size: var(--sp-20);
+  border-radius: var(--r-pill);
+  border: var(--bw-marker) solid var(--edge-separator);
+  overflow: hidden;
+  color: var(--ink-heading);
+  font-size: var(--icon-lg);
+}
+
+.hl__ring--new { border-style: dashed; }
+.hl__img { inline-size: 100%; block-size: 100%; object-fit: var(--fit-media); }
+.hl__label { font-size: var(--dz-text-2xs); color: var(--ink-body); }
+
+/* ---- profile tabs and grid ---- */
+
+.ptabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-16);
+  border-block-start: var(--bw-separator) solid var(--edge-separator);
+}
+
+.ptabs__tab {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) 0;
+  border: 0;
+  border-block-start: var(--bw-strong) solid transparent;
+  margin-block-start: calc(var(--bw-strong) * -1);
+  background: transparent;
+  color: var(--mute);
+  font: inherit;
+  font-size: var(--dz-text-2xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-uppercase-status);
+  cursor: pointer;
+}
+
+.ptabs__tab[aria-current='page'] { color: var(--ink-heading); border-block-start-color: var(--ink-heading); }
+.ptabs__icon { font-size: var(--icon-sm); }
+
+/* A media wall is three across, always. ArenaGrid picks its own column count from the room
+   it is given, which is the right rule for cards and the wrong one for a photo grid. */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-1); }
+
+.cell {
+  position: relative;
+  aspect-ratio: var(--aspect-media);
+  border: 0;
+  padding: 0;
+  background: var(--fill-surface-sunken);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cell__img { inline-size: 100%; block-size: 100%; object-fit: var(--fit-media); display: block; }
+
+.cell__kind {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-end: var(--sp-2);
+  color: var(--color-base-100);
+  font-size: var(--icon-lg);
+}
+
+.cell__over {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-6);
+  background: var(--overlay-media);
+  opacity: 0;
+  transition: opacity var(--dur-hover) var(--ease-hover);
+  color: var(--ink-heading);
+  font-weight: var(--fw-bold);
+}
+
+.cell:hover .cell__over { opacity: 0.72; }
+.cell__stat { display: inline-flex; align-items: center; gap: var(--sp-2); }
+
+/* ---- post detail ---- */
+
+.detail { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
+.detail__media { background: var(--color-base-100); align-self: center; }
+.detail__side { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; border-inline-start: var(--bw-separator) solid var(--edge-separator); }
+.detail__head { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3); border-block-end: var(--bw-separator) solid var(--edge-separator); }
+.detail__thread { display: grid; gap: var(--sp-4); align-content: start; padding: var(--sp-3); overflow-y: auto; max-block-size: calc(var(--sp-24) * 3.6); }
+.detail__foot { display: grid; gap: var(--sp-1); padding: var(--sp-3); border-block-start: var(--bw-separator) solid var(--edge-separator); }
+
+.thread { display: flex; gap: var(--sp-3); align-items: start; }
+.thread__body { flex: 1; min-inline-size: 0; }
+.thread__meta { display: flex; gap: var(--sp-3); font-size: var(--dz-text-2xs); color: var(--mute); padding-block-start: var(--sp-1); }
+
+/* Arena's avatar offers four fixed steps, the largest of which is 96px, and a profile
+   header wants roughly 150px. The avatar family is a scale rather than a role, so a style
+   plugin may not re-answer it and the component takes no size beyond lg: re-valuing the
+   scale token in this one scope is the only route a consumer has. */
+.profile__avatar { --avatar-lg: calc(var(--sp-24) * 1.55); }

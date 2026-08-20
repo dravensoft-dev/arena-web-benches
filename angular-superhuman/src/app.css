@@ -1,0 +1,224 @@
+@layer properties;
+@layer theme, base, components, utilities, arena-plugin;
+
+/* The bench's own markup: three panes, a conversation row and a keyboard cap. Tokens only. */
+
+.mail {
+  display: grid;
+  grid-template-columns: var(--layout-sidebar) minmax(20rem, 24rem) minmax(0, 1fr);
+  min-block-size: 100dvh;
+  background: var(--fill-page);
+  color: var(--ink-body);
+}
+
+/* ---- the rail ---- */
+
+.rail {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-inline-end: var(--bw-separator) solid var(--edge-separator);
+  background: var(--fill-surface-sunken);
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100dvh;
+}
+
+.rail__head { display: flex; align-items: center; gap: var(--sp-2); padding-inline: var(--sp-1); }
+.rail__glyph { color: var(--color-primary); font-size: var(--fs-md); }
+
+.rail__word {
+  font-family: var(--ff-heading);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-heading);
+  letter-spacing: var(--track-heading);
+  color: var(--ink-heading);
+}
+
+.rail__gap { flex: 1; }
+
+.rail__foot { padding-inline: var(--sp-1); }
+
+.rail__hint { display: inline-flex; align-items: center; gap: var(--sp-1); }
+
+.rail__hint-text {
+  font-size: var(--step-eyebrow);
+  color: var(--ink-eyebrow);
+  padding-inline-start: var(--sp-1);
+}
+
+/* A keyboard cap is what r-marker, bw-marker and edge-marker are for by name, and this is the
+   register that has one on every screen. */
+.cap {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--sp-5);
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-marker);
+  border: var(--bw-marker) solid var(--edge-marker);
+  background: var(--fill-surface);
+  color: var(--ink-body);
+  font-family: var(--ff-label);
+  font-size: var(--step-eyebrow);
+  line-height: var(--dz-ctl-h-sm);
+}
+
+/* ---- the list ---- */
+
+.list {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border-inline-end: var(--bw-separator) solid var(--edge-separator);
+  min-inline-size: 0;
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100dvh;
+}
+
+.list__head {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-block-end: var(--bw-separator) solid var(--edge-separator);
+}
+
+.list__rows { list-style: none; margin: 0; padding: 0; overflow-y: auto; }
+
+.row { border-block-end: var(--bw-separator) solid var(--edge-separator); }
+
+.row[aria-current='true'] { background: var(--fill-hover); }
+
+.row__hit {
+  display: flex;
+  align-items: start;
+  gap: var(--sp-2);
+  inline-size: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.row__hit:hover { background: var(--fill-hover); }
+
+/* A flag is a state the reader set, and Arena's status vocabulary has no word for it: warning
+   would say the conversation is one. The mark carries it, filled against absent. */
+.row__mark {
+  inline-size: var(--sp-4);
+  color: var(--ink-heading);
+  font-size: var(--dz-text-2xs);
+  padding-block-start: var(--sp-1);
+}
+
+.row__text { display: grid; gap: 0; min-inline-size: 0; flex: 1; }
+
+.row__top { display: flex; align-items: baseline; gap: var(--sp-2); min-inline-size: 0; }
+.row__gap { flex: 1; }
+
+.row__from {
+  font-size: var(--dz-text);
+  color: var(--ink-heading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row[data-unread='true'] .row__from { font-weight: var(--fw-heading); }
+
+.row__count {
+  font-size: var(--step-eyebrow);
+  color: var(--ink-eyebrow);
+}
+
+.row__clip { font-size: var(--step-eyebrow); color: var(--ink-eyebrow); }
+.row__at { font-size: var(--step-eyebrow); color: var(--ink-eyebrow); white-space: nowrap; }
+
+.row__line {
+  display: flex;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.row__subject { font-size: var(--dz-text-md); color: var(--ink-heading); flex-shrink: 0; }
+.row[data-unread='true'] .row__subject { font-weight: var(--fw-control); }
+
+.row__snippet {
+  font-size: var(--dz-text-md);
+  color: color-mix(in oklab, var(--ink-muted) 58%, transparent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ---- the reading column ---- */
+
+.read {
+  display: grid;
+  gap: var(--sp-4);
+  align-content: start;
+  padding: var(--sp-5) var(--gutter) var(--sp-10);
+  max-inline-size: calc(var(--measure-prose) + var(--sp-24));
+}
+
+.read__head { display: grid; gap: var(--sp-2); }
+
+.read__title-row { display: flex; align-items: start; gap: var(--sp-4); }
+
+.read__subject {
+  margin: 0;
+  flex: 1;
+  font-family: var(--ff-heading);
+  font-size: var(--step-title-page);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--track-heading);
+  color: var(--ink-heading);
+}
+
+.read__actions { display: flex; gap: var(--sp-1); }
+.read__labels { display: flex; gap: var(--sp-1); }
+
+.read__from {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-block-end: var(--sp-3);
+  border-block-end: var(--bw-separator) solid var(--edge-separator);
+}
+
+.read__who { display: grid; flex: 1; min-inline-size: 0; }
+.read__name { font-size: var(--dz-text); font-weight: var(--fw-control); color: var(--ink-heading); }
+.read__to { font-size: var(--step-eyebrow); color: var(--ink-eyebrow); }
+.read__at { font-size: var(--step-eyebrow); color: var(--ink-eyebrow); }
+
+.read__body { display: grid; gap: var(--sp-3); max-inline-size: var(--measure-prose); }
+
+.read__body p {
+  margin: 0;
+  font-size: var(--dz-text);
+  line-height: var(--lh-prose);
+  color: var(--ink-body);
+}
+
+.read__files { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+
+.file { margin: 0; inline-size: calc(var(--sp-24) * 2); display: grid; gap: var(--sp-1); }
+.file__meta { display: grid; }
+.file__name { font-size: var(--step-eyebrow); color: var(--ink-heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file__size { font-size: var(--step-eyebrow); color: var(--ink-eyebrow); }
+
+.read__reply {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-block-start: var(--sp-3);
+  border-block-start: var(--bw-separator) solid var(--edge-separator);
+}
+
+.read__reply-hint { display: inline-flex; align-items: center; gap: var(--sp-1); padding-inline-start: var(--sp-2); }

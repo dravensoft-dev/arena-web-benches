@@ -1,0 +1,29 @@
+{
+  "name": "angular-notion-bench",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prestart": "arena-to-prod --src src --src design --audit",
+    "start": "ng serve --port 5201",
+    "prebuild": "arena-to-prod --src src --src design --audit --undrawn",
+    "build": "ng build",
+    "measure": "arena-to-prod --src src --src design --audit --undrawn"
+  },
+  "dependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/cdk": "^22.0.0",
+    "@dravensoft/arena-angular": "10.0.0",
+    "@phosphor-icons/web": "^2.1.2",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
+    "typescript": "~6.0.0"
+  }
+}
