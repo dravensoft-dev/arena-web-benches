@@ -30,98 +30,43 @@ test.
 | Product | Components drawn | Parts the plugin paints |
 |---|---|---|
 | Calendly | 11 | 5 |
-| ClickUp | 30 | 19 |
+| ClickUp | 30 | 14 |
 | Duolingo | 7 | 7 |
-| Etsy | 22 | 5 |
-| Grafana | 19 | 2 |
-| Instagram | 9 | 9 |
+| Etsy | 22 | 3 |
+| Grafana | 19 | 0 |
+| Instagram | 9 | 8 |
 | Notion | 23 | 12 |
-| Superhuman | 12 | 3 |
+| Superhuman | 12 | 2 |
 
-Forty-five distinct parts are painted by hand across the eight plugins. No bench reports a raw
-colour, a bare length, a gradient outside a declared mark, or a rule reaching into an `arena-`
-class.
+Forty-two distinct parts are painted by hand across the eight plugins. No bench reports a raw
+colour, a bare length, a gradient outside a declared mark, a rule reaching into an `arena-` class,
+or a declaration restating what the slot it selects already paints.
+
+**Grafana's plugin carries no rule at all.** Every decision that console makes is a role it
+answers, which is the strongest reading the bench has produced: a register can be a set of answers
+rather than a sheet.
 
 ## Open findings
 
-### 1. Four products bind the label register's tracking by hand, each on a different slot
+### 1. Two products set a component's own padding by hand, on two different parts
 
-**Where** `track-label`, the role, against `tracking-label`, the scale step. `frameworks/tailwind/Theme.css`
-holds both and says of the pair that "the awkward half is the one a manifest should stop reaching
-for"; `ArenaChartCard.title` and `ArenaStatCard.label` reach it anyway, and
-`scripts/check/tailwind/check-role-tokens.ts` excuses them "until a role names the difference".
+**Where** `app-bar.band` and `side-nav.item` with `side-nav.trigger`.
 
-**What happens** Which slots belong to the label register is Arena's to decide, and a plugin cannot
-add one. A product that reads a tag, a button, a breadcrumb or a panel title as label-register text
-finds its answer to `track-label` does not reach there, and writes the role into the slot itself
-through the part hook.
+**What happens** No role reaches the padding a component gives its own contents. `pad-surface` is
+the room a SURFACE gives what it carries and `pad-control-x` and `pad-control-y` are the room a
+CONTROL gives its label, so a product that wants a bar taller than Arena draws it, or a navigation
+row shorter, finds neither reaches the part and writes the padding into the slot itself.
 
-**Which benches** Four of eight, in both halves of each pair, and no two of them on the same part:
-Grafana on `chart-card.title`, Notion on the three `breadcrumbs` slots, ClickUp on `tag` and
-`board.title`, Duolingo on `button`. Every one of them writes the same declaration,
-`letter-spacing: var(--track-label)`.
+**Which benches** Two of eight, in both halves of each pair, and not on the same part: Etsy on
+`app-bar.band`, which carries the search field and is the tallest thing on its page, and Superhuman
+on the two navigation rows, whose mailbox list is read down rather than pointed at. Each states the
+limit in its own stylesheet, and the two sentences are the same sentence.
 
-**What the benches do** They paint it, and Grafana states the reason in its own stylesheet: a
-console whose panel titles track differently from every other label is a console with two kinds of
-small text. This is not a count asking for a new role, because no two of them name the same part.
-It is four products disagreeing with the register's membership, which is the decision none of them
-can express.
-
-### 2. Three products set the size of a breadcrumb by hand
-
-**Where** `breadcrumbs.crumb`, `breadcrumbs.current` and `breadcrumbs.separator`.
-
-**What happens** The breadcrumb trail carries no size role, so a project that wants it quieter or
-louder than the slot compiles to writes `font-size` on each of the three slots.
-
-**Which benches** ClickUp, Etsy and Notion, in both halves of each pair. All three write `font-size`
-and a tracking on all three slots; ClickUp adds `text-transform` and Notion adds a held-back colour.
-
-**What the benches do** They paint it. Three plugins writing the same decision through the same
-three parts is the count Arena's own rule for growing the role tier asks for.
-
-### 3. Two products draw the head of a chart card identically by hand
-
-**Where** `chart-card.head`.
-
-**What happens** The rule between a chart card's head and its plot is not a decision any role
-carries, so a product that wants one writes the border and the padding itself.
-
-**Which benches** ClickUp and Grafana, in both halves. The two rules are the same pair of
-declarations, `border-block-end` and `padding-block-end`, and both resolve them from the separator
-and spacing tokens rather than from values of their own.
-
-**What the benches do** They paint it. Two dashboards reaching for the same separator is a narrower
-count than finding 2 and it is the same shape.
-
-### 4. Two products weight a navigation row by hand
-
-**Where** `side-nav.item` and `side-nav.trigger`.
-
-**What happens** How heavy a navigation row sits is not a role, so a product that wants its sidebar
-to read heavier than the slot writes `font-weight` on both parts.
-
-**Which benches** ClickUp and Notion, in both halves. Notion also writes a colour, which is a level
-rather than a weight and is answered elsewhere.
-
-**What the benches do** They paint it.
-
-### 5. A restatement written through an alias is invisible to the check that looks for one
-
-**Where** The `restated` report of `arena-to-prod`, and `side-nav.section-label`.
-
-**What happens** The check compares the text of a plugin declaration against the text the slot
-compiles to, so a declaration naming a token that resolves to the value the slot already paints
-raises the count of parts a plugin paints without changing a pixel, and nothing says so. That count
-is what Arena grows a role from, so a restatement it cannot see is evidence for a question nobody
-asked.
-
-**Which benches** ClickUp and Notion, in both halves, on `side-nav.section-label`: both write the
-label step by its scale name where the slot names the role that resolves to it.
-
-**What the benches do** Nothing. Arena records the limit itself, in
-`contracts/design/StylePlugins.md`, so the finding is the cost rather than the discovery: two of
-eight plugins carry a declaration that changes nothing, and the instrument reads both as evidence.
+**What the benches do** They paint it. This is not a count asking for one role, because the two
+parts want opposite things: one product spends the space and the other takes it back. It is two
+products meeting the same wall, which is that the height of a component is not a question the
+kernel asks. Density answers who is pointing at the screen and never what register a product
+speaks in, and Superhuman says so outright: the compact class does not reach it either.
 
 ## Answered
 
@@ -133,8 +78,8 @@ reason, not an omission.
   clears the bar and the decision is refused, because what the two rules change is how far the line
   is held back rather than which colour it takes, and a colour role names which colour and never
   how held back it is. `contracts/design/StylePlugins.md` carries the reasoning.
-- **Nothing inside a chart's plot is reachable.** Grafana paints the fewest parts of the eight, and
-  the reason is that its screens are mostly plots. Seven of the eight charts carry no manifest, so
-  they carry no slot and no part hook, and a product's data visualisation is the one region of its
+- **Nothing inside a chart's plot is reachable.** Grafana paints no part at all, and the reason is
+  that its screens are mostly plots. Seven of the eight charts carry no manifest, so they carry
+  no slot and no part hook, and a product's data visualisation is the one region of its
   screen a plugin cannot re-skin. It still wears the skin, because every value a chart paints is a
   token the palette moves. `frameworks/CHARTS.md` carries the reasoning.
