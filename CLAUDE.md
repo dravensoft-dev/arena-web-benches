@@ -59,6 +59,16 @@ Read the installed `package.json` before reading a finding into a report: a benc
 build assembled from an Arena working tree measures that tree, and a bench pointed at the registry
 measures what is published. A finding names which one it came from.
 
+## Git
+
+**One branch exists, and it is `main`.** Nothing is developed in this repository: a bench is a
+mock written to exercise Arena, and the only changes it takes are the version of Arena it reads
+and the answer it gives a role the kernel declares. Neither of those is work that outlives the
+commit that makes it, so a `develop` branch has nothing to hold and a feature branch has nothing
+to isolate. **Commit to `main`, and open no second branch**, whatever a habit or a harness default
+suggests. A defect found here is not developed here either; it is written into
+[`AUDIT.md`](./AUDIT.md) and fixed in Arena, which is where the branches are.
+
 ## How this is written
 
 **Everything here and in `AUDIT.md` is in the present tense, and describes what is true now.**
