@@ -5,7 +5,7 @@
     "": {
       "name": "react-clickup-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.0",
+        "@dravensoft/arena-react": "10.2.1",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -13,7 +13,7 @@
     },
   },
   "packages": {
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@10.2.0", "", { "peerDependencies": { "@phosphor-icons/web": "^2.1.2", "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-1ba8SfIO+x1QPGQEJWxv2gfJAL84PyeGCecZ2YJZG0pyT1Hvat2x6KkzR9432gKKLg5t0r+6n7I9BxLg4VJniA=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@10.2.1", "", { "peerDependencies": { "@phosphor-icons/web": "^2.1.2", "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-SwGcmsyvgsc0nfBtyHI6l/TUrxIA+ANkRYnqsozKhu9bcqQkUi1Xb4GG1EXIV/+lXxHR03gCcjBFG/Yxe0Jlcg=="],
 
     "@phosphor-icons/web": ["@phosphor-icons/web@2.1.2", "", {}, "sha512-rPAR9o/bEcp4Cw4DEeZHXf+nlGCMNGkNDRizYHM47NLxz9vvEHp/Tt6FMK1NcWadzw/pFDPnRBGi/ofRya958A=="],
 
