@@ -131,7 +131,7 @@ function Shop() {
 
       <ArenaSheet
         open={cartOpen}
-        placement="right"
+        placement="end"
         title="Your basket"
         dismissible
         onClose={() => setCartOpen(false)}

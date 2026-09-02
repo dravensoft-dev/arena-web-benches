@@ -68,6 +68,27 @@ products meeting the same wall, which is that the height of a component is not a
 kernel asks. Density answers who is pointing at the screen and never what register a product
 speaks in, and Superhuman says so outright: the compact class does not reach it either.
 
+### 2. Four overlays publish a part in one layer while they draw nothing in either
+
+**Where** `ArenaSheet`, `ArenaDialog`, `ArenaConfirmDialog` and `ArenaCommandPalette`, on the root
+part each binds to its host: `sheet`, `dialog.scrim`, `confirm-dialog` and `command-palette`.
+
+**What happens** Closed, the React half returns null and leaves no node. The Angular half cannot
+remove its own host, so the element stays, and its host bindings keep running: it carries the class
+that hides it, which is what the `open` variant is for, and it carries the part hook, which is the
+public name a style plugin selects. A plugin rule therefore matches an element in one layer and
+nothing in the other, and the two contracts that say `Closed renders nothing` say it of a layer
+where a part is still published. Nothing measures it: `check:parts` reads both layers as text and
+sees a hook in each, and the sinks `check:pixel-parity` compares draw the overlays open.
+
+**Which benches** Four of eight, in the Angular half of each pair and never in the React half:
+Etsy on `sheet`, and ClickUp, Notion and Superhuman on `command-palette`. Each pair agrees on every
+other part it draws, so the whole difference between a pair is this one hook. Re-derive it by
+building both halves and counting `[data-arena-part]` in each.
+
+**What the benches do** Nothing. Both halves write the overlay the way its prompt says to, and the
+divergence is entirely Arena's.
+
 ## Answered
 
 Kept so the next reader does not raise them again. Each is a decision Arena has taken with its

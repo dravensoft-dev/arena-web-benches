@@ -40,8 +40,10 @@ cd react-etsy && bun run measure
 ```
 
 `arena-to-prod --audit --undrawn`, which is where every figure in [`AUDIT.md`](./AUDIT.md) comes
-from. A `dev` or a `build` runs it first anyway, so a bench cannot be served or shipped without
-being measured.
+from. A `dev` runs it first anyway, so a bench cannot be served without being measured, and a
+`build` runs it under `--strict=audit`, so a half that reports a finding does not build and cannot
+be published. `measure` itself stays lenient, because it is the command this file's figures are
+read from and one that exits on the first report reports less.
 
 ## Packing them
 

@@ -42,7 +42,7 @@ layers differently. A divergence is a defect even when both halves look fine on 
 
 ## What may be edited here
 
-Two things, and they are not fixes.
+Three things, and none of them is a fix.
 
 - **A bench answers every role the kernel declares.** A build that stops because a role is
   unanswered is the kernel asking a question, not a defect; answer it in that bench's
@@ -50,11 +50,21 @@ Two things, and they are not fixes.
 - **The two halves of a pair stay identical in config and in `design/`.** If they drift, the
   instrument is broken and nothing it reports can be trusted.
 
+- **The repository's own plumbing.** How the sixteen are installed, built and published, and
+  which version of Arena they read. That is this repository being a repository rather than being a
+  bench, and it reaches no bench's markup, no `arena.config.json` and no `design/`. A change that
+  moves what a bench DRAWS is not plumbing, whatever it is filed as.
+
 Anything else that makes a bench build or look better is a fix, and a fix belongs in Arena.
 
 ## Which Arena a bench is reading
 
-A bench resolves Arena from its own `node_modules`, and what sits there decides what a run means.
+The sixteen are workspaces of the root package, so one `bun install` resolves them together and
+what sits in the root `node_modules` decides what every run means. Each half keeps a
+`node_modules` of its own holding the symlinks that decide what it resolves, which is what makes a
+React half measure with `@dravensoft/arena-react`'s CLI and an Angular half with the other's; the
+two packages ship a byte-identical CLI, so a hoisted one is the same program either way.
+
 Read the installed `package.json` before reading a finding into a report: a bench pointed at a
 build assembled from an Arena working tree measures that tree, and a bench pointed at the registry
 measures what is published. A finding names which one it came from.
