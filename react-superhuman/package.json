@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "arena-to-prod --src src --src design --audit",
     "dev": "bun --hot ./Server.ts",
-    "prebuild": "arena-to-prod --src src --src design --audit --undrawn",
+    "prebuild": "arena-to-prod --src src --src design --audit --undrawn --strict=audit",
     "build": "bun build ./src/index.html --outdir dist --minify",
     "measure": "arena-to-prod --src src --src design --audit --undrawn"
   },

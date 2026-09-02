@@ -5,8 +5,8 @@
   "scripts": {
     "prestart": "arena-to-prod --src src --src design --audit",
     "start": "ng serve --port 5202",
-    "prebuild": "arena-to-prod --src src --src design --audit --undrawn",
-    "build": "ng build",
+    "prebuild": "arena-to-prod --src src --src design --audit --undrawn --strict=audit",
+    "build": "ng build --base-href ./",
     "measure": "arena-to-prod --src src --src design --audit --undrawn"
   },
   "dependencies": {

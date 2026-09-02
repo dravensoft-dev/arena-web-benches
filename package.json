@@ -2,6 +2,10 @@
   "name": "arena-web-benches",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "react-*",
+    "angular-*"
+  ],
   "scripts": {
     "pack": "bun scripts/pack.ts"
   }
