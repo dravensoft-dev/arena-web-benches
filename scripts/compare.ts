@@ -15,12 +15,12 @@ export const FRAME_HEIGHT = 720;
 const escape = (text: string) => text
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export function comparePage(products: string[]) {
-  const rows = products.map((product) => `<section>
-<h2>${escape(product)}</h2>
+export function comparePage(pairs: { product: string; label: string }[]) {
+  const rows = pairs.map(({ product, label }) => `<section>
+<h2>${escape(label)}</h2>
 <div class="pair">
 ${LAYERS.map((layer) => `  <figure><figcaption>${layer}</figcaption>
-  <iframe src="/${escape(product)}/${layer}/" title="${escape(product)}, ${layer}" loading="lazy"></iframe></figure>`).join('\n')}
+  <iframe src="/${escape(product)}/${layer}/" title="${escape(label)}, ${layer}" loading="lazy"></iframe></figure>`).join('\n')}
 </div>
 </section>`).join('\n');
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -31,7 +31,7 @@ ${LAYERS.map((layer) => `  <figure><figcaption>${layer}</figcaption>
 body{margin:0;padding:24px;font:14px/1.5 system-ui,sans-serif}
 h1{font-size:20px;margin:0 0 4px}
 p{margin:0 0 24px;opacity:.7}
-h2{font-size:16px;margin:0 0 8px;text-transform:capitalize}
+h2{font-size:16px;margin:0 0 8px}
 section{margin-bottom:40px}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 figure{margin:0;display:flex;flex-direction:column;gap:4px}
@@ -51,8 +51,8 @@ function main() {
     console.error(`compare: ${OUT}/ holds no built halves; run bun run build, which is what this serves`);
     process.exit(1);
   }
-  const products = manifest(OUT).pairs.map(({ product }) => product);
-  const page = comparePage(products);
+  const pairs = manifest(OUT).pairs.map(({ product, label }) => ({ product, label }));
+  const page = comparePage(pairs);
 
   const server = Bun.serve({
     port: PORT,
@@ -65,7 +65,7 @@ function main() {
     },
   });
 
-  console.log(`compare: ${products.length} pair(s) on ${server.url}`);
+  console.log(`compare: ${pairs.length} pair(s) on ${server.url}`);
 }
 
 if (import.meta.main) main();

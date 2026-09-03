@@ -32,7 +32,7 @@ export const ASKED = /['"]img\/([^'"]+)['"]/g;
 
 export type Half = { dir: string; out: string };
 
-export type Pair = { product: string; skin: string; react: Half; angular: Half };
+export type Pair = { product: string; label: string; skin: string; react: Half; angular: Half };
 
 export type Manifest = { arena: string; pairs: Pair[] };
 
