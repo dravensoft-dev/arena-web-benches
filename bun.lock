@@ -13,7 +13,7 @@
         "@angular/compiler": "^22.0.7",
         "@angular/core": "^22.0.7",
         "@angular/platform-browser": "^22.0.7",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -33,7 +33,7 @@
         "@angular/compiler": "^22.0.0",
         "@angular/core": "^22.0.0",
         "@angular/platform-browser": "^22.0.0",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -53,7 +53,7 @@
         "@angular/compiler": "^22.0.0",
         "@angular/core": "^22.0.0",
         "@angular/platform-browser": "^22.0.0",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -73,7 +73,7 @@
         "@angular/compiler": "^22.0.7",
         "@angular/core": "^22.0.7",
         "@angular/platform-browser": "^22.0.7",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -93,7 +93,7 @@
         "@angular/compiler": "^22.0.7",
         "@angular/core": "^22.0.7",
         "@angular/platform-browser": "^22.0.7",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -113,7 +113,7 @@
         "@angular/compiler": "^22.0.0",
         "@angular/core": "^22.0.0",
         "@angular/platform-browser": "^22.0.0",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -133,7 +133,7 @@
         "@angular/compiler": "^22.0.0",
         "@angular/core": "^22.0.0",
         "@angular/platform-browser": "^22.0.0",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -153,7 +153,7 @@
         "@angular/compiler": "^22.0.7",
         "@angular/core": "^22.0.7",
         "@angular/platform-browser": "^22.0.7",
-        "@dravensoft/arena-angular": "10.2.1",
+        "@dravensoft/arena-angular": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "rxjs": "^7.8.2",
         "tslib": "^2.8.1",
@@ -168,7 +168,7 @@
     "react-calendly": {
       "name": "react-calendly-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -177,7 +177,7 @@
     "react-clickup": {
       "name": "react-clickup-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -186,7 +186,7 @@
     "react-duolingo": {
       "name": "react-duolingo-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -195,7 +195,7 @@
     "react-etsy": {
       "name": "react-etsy-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -204,7 +204,7 @@
     "react-grafana": {
       "name": "react-grafana-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -213,7 +213,7 @@
     "react-instagram": {
       "name": "react-instagram-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -222,7 +222,7 @@
     "react-notion": {
       "name": "react-notion-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -231,7 +231,7 @@
     "react-superhuman": {
       "name": "react-superhuman-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "10.2.1",
+        "@dravensoft/arena-react": "10.2.4",
         "@phosphor-icons/web": "^2.1.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -295,9 +295,9 @@
 
     "@babel/types": ["@babel/types@8.0.4", "", { "dependencies": { "@babel/helper-string-parser": "^8.0.0", "@babel/helper-validator-identifier": "^8.0.4" } }, "sha512-eY+Yn3dCqTGmyiq2QRU66lA5FL8lqqqvecHt0fF3uHONIa7ToYsaCiWV8lOKqAs0Rb2SjixiKFROngnulPtt2g=="],
 
-    "@dravensoft/arena-angular": ["@dravensoft/arena-angular@10.2.1", "", { "dependencies": { "tslib": "^2.8.1" }, "peerDependencies": { "@angular/cdk": ">=20", "@angular/common": ">=20", "@angular/core": ">=20", "@angular/platform-browser": ">=20", "@angular/router": ">=20", "@phosphor-icons/web": "^2.1.2" }, "optionalPeers": ["@angular/router"], "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-r9HPaYCoLCX3M5tKSRKG36PIoz/5RGApDlBJrLazVc6MKvoST5khybGKl4LOusvb3QbrGBA+/8vQpIOHFj/1Bw=="],
+    "@dravensoft/arena-angular": ["@dravensoft/arena-angular@10.2.4", "", { "dependencies": { "tslib": "^2.8.1" }, "peerDependencies": { "@angular/cdk": ">=20", "@angular/common": ">=20", "@angular/core": ">=20", "@angular/platform-browser": ">=20", "@angular/router": ">=20", "@phosphor-icons/web": "^2.1.2" }, "optionalPeers": ["@angular/router"], "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-IE+EFGnItFjoyfBaOjGRlL3JTxBFSDXK+sRXGa6c6+6k2K8B74ntly6aBtTk0UXMTvjpPLw0TXAMvwKHDcDhOw=="],
 
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@10.2.1", "", { "peerDependencies": { "@phosphor-icons/web": "^2.1.2", "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-SwGcmsyvgsc0nfBtyHI6l/TUrxIA+ANkRYnqsozKhu9bcqQkUi1Xb4GG1EXIV/+lXxHR03gCcjBFG/Yxe0Jlcg=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@10.2.4", "", { "peerDependencies": { "@phosphor-icons/web": "^2.1.2", "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena-to-prod": "bin/arena-to-prod.mjs" } }, "sha512-hym/EQJfc1Jh8Tky1tMghQf4IDAHVxghs4KruNnbZCRi73heXHMylXiylhmFUbd4AhdsDLGmymZwgo2pgje9UA=="],
 
     "@emnapi/core": ["@emnapi/core@1.11.2", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.2", "tslib": "^2.4.0" } }, "sha512-TC8MkTuZUtcTSiFeuC0ksCh9QIJ5+F21MvZ4Wn4ORfYaFJ/0dsiudv5tVkejgwZlwQ39jL9WWDe2lz8x0WglOA=="],
 
