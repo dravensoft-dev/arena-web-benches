@@ -107,7 +107,7 @@ function App() {
     <div className="app">
       <nav className="nav" aria-label="Primary">
         <a className="nav__brand" href="#/" onClick={() => setScreen('feed')}>
-          <img src="/img/brand-glyph.svg" alt="" className="nav__glyph" />
+          <img src="img/brand-glyph.svg" alt="" className="nav__glyph" />
           <span className="nav__word">Instagram</span>
         </a>
 

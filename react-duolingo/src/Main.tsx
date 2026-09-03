@@ -46,7 +46,7 @@ function App() {
     <div className="app">
       <nav className="nav" aria-label="Primary">
         <a className="nav__brand" href="#/">
-          <img src="/img/brand-word.svg" alt="Duolingo" className="nav__word" />
+          <img src="img/brand-word.svg" alt="Duolingo" className="nav__word" />
         </a>
 
         <ul className="nav__list">

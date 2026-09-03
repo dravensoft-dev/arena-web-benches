@@ -6,12 +6,12 @@ export type Priority = 'Urgent' | 'High' | 'Normal' | 'Low';
 export type Person = { name: string; image: string };
 
 export const PEOPLE: Record<string, Person> = {
-  ada: { name: 'Ada Okonjo', image: '/img/u1.jpg' },
-  ben: { name: 'Ben Yusuf', image: '/img/u2.jpg' },
-  cai: { name: 'Cai Wen', image: '/img/u3.jpg' },
-  dia: { name: 'Dia Novak', image: '/img/u4.jpg' },
-  eli: { name: 'Eli Ferrand', image: '/img/u5.jpg' },
-  fay: { name: 'Fay Ortiz', image: '/img/u6.jpg' },
+  ada: { name: 'Ada Okonjo', image: 'img/u1.jpg' },
+  ben: { name: 'Ben Yusuf', image: 'img/u2.jpg' },
+  cai: { name: 'Cai Wen', image: 'img/u3.jpg' },
+  dia: { name: 'Dia Novak', image: 'img/u4.jpg' },
+  eli: { name: 'Eli Ferrand', image: 'img/u5.jpg' },
+  fay: { name: 'Fay Ortiz', image: 'img/u6.jpg' },
 };
 
 export type Task = {

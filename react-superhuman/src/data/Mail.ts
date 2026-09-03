@@ -34,7 +34,7 @@ export const THREADS: Thread[] = [
   {
     id: 'contract',
     from: 'Priya Raghunathan',
-    avatar: '/img/a1.jpg',
+    avatar: 'img/a1.jpg',
     to: 'you, Marcus, legal',
     subject: 'Redlines on the Wexler contract, section 4 only',
     snippet: 'Legal came back on section 4 and nothing else. Their two asks are the notice period and',
@@ -49,15 +49,15 @@ export const THREADS: Thread[] = [
     split: 'important',
     labels: ['Legal', 'Wexler'],
     attachments: [
-      { name: 'wexler-contract-v4.pdf', size: '284 KB', img: '/img/d1.jpg' },
-      { name: 'redlines-summary.pdf', size: '62 KB', img: '/img/d2.jpg' },
+      { name: 'wexler-contract-v4.pdf', size: '284 KB', img: 'img/d1.jpg' },
+      { name: 'redlines-summary.pdf', size: '62 KB', img: 'img/d2.jpg' },
     ],
     count: 4,
   },
   {
     id: 'standup',
     from: 'Marcus Bell',
-    avatar: '/img/a2.jpg',
+    avatar: 'img/a2.jpg',
     to: 'engineering',
     subject: 'Standup notes, Tuesday',
     snippet: 'Short one today. The migration is through staging and the rollback path is tested.',
@@ -73,7 +73,7 @@ export const THREADS: Thread[] = [
   {
     id: 'invoice',
     from: 'Nordhaus Studio',
-    avatar: '/img/a3.jpg',
+    avatar: 'img/a3.jpg',
     to: 'accounts',
     subject: 'Invoice 2291 is now overdue',
     snippet: 'This is a reminder that invoice 2291 for the October retainer is now fourteen days past',
@@ -89,7 +89,7 @@ export const THREADS: Thread[] = [
   {
     id: 'hiring',
     from: 'Sofia Almeida',
-    avatar: '/img/a4.jpg',
+    avatar: 'img/a4.jpg',
     to: 'you',
     subject: 'Two more for the staff engineer loop',
     snippet: 'Both came through the referral from Ana. I have put my notes against each of them in the',
@@ -105,7 +105,7 @@ export const THREADS: Thread[] = [
   {
     id: 'launch',
     from: 'Tobias Lund',
-    avatar: '/img/a5.jpg',
+    avatar: 'img/a5.jpg',
     to: 'launch',
     subject: 'Copy for the pricing page, second pass',
     snippet: 'I cut the middle section entirely. It was answering a question nobody asked and it made the',
@@ -115,13 +115,13 @@ export const THREADS: Thread[] = [
     starred: false,
     split: 'important',
     labels: ['Launch', 'Copy'],
-    attachments: [{ name: 'pricing-copy-v2.md', size: '9 KB', img: '/img/d3.jpg' }],
+    attachments: [{ name: 'pricing-copy-v2.md', size: '9 KB', img: 'img/d3.jpg' }],
     count: 6,
   },
   {
     id: 'digest',
     from: 'Ledger Weekly',
-    avatar: '/img/a6.jpg',
+    avatar: 'img/a6.jpg',
     to: 'you',
     subject: 'The week in payments infrastructure',
     snippet: 'Three acquisitions, one outage, and a regulator that has finally said something concrete.',
@@ -137,7 +137,7 @@ export const THREADS: Thread[] = [
   {
     id: 'receipt',
     from: 'Kestrel Cloud',
-    avatar: '/img/a7.jpg',
+    avatar: 'img/a7.jpg',
     to: 'accounts',
     subject: 'Your October usage summary',
     snippet: 'Your October usage came to 4,182 compute hours across three regions.',
@@ -153,7 +153,7 @@ export const THREADS: Thread[] = [
   {
     id: 'event',
     from: 'Ana Ferreira',
-    avatar: '/img/a8.jpg',
+    avatar: 'img/a8.jpg',
     to: 'you, Priya',
     subject: 'Dinner on the 14th, moved to the 15th',
     snippet: 'The restaurant lost our booking so I have moved it a day. Same time, same place.',

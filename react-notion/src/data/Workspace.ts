@@ -17,7 +17,7 @@ export type Block =
 
 export const PAGE_TITLE = 'Engineering wiki';
 export const PAGE_ICON = 'ph-fill ph-book-open-text';
-export const PAGE_COVER = '/img/cover.jpg';
+export const PAGE_COVER = 'img/cover.jpg';
 
 export const DOC_BLOCKS: Block[] = [
   {
@@ -40,7 +40,7 @@ export const DOC_BLOCKS: Block[] = [
       'Three services and one gateway. The gateway owns authentication and nothing else, which is '
       + 'why a service never reads a session and never writes one.',
   },
-  { kind: 'image', src: '/img/architecture.jpg', caption: 'The request path, drawn at the last architecture review' },
+  { kind: 'image', src: 'img/architecture.jpg', caption: 'The request path, drawn at the last architecture review' },
   { kind: 'bullet', text: 'The gateway terminates TLS and resolves the session' },
   { kind: 'bullet', text: 'Each service owns its own schema and migrates it independently' },
   { kind: 'bullet', text: 'Nothing shares a database, and nothing reads another service tables' },
@@ -67,13 +67,13 @@ export type Task = {
 };
 
 export const TASKS: Task[] = [
-  { id: 'T-104', name: 'Split the session store out of the gateway', status: 'In progress', owner: 'Marta Ilves', ownerImage: '/img/p1.jpg', tags: ['Platform', 'Backend'], due: 'Aug 22, 2026', effort: 8 },
-  { id: 'T-098', name: 'Document the deploy gate for new starters', status: 'In review', owner: 'Owen Baptiste', ownerImage: '/img/p2.jpg', tags: ['Docs'], due: 'Aug 18, 2026', effort: 2 },
-  { id: 'T-121', name: 'Replace the nightly export with a stream', status: 'Not started', owner: 'Priya Raman', ownerImage: '/img/p3.jpg', tags: ['Data', 'Backend'], due: 'Sep 04, 2026', effort: 13 },
-  { id: 'T-087', name: 'Migrate the billing schema off the shared cluster', status: 'Done', owner: 'Tomas Klein', ownerImage: '/img/p4.jpg', tags: ['Platform'], due: 'Aug 08, 2026', effort: 5 },
-  { id: 'T-133', name: 'Add a canary check for the checkout path', status: 'In progress', owner: 'Priya Raman', ownerImage: '/img/p3.jpg', tags: ['Reliability'], due: 'Aug 29, 2026', effort: 5 },
-  { id: 'T-140', name: 'Retire the legacy admin console', status: 'Not started', owner: 'Marta Ilves', ownerImage: '/img/p1.jpg', tags: ['Frontend', 'Cleanup'], due: 'Sep 19, 2026', effort: 8 },
-  { id: 'T-076', name: 'Write the incident review for the July outage', status: 'Done', owner: 'Owen Baptiste', ownerImage: '/img/p2.jpg', tags: ['Docs', 'Reliability'], due: 'Jul 30, 2026', effort: 3 },
+  { id: 'T-104', name: 'Split the session store out of the gateway', status: 'In progress', owner: 'Marta Ilves', ownerImage: 'img/p1.jpg', tags: ['Platform', 'Backend'], due: 'Aug 22, 2026', effort: 8 },
+  { id: 'T-098', name: 'Document the deploy gate for new starters', status: 'In review', owner: 'Owen Baptiste', ownerImage: 'img/p2.jpg', tags: ['Docs'], due: 'Aug 18, 2026', effort: 2 },
+  { id: 'T-121', name: 'Replace the nightly export with a stream', status: 'Not started', owner: 'Priya Raman', ownerImage: 'img/p3.jpg', tags: ['Data', 'Backend'], due: 'Sep 04, 2026', effort: 13 },
+  { id: 'T-087', name: 'Migrate the billing schema off the shared cluster', status: 'Done', owner: 'Tomas Klein', ownerImage: 'img/p4.jpg', tags: ['Platform'], due: 'Aug 08, 2026', effort: 5 },
+  { id: 'T-133', name: 'Add a canary check for the checkout path', status: 'In progress', owner: 'Priya Raman', ownerImage: 'img/p3.jpg', tags: ['Reliability'], due: 'Aug 29, 2026', effort: 5 },
+  { id: 'T-140', name: 'Retire the legacy admin console', status: 'Not started', owner: 'Marta Ilves', ownerImage: 'img/p1.jpg', tags: ['Frontend', 'Cleanup'], due: 'Sep 19, 2026', effort: 8 },
+  { id: 'T-076', name: 'Write the incident review for the July outage', status: 'Done', owner: 'Owen Baptiste', ownerImage: 'img/p2.jpg', tags: ['Docs', 'Reliability'], due: 'Jul 30, 2026', effort: 3 },
 ];
 
 export const BOARD_COLUMNS: Task['status'][] = ['Not started', 'In progress', 'In review', 'Done'];

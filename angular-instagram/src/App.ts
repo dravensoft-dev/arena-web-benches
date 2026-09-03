@@ -110,7 +110,7 @@ export class PostDialog {
   template: `
     <nav class="nav" aria-label="Primary">
       <a class="nav__brand" href="#/" (click)="screen.set('feed')">
-        <img src="/img/brand-glyph.svg" alt="" class="nav__glyph" />
+        <img src="img/brand-glyph.svg" alt="" class="nav__glyph" />
         <span class="nav__word">Instagram</span>
       </a>
 

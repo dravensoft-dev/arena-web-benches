@@ -1,7 +1,7 @@
 export const HOST = {
   name: 'Ines Marchetti',
   role: 'Head of Partnerships, Northwind',
-  avatar: '/img/host.jpg',
+  avatar: 'img/host.jpg',
 };
 
 export const EVENT = {

@@ -1,16 +1,16 @@
 export type Account = { handle: string; name: string; avatar: string; verified?: boolean };
 
-export const ME: Account = { handle: 'juno.reyes', name: 'Juno Reyes', avatar: '/img/av1.jpg' };
+export const ME: Account = { handle: 'juno.reyes', name: 'Juno Reyes', avatar: 'img/av1.jpg' };
 
 export const ACCOUNTS: Record<string, Account> = {
   'juno.reyes': ME,
-  'atlas.knits': { handle: 'atlas.knits', name: 'Atlas Knitwear', avatar: '/img/av2.jpg', verified: true },
-  'marisol.b': { handle: 'marisol.b', name: 'Marisol Bruna', avatar: '/img/av3.jpg' },
-  'kite.studio': { handle: 'kite.studio', name: 'Kite Studio', avatar: '/img/av4.jpg', verified: true },
-  'oren.field': { handle: 'oren.field', name: 'Oren Field', avatar: '/img/av5.jpg' },
-  'saltandpine': { handle: 'saltandpine', name: 'Salt and Pine', avatar: '/img/av6.jpg' },
-  'tavi.roads': { handle: 'tavi.roads', name: 'Tavi Roads', avatar: '/img/av7.jpg' },
-  'huesandco': { handle: 'huesandco', name: 'Hues and Co', avatar: '/img/av8.jpg', verified: true },
+  'atlas.knits': { handle: 'atlas.knits', name: 'Atlas Knitwear', avatar: 'img/av2.jpg', verified: true },
+  'marisol.b': { handle: 'marisol.b', name: 'Marisol Bruna', avatar: 'img/av3.jpg' },
+  'kite.studio': { handle: 'kite.studio', name: 'Kite Studio', avatar: 'img/av4.jpg', verified: true },
+  'oren.field': { handle: 'oren.field', name: 'Oren Field', avatar: 'img/av5.jpg' },
+  'saltandpine': { handle: 'saltandpine', name: 'Salt and Pine', avatar: 'img/av6.jpg' },
+  'tavi.roads': { handle: 'tavi.roads', name: 'Tavi Roads', avatar: 'img/av7.jpg' },
+  'huesandco': { handle: 'huesandco', name: 'Hues and Co', avatar: 'img/av8.jpg', verified: true },
 };
 
 export type Story = { handle: string; seen: boolean; live?: boolean };
@@ -47,7 +47,7 @@ export const POSTS: Post[] = [
     id: 'p1',
     handle: 'atlas.knits',
     place: 'Reykjavik, Iceland',
-    media: ['/img/post1.jpg', '/img/post2.jpg', '/img/post3.jpg'],
+    media: ['img/post1.jpg', 'img/post2.jpg', 'img/post3.jpg'],
     caption: 'Three weights of undyed wool, spun on the same day. The middle one is going into the winter run.',
     likes: 4821,
     likedBy: 'marisol.b',
@@ -64,7 +64,7 @@ export const POSTS: Post[] = [
     id: 'p2',
     handle: 'kite.studio',
     place: 'Lisbon, Portugal',
-    media: ['/img/post4.jpg'],
+    media: ['img/post4.jpg'],
     caption: 'Second floor is finished. Took the wall out and the room found its own proportions.',
     likes: 1290,
     likedBy: 'tavi.roads',
@@ -79,7 +79,7 @@ export const POSTS: Post[] = [
   {
     id: 'p3',
     handle: 'saltandpine',
-    media: ['/img/post5.jpg', '/img/post6.jpg'],
+    media: ['img/post5.jpg', 'img/post6.jpg'],
     caption: 'Cold morning, warm bread. That is the whole post.',
     likes: 8734,
     likedBy: 'kite.studio',
@@ -97,22 +97,22 @@ export const SUGGESTIONS = ['marisol.b', 'oren.field', 'tavi.roads', 'huesandco'
 export type GridPost = { id: string; src: string; likes: number; comments: number; kind: 'single' | 'carousel' | 'reel' };
 
 export const PROFILE_GRID: GridPost[] = [
-  { id: 'g1', src: '/img/post7.jpg', likes: 1204, comments: 22, kind: 'carousel' },
-  { id: 'g2', src: '/img/post8.jpg', likes: 892, comments: 14, kind: 'single' },
-  { id: 'g3', src: '/img/post9.jpg', likes: 3311, comments: 87, kind: 'reel' },
-  { id: 'g4', src: '/img/post10.jpg', likes: 640, comments: 9, kind: 'single' },
-  { id: 'g5', src: '/img/post11.jpg', likes: 2108, comments: 41, kind: 'carousel' },
-  { id: 'g6', src: '/img/post12.jpg', likes: 1755, comments: 30, kind: 'single' },
-  { id: 'g7', src: '/img/post1.jpg', likes: 970, comments: 11, kind: 'single' },
-  { id: 'g8', src: '/img/post3.jpg', likes: 4402, comments: 122, kind: 'reel' },
-  { id: 'g9', src: '/img/post5.jpg', likes: 1388, comments: 26, kind: 'carousel' },
+  { id: 'g1', src: 'img/post7.jpg', likes: 1204, comments: 22, kind: 'carousel' },
+  { id: 'g2', src: 'img/post8.jpg', likes: 892, comments: 14, kind: 'single' },
+  { id: 'g3', src: 'img/post9.jpg', likes: 3311, comments: 87, kind: 'reel' },
+  { id: 'g4', src: 'img/post10.jpg', likes: 640, comments: 9, kind: 'single' },
+  { id: 'g5', src: 'img/post11.jpg', likes: 2108, comments: 41, kind: 'carousel' },
+  { id: 'g6', src: 'img/post12.jpg', likes: 1755, comments: 30, kind: 'single' },
+  { id: 'g7', src: 'img/post1.jpg', likes: 970, comments: 11, kind: 'single' },
+  { id: 'g8', src: 'img/post3.jpg', likes: 4402, comments: 122, kind: 'reel' },
+  { id: 'g9', src: 'img/post5.jpg', likes: 1388, comments: 26, kind: 'carousel' },
 ];
 
 export const HIGHLIGHTS = [
-  { id: 'h1', label: 'Studio', src: '/img/post2.jpg' },
-  { id: 'h2', label: 'Iceland', src: '/img/post4.jpg' },
-  { id: 'h3', label: 'Dyeing', src: '/img/post6.jpg' },
-  { id: 'h4', label: 'Shop', src: '/img/post8.jpg' },
+  { id: 'h1', label: 'Studio', src: 'img/post2.jpg' },
+  { id: 'h2', label: 'Iceland', src: 'img/post4.jpg' },
+  { id: 'h3', label: 'Dyeing', src: 'img/post6.jpg' },
+  { id: 'h4', label: 'Shop', src: 'img/post8.jpg' },
 ];
 
 export function writeCount(n: number) {

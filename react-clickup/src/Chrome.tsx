@@ -71,7 +71,7 @@ export function Sidebar({ screen, onScreen }: { screen: Screen; onScreen: (next:
         <ArenaAppLogo
           size="sm"
           name="ClickUp"
-          mark={<img src="/img/brand-mark.svg" alt="" className="side__mark" />}
+          mark={<img src="img/brand-mark.svg" alt="" className="side__mark" />}
         />
         <span className="side__brand-gap" />
         <ArenaIconButton icon="ph-bold ph-caret-up-down" label="Switch workspace" size="sm" />

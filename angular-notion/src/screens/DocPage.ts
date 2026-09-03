@@ -61,7 +61,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
           <div class="prop">
             <span class="prop__key"><i class="ph-bold ph-user" aria-hidden="true"></i>Owner</span>
             <span class="prop__value">
-              <arena-avatar name="Marta Ilves" src="/img/p1.jpg" size="xs" />
+              <arena-avatar name="Marta Ilves" src="img/p1.jpg" size="xs" />
               Marta Ilves
             </span>
           </div>

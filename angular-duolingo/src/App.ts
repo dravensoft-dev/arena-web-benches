@@ -30,7 +30,7 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
     } @else {
       <nav class="nav" aria-label="Primary">
         <a class="nav__brand" href="#/">
-          <img src="/img/brand-word.svg" alt="Duolingo" class="nav__word" />
+          <img src="img/brand-word.svg" alt="Duolingo" class="nav__word" />
         </a>
 
         <ul class="nav__list">

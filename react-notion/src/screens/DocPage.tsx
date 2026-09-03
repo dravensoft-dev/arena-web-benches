@@ -62,7 +62,7 @@ export function DocPage() {
             <div className="prop">
               <span className="prop__key"><i className="ph-bold ph-user" aria-hidden="true" />Owner</span>
               <span className="prop__value">
-                <ArenaAvatar name="Marta Ilves" src="/img/p1.jpg" size="xs" />
+                <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" size="xs" />
                 Marta Ilves
               </span>
             </div>

@@ -111,7 +111,7 @@ const SCREEN_OF: Record<string, Screen> = {
   template: `
     <div class="side__brand">
       <arena-app-logo size="sm" name="ClickUp">
-        <img mark src="/img/brand-mark.svg" alt="" class="side__mark" />
+        <img mark src="img/brand-mark.svg" alt="" class="side__mark" />
       </arena-app-logo>
       <span class="side__brand-gap"></span>
       <arena-icon-button icon="ph-bold ph-caret-up-down" label="Switch workspace" size="sm" />

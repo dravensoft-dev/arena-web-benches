@@ -6,7 +6,7 @@ export function ProfileScreen() {
   return (
     <div className="profile">
       <header className="profile__head">
-        <ArenaAvatar name="Juno Reyes" src="/img/l4.jpg" size="lg" />
+        <ArenaAvatar name="Juno Reyes" src="img/l4.jpg" size="lg" />
         <div className="profile__who">
           <h1 className="profile__name">Juno Reyes</h1>
           <p className="profile__handle">juno_reyes &middot; Joined March 2024</p>

@@ -86,14 +86,14 @@ export const XP_GOAL = 50;
 export type Leader = { rank: number; name: string; image: string; xp: number; me?: boolean };
 
 export const LEAGUE: Leader[] = [
-  { rank: 1, name: 'Ines Marchetti', image: '/img/l1.jpg', xp: 2480 },
-  { rank: 2, name: 'Kofi Mensah', image: '/img/l2.jpg', xp: 2210 },
-  { rank: 3, name: 'Lena Ruzicka', image: '/img/l3.jpg', xp: 1970 },
-  { rank: 4, name: 'You', image: '/img/l4.jpg', xp: 1815, me: true },
-  { rank: 5, name: 'Petra Nowak', image: '/img/l5.jpg', xp: 1640 },
-  { rank: 6, name: 'Samir Haddad', image: '/img/l6.jpg', xp: 1502 },
-  { rank: 7, name: 'Yuki Tanabe', image: '/img/l7.jpg', xp: 1388 },
-  { rank: 8, name: 'Rui Batista', image: '/img/l8.jpg', xp: 1240 },
+  { rank: 1, name: 'Ines Marchetti', image: 'img/l1.jpg', xp: 2480 },
+  { rank: 2, name: 'Kofi Mensah', image: 'img/l2.jpg', xp: 2210 },
+  { rank: 3, name: 'Lena Ruzicka', image: 'img/l3.jpg', xp: 1970 },
+  { rank: 4, name: 'You', image: 'img/l4.jpg', xp: 1815, me: true },
+  { rank: 5, name: 'Petra Nowak', image: 'img/l5.jpg', xp: 1640 },
+  { rank: 6, name: 'Samir Haddad', image: 'img/l6.jpg', xp: 1502 },
+  { rank: 7, name: 'Yuki Tanabe', image: 'img/l7.jpg', xp: 1388 },
+  { rank: 8, name: 'Rui Batista', image: 'img/l8.jpg', xp: 1240 },
 ];
 
 export type Achievement = { id: string; title: string; level: number; icon: string; progress: number; goal: number; slot: number };

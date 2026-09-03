@@ -19,7 +19,7 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
       <div className="doc__scroll">
         <div className="home">
           <div className="home__greeting">
-            <ArenaAvatar name="Marta Ilves" src="/img/p1.jpg" size="lg" />
+            <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" size="lg" />
             <div>
               <h1 className="home__hello">Good afternoon, Marta</h1>
               <p className="home__sub">Six pages changed in your workspace since you were last here.</p>

@@ -23,7 +23,7 @@ import type { Screen } from '../Sidebar';
     <div class="doc__scroll">
       <div class="home">
         <div class="home__greeting">
-          <arena-avatar name="Marta Ilves" src="/img/p1.jpg" size="lg" />
+          <arena-avatar name="Marta Ilves" src="img/p1.jpg" size="lg" />
           <div>
             <h1 class="home__hello">Good afternoon, Marta</h1>
             <p class="home__sub">Six pages changed in your workspace since you were last here.</p>
