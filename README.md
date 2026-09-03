@@ -21,17 +21,35 @@ run side by side without colliding. A React half reads `PORT` if you want it som
 
 | Product | React | Angular |
 |---|---|---|
-| Calendly | `react-calendly` on 5108 | `angular-calendly` on 5208 |
-| ClickUp | `react-clickup` on 5102 | `angular-clickup` on 5202 |
-| Duolingo | `react-duolingo` on 5104 | `angular-duolingo` on 5204 |
-| Etsy | `react-etsy` on 5105 | `angular-etsy` on 5205 |
-| Grafana | `react-grafana` on 5107 | `angular-grafana` on 5207 |
-| Instagram | `react-instagram` on 5103 | `angular-instagram` on 5203 |
-| Notion | `react-notion` on 5101 | `angular-notion` on 5201 |
-| Superhuman | `react-superhuman` on 5106 | `angular-superhuman` on 5206 |
+| Calendly | `react-calendly` on 5108, [published](https://arena.dravensoft.org/web-benches/calendly/react/) | `angular-calendly` on 5208, [published](https://arena.dravensoft.org/web-benches/calendly/angular/) |
+| ClickUp | `react-clickup` on 5102, [published](https://arena.dravensoft.org/web-benches/clickup/react/) | `angular-clickup` on 5202, [published](https://arena.dravensoft.org/web-benches/clickup/angular/) |
+| Duolingo | `react-duolingo` on 5104, [published](https://arena.dravensoft.org/web-benches/duolingo/react/) | `angular-duolingo` on 5204, [published](https://arena.dravensoft.org/web-benches/duolingo/angular/) |
+| Etsy | `react-etsy` on 5105, [published](https://arena.dravensoft.org/web-benches/etsy/react/) | `angular-etsy` on 5205, [published](https://arena.dravensoft.org/web-benches/etsy/angular/) |
+| Grafana | `react-grafana` on 5107, [published](https://arena.dravensoft.org/web-benches/grafana/react/) | `angular-grafana` on 5207, [published](https://arena.dravensoft.org/web-benches/grafana/angular/) |
+| Instagram | `react-instagram` on 5103, [published](https://arena.dravensoft.org/web-benches/instagram/react/) | `angular-instagram` on 5203, [published](https://arena.dravensoft.org/web-benches/instagram/angular/) |
+| Notion | `react-notion` on 5101, [published](https://arena.dravensoft.org/web-benches/notion/react/) | `angular-notion` on 5201, [published](https://arena.dravensoft.org/web-benches/notion/angular/) |
+| Superhuman | `react-superhuman` on 5106, [published](https://arena.dravensoft.org/web-benches/superhuman/react/) | `angular-superhuman` on 5206, [published](https://arena.dravensoft.org/web-benches/superhuman/angular/) |
 
 Each bench is a mock written to exercise Arena. The product names say which interface a bench
 was drawn after; the marks and the artwork are its own.
+
+## Building all of them
+
+```bash
+bun install
+bun run build      # dist/<product>/<layer>/, and benches.json beside them
+bun run compare    # the eight pairs, each as two frames, on http://localhost:5100
+```
+
+`build` runs each half's own build and stops on the first that fails, so its exit code is the
+whole of the claim that a published gallery holds sixteen halves or none. It normalises the two
+output paths into one shape, asserts the `./` base every half needs to be served from a
+subdirectory, and asserts that every raster a half asks for is a raster it carries. That directory
+is the only thing [Arena](https://github.com/dravensoft-dev/arena) reads, and it publishes it at
+the addresses in the table above.
+
+`compare` is the two halves of a pair open at once, which is the whole reason there are two. The
+published site lists the addresses and embeds none of them.
 
 ## Measuring one
 
@@ -49,4 +67,6 @@ read from and one that exits on the first report reports less.
 
 `bun run pack vX.Y.Z` writes one `dist/arena-web-benches-<product>-vX.Y.Z.tar.gz` per pair, from
 `git archive`, so a tarball holds what the commit holds and nothing a build left behind. The
-working tree has to be clean: a tarball that matches no commit cannot be produced again.
+working tree has to be clean: a tarball that matches no commit cannot be produced again. It reads
+its pairs from `benches.json` and clears the tarballs rather than the directory, because `build`
+writes the published halves into that same `dist/`.

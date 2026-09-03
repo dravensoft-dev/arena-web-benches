@@ -52,8 +52,14 @@ Three things, and none of them is a fix.
 
 - **The repository's own plumbing.** How the sixteen are installed, built and published, and
   which version of Arena they read. That is this repository being a repository rather than being a
-  bench, and it reaches no bench's markup, no `arena.config.json` and no `design/`. A change that
-  moves what a bench DRAWS is not plumbing, whatever it is filed as.
+  bench, and it reaches no `arena.config.json` and no `design/`. A change that moves what a bench
+  DRAWS is not plumbing, whatever it is filed as; how a bench ASKS for something it already draws
+  is, which is why every raster is named relative to the half rather than to a domain root.
+
+  **`benches.json` is where a pair is declared**, and `bun run build` reads it and writes the one
+  directory Arena consumes. A pair the manifest does not name is a pair the published site does
+  not carry, and Arena's own gate refuses an output that declares a half it does not hold or holds
+  one it does not declare. Nothing else crosses between the two repositories.
 
 Anything else that makes a bench build or look better is a fix, and a fix belongs in Arena.
 
