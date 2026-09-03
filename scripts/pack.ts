@@ -1,18 +1,17 @@
 /* One tarball per twin pair, for a release page to carry. git archive is what makes it clean:
  * it holds what the commit holds, so each bench's own .gitignore is the whole definition of
  * what a packed bench is, and no second list of exclusions exists to go stale. A dirty tree is
- * refused rather than packed, because a tarball that matches no commit cannot be produced again. */
+ * refused rather than packed, because a tarball that matches no commit cannot be produced again.
+ * The pairs come from benches.json, which is the one place they are named, and only the tarballs
+ * are cleared: `build` writes the published halves into the same directory. */
 
-import { existsSync, mkdirSync, rmSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
+import { LAYERS, OUT, manifest } from './build.ts';
 
-export const PRODUCTS = [
-  'calendly', 'clickup', 'duolingo', 'etsy', 'grafana', 'instagram', 'notion', 'superhuman',
-];
+export const PRODUCTS = manifest().pairs.map(({ product }) => product);
 
-export const LAYERS = ['react', 'angular'];
-
-export const OUT = 'dist';
+export const TARBALL = '.tar.gz';
 
 export const TAG = /^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
@@ -57,8 +56,10 @@ function main(argv: string[]) {
     process.exit(1);
   }
 
-  rmSync(OUT, { recursive: true, force: true });
   mkdirSync(OUT, { recursive: true });
+  for (const one of readdirSync(OUT)) {
+    if (one.endsWith(TARBALL)) unlinkSync(join(OUT, one));
+  }
 
   for (const product of PRODUCTS) {
     const name = nameFor(product, tag);

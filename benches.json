@@ -1,0 +1,13 @@
+{
+  "arena": "10.2.1",
+  "pairs": [
+    { "product": "calendly",   "skin": "calendly",   "react": { "dir": "react-calendly",   "out": "dist" }, "angular": { "dir": "angular-calendly",   "out": "dist/browser" } },
+    { "product": "clickup",    "skin": "clickup",    "react": { "dir": "react-clickup",    "out": "dist" }, "angular": { "dir": "angular-clickup",    "out": "dist/browser" } },
+    { "product": "duolingo",   "skin": "duolingo",   "react": { "dir": "react-duolingo",   "out": "dist" }, "angular": { "dir": "angular-duolingo",   "out": "dist/browser" } },
+    { "product": "etsy",       "skin": "etsy",       "react": { "dir": "react-etsy",       "out": "dist" }, "angular": { "dir": "angular-etsy",       "out": "dist/browser" } },
+    { "product": "grafana",    "skin": "grafana",    "react": { "dir": "react-grafana",    "out": "dist" }, "angular": { "dir": "angular-grafana",    "out": "dist/browser" } },
+    { "product": "instagram",  "skin": "instagram",  "react": { "dir": "react-instagram",  "out": "dist" }, "angular": { "dir": "angular-instagram",  "out": "dist/browser" } },
+    { "product": "notion",     "skin": "notion",     "react": { "dir": "react-notion",     "out": "dist" }, "angular": { "dir": "angular-notion",     "out": "dist/browser" } },
+    { "product": "superhuman", "skin": "superhuman", "react": { "dir": "react-superhuman", "out": "dist" }, "angular": { "dir": "angular-superhuman", "out": "dist/browser" } }
+  ]
+}

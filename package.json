@@ -7,6 +7,7 @@
     "angular-*"
   ],
   "scripts": {
+    "build": "bun scripts/build.ts",
     "pack": "bun scripts/pack.ts"
   }
 }
