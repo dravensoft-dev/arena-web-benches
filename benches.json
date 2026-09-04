@@ -1,5 +1,5 @@
 {
-  "arena": "10.2.4",
+  "arena": "11.0.0",
   "pairs": [
     { "product": "calendly",   "label": "Calendly",   "skin": "calendly",   "react": { "dir": "react-calendly",     "out": "dist" }, "angular": { "dir": "angular-calendly",     "out": "dist/browser" } },
     { "product": "clickup",    "label": "ClickUp",    "skin": "clickup",    "react": { "dir": "react-clickup",      "out": "dist" }, "angular": { "dir": "angular-clickup",      "out": "dist/browser" } },
