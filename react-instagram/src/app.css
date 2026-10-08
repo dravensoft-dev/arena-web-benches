@@ -128,12 +128,7 @@
 .story__live {
   position: absolute;
   inset-block-end: calc(var(--sp-2) * -1);
-  padding: 0 var(--sp-1);
-  border-radius: var(--r-marker);
-  background: var(--color-error);
-  color: var(--color-error-content);
-  font-size: var(--dz-text-2xs);
-  font-weight: var(--fw-bold);
+  display: flex;
 }
 
 .story__name {

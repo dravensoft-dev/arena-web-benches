@@ -574,6 +574,10 @@
     "$type": "dimension",
     "$value": "{sp.2}"
   },
+  "pad-band-y": {
+    "$type": "dimension",
+    "$value": "{sp.5}"
+  },
   "gap-marker": {
     "$type": "dimension",
     "$value": {

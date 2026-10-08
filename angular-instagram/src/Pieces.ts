@@ -1,5 +1,5 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import { ArenaAvatar, ArenaIconButton } from '@dravensoft/arena-angular';
+import { ArenaAvatar, ArenaBadge, ArenaIconButton } from '@dravensoft/arena-angular';
 import { ACCOUNTS } from './data/Feed';
 
 /* A story ring is a gradient stroke around an avatar, and its state is whether it has been
@@ -8,7 +8,7 @@ import { ACCOUNTS } from './data/Feed';
   selector: 'app-story-ring',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar],
+  imports: [ArenaAvatar, ArenaBadge],
   host: { style: 'display: contents' },
   template: `
     <button type="button" class="story" [attr.data-seen]="seen() ? 'yes' : 'no'" [attr.data-size]="size()">
@@ -16,7 +16,7 @@ import { ACCOUNTS } from './data/Feed';
         <span class="story__inner">
           <arena-avatar [name]="account().name" [src]="account().avatar" [class.arena-size-lg]="size() === 'lg'" />
         </span>
-        @if (live()) { <span class="story__live">LIVE</span> }
+        @if (live()) { <span class="story__live"><arena-badge tone="danger" class="arena-mark-solid arena-size-sm">LIVE</arena-badge></span> }
       </span>
       <span class="story__name">{{ label() ?? account().handle }}</span>
     </button>

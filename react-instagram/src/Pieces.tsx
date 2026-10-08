@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArenaAvatar, ArenaIconButton } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaBadge, ArenaIconButton } from '@dravensoft/arena-react';
 import { ACCOUNTS } from './data/Feed';
 
 /* A story ring is a gradient stroke around an avatar, and its state is whether it has been
@@ -24,7 +24,7 @@ export function StoryRing({
         <span className="story__inner">
           <ArenaAvatar name={account.name} src={account.avatar} className={size === 'lg' ? 'arena-size-lg' : undefined} />
         </span>
-        {live && <span className="story__live">LIVE</span>}
+        {live && <span className="story__live"><ArenaBadge tone="danger" className="arena-mark-solid arena-size-sm">LIVE</ArenaBadge></span>}
       </span>
       <span className="story__name">{label ?? account.handle}</span>
     </button>

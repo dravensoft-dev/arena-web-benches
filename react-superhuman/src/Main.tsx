@@ -167,7 +167,7 @@ function Relay() {
           ) : null}
 
           <footer className="read__reply">
-            <ArenaButton icon="ph-bold ph-arrow-bend-up-left" className="arena-size-sm">Reply</ArenaButton>
+            <ArenaButton icon="ph-bold ph-arrow-bend-up-left" className="arena-size-sm arena-emphasis-secondary">Reply</ArenaButton>
             <ArenaButton icon="ph-bold ph-arrow-bend-double-up-right" className="arena-emphasis-secondary arena-size-sm">Forward</ArenaButton>
             <span className="read__reply-hint">
               <Cap>R</Cap>

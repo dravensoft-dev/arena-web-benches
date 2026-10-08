@@ -1,7 +1,7 @@
 /* A shop's appearance, painted through the part hooks the kernel exposes. Everything answerable
    as a role is answered in plugin.tokens.json, so what is left here is what this register wants
-   and no question of the kernel's asks: where a mark sits on a picture, how much air the bar
-   spends on itself, and a trail that reads as chrome rather than as a heading. */
+   and no question of the kernel's asks: where a mark sits on a picture, and a trail that reads
+   as chrome rather than as a heading. */
 
 /* A marker is a corner chip on the picture, not a band across the foot of it. The role names
    which colour the wash takes and cannot say where the thing wearing it goes, and a shop puts
@@ -11,12 +11,6 @@
   justify-content: start;
   background: transparent;
   padding: var(--sp-3);
-}
-
-/* The bar carries the search field, so it is the tallest thing on the page rather than a rule
-   above the content. No role reaches a component's own padding. */
-[data-arena-part="app-bar.band"] {
-  padding-block: var(--sp-5);
 }
 
 /* A trail above a listing is chrome. Its size and its tracking are roles now; what is left is

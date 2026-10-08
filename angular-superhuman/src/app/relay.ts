@@ -148,7 +148,7 @@ const SPLITS: ArenaSegmentOption[] = [
           }
 
           <footer class="read__reply">
-            <arena-button icon="ph-bold ph-arrow-bend-up-left" class="arena-size-sm">Reply</arena-button>
+            <arena-button icon="ph-bold ph-arrow-bend-up-left" class="arena-size-sm arena-emphasis-secondary">Reply</arena-button>
             <arena-button icon="ph-bold ph-arrow-bend-double-up-right" class="arena-emphasis-secondary arena-size-sm">Forward</arena-button>
             <span class="read__reply-hint">
               <app-cap>R</app-cap>
