@@ -24,8 +24,7 @@ is in [`CLAUDE.md`](./CLAUDE.md).
 ## The measurement
 
 Every half is read with `bun run measure`, which runs `arena build`, `arena check`, `arena audit`
-and `arena usage` over `src` and `design`, against a build assembled from an Arena working tree at
-12.0.0 (the two tarballs in `vendor/`). The two halves of every pair agree on both figures below,
+and `arena usage` over `src` and `design`, against Arena 12.0.0 from npm. The two halves of every pair agree on both figures below,
 which is the claim the paired mock exists to test.
 
 | Product | Components drawn | Parts the plugin paints |

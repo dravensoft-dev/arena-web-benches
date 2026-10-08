@@ -5,9 +5,10 @@ twice: once in React and once in Angular, from the same `arena.config.json` and 
 `design/` directory, so a difference between a pair is Arena answering the two layers
 differently rather than the app being written twice.
 
-Every bench installs Arena from the two tarballs in `vendor/`, which `bun scripts/vendor.ts
-<arena>` packs from a built Arena tree. None of them reads the tree itself, and `vendor/` is not
-committed, so a clone runs `vendor.ts` before its first `bun install`.
+Every bench installs Arena from npm. None of them reads the Arena tree. To rehearse a version the
+registry does not carry yet, `bun scripts/vendor.ts <arena>` packs the two packages from a built
+Arena tree into `vendor/`, and each half names its tarball as `file:../vendor/<name>.tgz` until
+the publish; `vendor/` is not committed, so those pins never reach `main`.
 
 ## Running one
 
