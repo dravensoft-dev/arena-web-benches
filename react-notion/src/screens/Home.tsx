@@ -9,17 +9,17 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
       <header className="topbar">
         <span className="topbar__title">Home</span>
         <div className="topbar__actions">
-          <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-magnifying-glass" onClick={onSearch}>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" onClick={onSearch}>
             Search
           </ArenaButton>
-          <ArenaIconButton icon="ph-bold ph-gear" label="Settings" size="sm" />
+          <ArenaIconButton icon="ph-bold ph-gear" label="Settings" className="arena-size-sm" />
         </div>
       </header>
 
       <div className="doc__scroll">
         <div className="home">
           <div className="home__greeting">
-            <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" size="lg" />
+            <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" className="arena-size-lg" />
             <div>
               <h1 className="home__hello">Good afternoon, Marta</h1>
               <p className="home__sub">Six pages changed in your workspace since you were last here.</p>
@@ -49,12 +49,12 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
             </div>
           </section>
 
-          <section className="home__section">
+          <section className="home__section" style={{ '--arena-grid-min': 'calc(var(--sp-1) * 60)' } as React.CSSProperties}>
             <h2 className="home__section-title">
               <i className="ph-bold ph-cards-three" aria-hidden="true" />
               Start with a template
             </h2>
-            <ArenaGrid min="240px" gap="md">
+            <ArenaGrid>
               {TEMPLATES.map((template) => (
                 <ArenaCard key={template.id} title={template.title} interactive onClick={() => onScreen('doc')}>
                   <p className="template__blurb">

@@ -68,7 +68,7 @@ export class PriorityFlag {
   template: `
     @for (id of shown(); track id) {
       <span class="stack__slot">
-        <arena-avatar [name]="person(id).name" [src]="person(id).image" size="xs" />
+        <arena-avatar [name]="person(id).name" [src]="person(id).image" class="arena-size-xs" />
       </span>
     }
     @if (rest() > 0) { <span class="stack__more arena-num">+{{ rest() }}</span> }
@@ -110,11 +110,11 @@ const SCREEN_OF: Record<string, Screen> = {
   host: { class: 'side' },
   template: `
     <div class="side__brand">
-      <arena-app-logo size="sm" name="ClickUp">
+      <arena-app-logo class="arena-size-sm" name="ClickUp">
         <img mark src="img/brand-mark.svg" alt="" class="side__mark" />
       </arena-app-logo>
       <span class="side__brand-gap"></span>
-      <arena-icon-button icon="ph-bold ph-caret-up-down" label="Switch workspace" size="sm" />
+      <arena-icon-button icon="ph-bold ph-caret-up-down" label="Switch workspace" class="arena-size-sm" />
     </div>
 
     <div class="side__quick">
@@ -159,12 +159,12 @@ const SCREEN_OF: Record<string, Screen> = {
     </div>
 
     <div class="side__foot">
-      <arena-avatar [name]="ada.name" [src]="ada.image" size="sm" status="online" />
+      <arena-avatar [name]="ada.name" [src]="ada.image" class="arena-size-sm" status="online" />
       <span class="side__me">
         <span class="side__me-name">Ada Okonjo</span>
         <span class="side__me-role">Workspace owner</span>
       </span>
-      <arena-icon-button icon="ph-bold ph-gear" label="Settings" size="sm" />
+      <arena-icon-button icon="ph-bold ph-gear" label="Settings" class="arena-size-sm" />
     </div>
   `,
 })

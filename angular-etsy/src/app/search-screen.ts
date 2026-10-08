@@ -57,7 +57,7 @@ const KINDS: ArenaSegmentOption[] = [
       <div class="results__facets arena-row">
         @for (facet of facets; track facet.id) {
           <arena-tag
-            [tone]="chosen().includes(facet.id) ? 'primary' : 'neutral'"
+            [class.arena-accent-primary]="chosen().includes(facet.id)"
             [removable]="chosen().includes(facet.id)"
             (remove)="drop(facet.id)"
           >{{ facet.label }}</arena-tag>

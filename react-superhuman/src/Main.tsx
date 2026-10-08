@@ -64,13 +64,13 @@ function Relay() {
           <ArenaIconButton
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
-            size="sm"
+            className="arena-size-sm"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           />
         </div>
 
         <div className="rail__compose">
-          <ArenaButton variant="primary" full icon="ph-bold ph-pencil-simple" size="sm">
+          <ArenaButton icon="ph-bold ph-pencil-simple" className="arena-fill arena-size-sm">
             Compose
           </ArenaButton>
         </div>
@@ -107,7 +107,7 @@ function Relay() {
             ariaLabel="Which half of the inbox"
             options={SPLITS}
             value={split}
-            size="sm"
+            className="arena-size-sm"
             onChange={setSplit}
           />
         </div>
@@ -124,10 +124,10 @@ function Relay() {
             <div className="read__title-row">
               <h1 className="read__subject">{open.subject}</h1>
               <span className="read__actions">
-                <ArenaIconButton icon="ph-bold ph-archive" label="Archive" size="sm" />
-                <ArenaIconButton icon="ph-bold ph-clock-countdown" label="Snooze" size="sm" />
-                <ArenaIconButton icon="ph-bold ph-trash" label="Delete" size="sm" />
-                <ArenaIconButton icon="ph-bold ph-dots-three" label="More actions" size="sm" />
+                <ArenaIconButton icon="ph-bold ph-archive" label="Archive" className="arena-size-sm" />
+                <ArenaIconButton icon="ph-bold ph-clock-countdown" label="Snooze" className="arena-size-sm" />
+                <ArenaIconButton icon="ph-bold ph-trash" label="Delete" className="arena-size-sm" />
+                <ArenaIconButton icon="ph-bold ph-dots-three" label="More actions" className="arena-size-sm" />
               </span>
             </div>
             {open.labels.length ? (
@@ -140,7 +140,7 @@ function Relay() {
           </header>
 
           <div className="read__from">
-            <ArenaAvatar src={open.avatar} name={open.from} size="sm" />
+            <ArenaAvatar src={open.avatar} name={open.from} className="arena-size-sm" />
             <span className="read__who">
               <span className="read__name">{open.from}</span>
               <span className="read__to">{`to ${open.to}`}</span>
@@ -167,8 +167,8 @@ function Relay() {
           ) : null}
 
           <footer className="read__reply">
-            <ArenaButton variant="primary" icon="ph-bold ph-arrow-bend-up-left" size="sm">Reply</ArenaButton>
-            <ArenaButton variant="secondary" icon="ph-bold ph-arrow-bend-double-up-right" size="sm">Forward</ArenaButton>
+            <ArenaButton icon="ph-bold ph-arrow-bend-up-left" className="arena-size-sm">Reply</ArenaButton>
+            <ArenaButton icon="ph-bold ph-arrow-bend-double-up-right" className="arena-emphasis-secondary arena-size-sm">Forward</ArenaButton>
             <span className="read__reply-hint">
               <Cap>R</Cap>
               <span className="rail__hint-text">to reply</span>

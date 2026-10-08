@@ -26,7 +26,7 @@ import type { PathNode, Unit } from '../data/Course';
     @if (node().state === 'active') {
       <arena-progress-bar
         shape="radial"
-        size="lg"
+        class="arena-size-lg"
         [showLabel]="false"
         [showPercentage]="false"
         [progressPercentage]="node().progress ?? 0"
@@ -132,7 +132,7 @@ export class UnitBlock {
       </arena-card>
 
       <arena-card title="Ruby league" eyebrow="Top 10 advance">
-        <arena-people-list label="Ruby league standings" ordered size="sm">
+        <arena-people-list label="Ruby league standings" ordered class="arena-size-sm">
           @for (leader of top; track leader.rank) {
             <arena-person-row [rank]="leader.rank" [name]="leader.name"
               [src]="leader.image" [figure]="leader.xp + ' XP'" [current]="leader.me" />
@@ -142,7 +142,7 @@ export class UnitBlock {
 
       <arena-card title="Unlock Super">
         <p class="rail__blurb">No ads, unlimited hearts, and a personalised practice hub.</p>
-        <arena-button full icon="ph-bold ph-crown-simple">Try 2 weeks free</arena-button>
+        <arena-button class="arena-fill" icon="ph-bold ph-crown-simple">Try 2 weeks free</arena-button>
       </arena-card>
     </aside>
   `,

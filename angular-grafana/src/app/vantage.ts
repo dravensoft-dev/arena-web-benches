@@ -30,8 +30,8 @@ import {
 const COLUMNS: ArenaTableColumn[] = [
   { header: 'State' },
   { header: 'Rule' },
-  { header: 'Service', mono: true },
-  { header: 'For', align: 'right', mono: true },
+  { header: 'Service', numeric: true },
+  { header: 'For', key: 'for', numeric: true },
 ];
 
 @Component({
@@ -66,11 +66,11 @@ const COLUMNS: ArenaTableColumn[] = [
               <arena-badge tone="danger" dot>2 firing</arena-badge>
               <span class="board__gap"></span>
               <arena-select label="Range" [options]="ranges" [value]="range()" (change)="range.set($event)" />
-              <arena-icon-button icon="ph-bold ph-arrows-clockwise" label="Refresh now" size="sm" />
+              <arena-icon-button icon="ph-bold ph-arrows-clockwise" label="Refresh now" class="arena-size-sm" />
               <arena-icon-button
                 [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
                 [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
-                size="sm"
+                class="arena-size-sm"
                 (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
               />
             </div>
@@ -161,7 +161,7 @@ const COLUMNS: ArenaTableColumn[] = [
             </arena-chart-card>
           </div>
 
-          <section class="alerts" aria-label="Active alerts">
+          <section class="alerts" aria-label="Active alerts" style="--arena-column-for-align: right">
             <h2 class="alerts__title">Active alerts</h2>
             <arena-table label="Active alerts" [columns]="columns">
               @for (one of alerts; track one.id) {

@@ -131,11 +131,11 @@ function Shop() {
 
       <ArenaSheet
         open={cartOpen}
-        placement="end"
+        className="arena-placement-end"
         title="Your basket"
         dismissible
         onClose={() => setCartOpen(false)}
-        footer={<ArenaButton variant="primary" full>Go to checkout</ArenaButton>}
+        footer={<ArenaButton className="arena-fill">Go to checkout</ArenaButton>}
       >
         {basket.length === 0
           ? <p className="basket__empty">Nothing in it yet.</p>

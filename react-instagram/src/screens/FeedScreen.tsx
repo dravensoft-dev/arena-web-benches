@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { CSSProperties } from 'react';
 import {
   ArenaAvatar,
   ArenaButton,
@@ -44,7 +45,7 @@ function PostCard({ post, onOpen }: { post: Post; onOpen: (post: Post) => void }
         <ArenaMenu
           align="end"
           items={POST_MENU}
-          trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Options for ${account.handle}`} size="sm" />}
+          trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Options for ${account.handle}`} className="arena-size-sm" />}
         />
       </header>
 
@@ -99,7 +100,7 @@ function PostCard({ post, onOpen }: { post: Post; onOpen: (post: Post) => void }
         ))}
         <div className="post__add">
           <input className="post__input" placeholder="Add a comment..." aria-label="Add a comment" />
-          <ArenaButton variant="ghost" size="sm">Post</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm">Post</ArenaButton>
         </div>
       </div>
     </article>
@@ -110,8 +111,8 @@ export function FeedScreen({ onOpen }: { onOpen: (post: Post) => void }) {
   return (
     <div className="feed">
       <div className="feed__col">
-        <div className="rail">
-          <ArenaScroller label="Stories" behaviour="snap" itemWidth="var(--sp-20)">
+        <div className="rail" style={{ '--arena-scroller-item': 'var(--sp-20)' } as CSSProperties}>
+          <ArenaScroller label="Stories" behaviour="snap">
             {STORIES.map((story) => (
               <ArenaScrollerItem key={story.handle}>
                 <StoryRing handle={story.handle} seen={story.seen} live={story.live} />
@@ -125,24 +126,24 @@ export function FeedScreen({ onOpen }: { onOpen: (post: Post) => void }) {
 
       <aside className="aside">
         <div className="aside__me">
-          <ArenaAvatar name={ME.name} src={ME.avatar} size="lg" />
+          <ArenaAvatar name={ME.name} src={ME.avatar} className="arena-size-lg" />
           <span className="aside__me-text">
             <Handle handle={ME.handle} bold />
             <span className="aside__me-name">{ME.name}</span>
           </span>
-          <ArenaButton variant="ghost" size="sm">Switch</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm">Switch</ArenaButton>
         </div>
 
         <div className="aside__head">
           <span className="aside__title">Suggested for you</span>
-          <ArenaButton variant="ghost" size="sm">See all</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm">See all</ArenaButton>
         </div>
 
         <ArenaPeopleList label="Suggested accounts">
           {SUGGESTIONS.map((handle) => (
             <ArenaPersonRow key={handle} name={handle} src={ACCOUNTS[handle].avatar}
               secondary="Followed by marisol.b"
-              action={<ArenaButton variant="ghost" size="sm">Follow</ArenaButton>} />
+              action={<ArenaButton className="arena-emphasis-ghost arena-size-sm">Follow</ArenaButton>} />
           ))}
         </ArenaPeopleList>
 

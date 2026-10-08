@@ -3,14 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "arena-to-prod --src src --src design --audit",
+    "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",
-    "prebuild": "arena-to-prod --src src --src design --audit --undrawn --strict=audit",
+    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
     "build": "bun build ./src/index.html --outdir dist --minify",
-    "measure": "arena-to-prod --src src --src design --audit --undrawn"
+    "measure": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
-    "@dravensoft/arena-react": "11.0.0",
+    "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.0.0.tgz",
     "@phosphor-icons/web": "^2.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

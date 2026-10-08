@@ -77,7 +77,7 @@ export function Blocks({ blocks }: { blocks: readonly Block[] }) {
             return (
               <div key={key} className="block block--figure">
                 <ArenaFigure
-                  ratio="16 / 9"
+                  className="arena-ratio-video"
                   caption={block.caption}
                   media={<img src={block.src} alt={block.caption} />}
                 />

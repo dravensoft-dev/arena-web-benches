@@ -1,6 +1,5 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { ArenaAvatar, ArenaIconButton } from '@dravensoft/arena-angular';
-import type { ArenaAvatarSize } from '@dravensoft/arena-angular';
 import { ACCOUNTS } from './data/Feed';
 
 /* A story ring is a gradient stroke around an avatar, and its state is whether it has been
@@ -15,7 +14,7 @@ import { ACCOUNTS } from './data/Feed';
     <button type="button" class="story" [attr.data-seen]="seen() ? 'yes' : 'no'" [attr.data-size]="size()">
       <span class="story__ring">
         <span class="story__inner">
-          <arena-avatar [name]="account().name" [src]="account().avatar" [size]="face()" />
+          <arena-avatar [name]="account().name" [src]="account().avatar" [class.arena-size-lg]="size() === 'lg'" />
         </span>
         @if (live()) { <span class="story__live">LIVE</span> }
       </span>
@@ -31,7 +30,6 @@ export class StoryRing {
   readonly label = input<string | undefined>(undefined);
 
   protected readonly account = computed(() => ACCOUNTS[this.handle()]);
-  protected readonly face = computed<ArenaAvatarSize>(() => (this.size() === 'lg' ? 'lg' : 'md'));
 }
 
 @Component({
@@ -61,12 +59,12 @@ export class Handle {
       <img [src]="media()[index()]" [alt]="alt()" class="carousel__img" />
       @if (many() && index() > 0) {
         <span class="carousel__nav carousel__nav--prev">
-          <arena-icon-button icon="ph-bold ph-caret-left" label="Previous photo" size="sm" (click)="index.set(index() - 1)" />
+          <arena-icon-button icon="ph-bold ph-caret-left" label="Previous photo" class="arena-size-sm" (click)="index.set(index() - 1)" />
         </span>
       }
       @if (many() && index() < media().length - 1) {
         <span class="carousel__nav carousel__nav--next">
-          <arena-icon-button icon="ph-bold ph-caret-right" label="Next photo" size="sm" (click)="index.set(index() + 1)" />
+          <arena-icon-button icon="ph-bold ph-caret-right" label="Next photo" class="arena-size-sm" (click)="index.set(index() + 1)" />
         </span>
       }
       @if (many()) { <span class="carousel__count arena-num">{{ index() + 1 }}/{{ media().length }}</span> }

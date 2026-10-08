@@ -70,10 +70,10 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
 
         <div class="buy arena-stack">
           <div class="buy__shop">
-            <arena-avatar [src]="one().shopAvatar" [name]="one().shop" size="sm" />
+            <arena-avatar [src]="one().shopAvatar" [name]="one().shop" class="arena-size-sm" />
             <span class="buy__shop-name">{{ one().shop }}</span>
             @if (one().mark === 'star-seller') {
-              <arena-badge tone="gold">Star Seller</arena-badge>
+              <arena-badge class="arena-accent-gold">Star Seller</arena-badge>
             }
           </div>
 
@@ -88,12 +88,11 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
           <arena-select label="Width" [options]="sizes" [value]="size()" (change)="size.set($event)" />
           <arena-select label="Quantity" [options]="quantities" [value]="quantity()" (change)="quantity.set($event)" />
 
-          <arena-button variant="primary" full icon="ph-bold ph-basket" (click)="basket.emit(one().id)">
+          <arena-button class="arena-fill" icon="ph-bold ph-basket" (click)="basket.emit(one().id)">
             Add to basket
           </arena-button>
           <arena-button
-            variant="secondary"
-            full
+            class="arena-emphasis-secondary arena-fill"
             [icon]="saved().includes(one().id) ? 'ph-fill ph-heart' : 'ph-bold ph-heart'"
             (click)="save.emit(one().id)"
           >
@@ -106,7 +105,7 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
 
       @if (more().length) {
         <arena-section title="You may also like" eyebrow="Picked for you">
-          <arena-scroller label="Items you may also like" itemWidth="var(--grid-min)">
+          <arena-scroller label="Items you may also like" class="arena-scroller-item-md">
             @for (other of more(); track other.id) {
               <arena-scroller-item>
                 <app-listing-card

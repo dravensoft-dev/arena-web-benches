@@ -21,13 +21,13 @@ const COLUMNS: ArenaTableColumn[] = [
   { header: 'Status' },
   { header: 'Owner' },
   { header: 'Tags' },
-  { header: 'Due', align: 'right' },
-  { header: 'Effort', align: 'right', mono: true },
+  { header: 'Due', key: 'due' },
+  { header: 'Effort', key: 'effort', numeric: true },
 ];
 
 const STATUS_TONE: Record<Task['status'], ArenaTagTone> = {
   'Not started': 'neutral',
-  'In progress': 'primary',
+  'In progress': 'neutral',
   'In review': 'warning',
   Done: 'success',
 };
@@ -82,12 +82,12 @@ export class Tags {
       />
     </div>
     <arena-menu align="end" [items]="filter">
-      <arena-button trigger variant="ghost" size="sm" icon="ph-bold ph-funnel">Filter</arena-button>
+      <arena-button trigger class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</arena-button>
     </arena-menu>
     <arena-menu align="end" [items]="sort">
-      <arena-button trigger variant="ghost" size="sm" icon="ph-bold ph-arrows-down-up">Sort</arena-button>
+      <arena-button trigger class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-arrows-down-up">Sort</arena-button>
     </arena-menu>
-    <arena-button size="sm" icon="ph-bold ph-plus">New</arena-button>
+    <arena-button class="arena-size-sm" icon="ph-bold ph-plus">New</arena-button>
   `,
 })
 export class Toolbar {
@@ -109,7 +109,7 @@ export class Toolbar {
       <app-tags [tags]="task().tags" />
       <footer class="board__foot">
         <span class="board__owner">
-          <arena-avatar [name]="task().owner" [src]="task().ownerImage" size="xs" />
+          <arena-avatar [name]="task().owner" [src]="task().ownerImage" class="arena-size-xs" />
           {{ task().owner }}
         </span>
         <span class="board__due arena-num">{{ task().due }}</span>
@@ -135,8 +135,8 @@ export class BoardCard {
     <header class="topbar">
       <arena-breadcrumbs ariaLabel="Page location" [items]="crumbs" />
       <div class="topbar__actions">
-        <arena-button variant="ghost" size="sm" icon="ph-bold ph-share-network">Share</arena-button>
-        <arena-icon-button icon="ph-bold ph-dots-three" label="More actions" size="sm" />
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</arena-button>
+        <arena-icon-button icon="ph-bold ph-dots-three" label="More actions" class="arena-size-sm" />
       </div>
     </header>
 
@@ -149,7 +149,7 @@ export class BoardCard {
           <h1 class="doc__title doc__title--db">Sprint tasks</h1>
         </div>
 
-        <div class="db__views">
+        <div class="db__views" style="--arena-column-due-align: right; --arena-column-effort-align: right">
           <arena-tabs [value]="view()" (change)="view.set($event)">
             <arena-tab value="table" label="Table">
               <app-toolbar [query]="query()" (queryChange)="query.set($event)" />
@@ -162,10 +162,10 @@ export class BoardCard {
                         {{ task.name }}
                       </span>
                     </td>
-                    <td arena-table-cell><arena-tag [tone]="tone(task.status)">{{ task.status }}</arena-tag></td>
+                    <td arena-table-cell><arena-tag [tone]="tone(task.status)" [class.arena-accent-primary]="task.status === 'In progress'">{{ task.status }}</arena-tag></td>
                     <td arena-table-cell>
                       <span class="db__owner">
-                        <arena-avatar [name]="task.owner" [src]="task.ownerImage" size="xs" />
+                        <arena-avatar [name]="task.owner" [src]="task.ownerImage" class="arena-size-xs" />
                         {{ task.owner }}
                       </span>
                     </td>
@@ -182,11 +182,11 @@ export class BoardCard {
               <arena-board label="Sprint tasks by status">
                 @for (status of boardColumns; track status) {
                   <arena-board-column [title]="status" [count]="column(status).length">
-                    <arena-icon-button action icon="ph-bold ph-plus" [label]="'Add to ' + status" size="sm" />
+                    <arena-icon-button action icon="ph-bold ph-plus" [label]="'Add to ' + status" class="arena-size-sm" />
                     @for (task of column(status); track task.id) {
                       <app-board-card [task]="task" />
                     }
-                    <arena-button footer variant="ghost" size="sm" icon="ph-bold ph-plus" full>New</arena-button>
+                    <arena-button footer class="arena-emphasis-ghost arena-size-sm arena-fill" icon="ph-bold ph-plus">New</arena-button>
                   </arena-board-column>
                 }
               </arena-board>

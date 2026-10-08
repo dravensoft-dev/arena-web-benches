@@ -60,17 +60,17 @@ const CRUMBS: ArenaCrumb[] = [
       <header class="bar">
         <arena-breadcrumbs ariaLabel="Location" [items]="crumbs" />
         <div class="bar__gap"></div>
-        <arena-button variant="ghost" size="sm" icon="ph-bold ph-magnifying-glass" (click)="palette.set(true)">
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" (click)="palette.set(true)">
           Search
         </arena-button>
-        <arena-icon-button icon="ph-bold ph-bell" label="Notifications" size="sm" />
+        <arena-icon-button icon="ph-bold ph-bell" label="Notifications" class="arena-size-sm" />
         <arena-icon-button
           [icon]="themeIcon()"
           label="Switch appearance"
-          size="sm"
+          class="arena-size-sm"
           (click)="toggleTheme()"
         />
-        <arena-avatar [name]="ada.name" [src]="ada.image" size="sm" />
+        <arena-avatar [name]="ada.name" [src]="ada.image" class="arena-size-sm" />
       </header>
 
       <div class="head">
@@ -82,8 +82,8 @@ const CRUMBS: ArenaCrumb[] = [
           </div>
         </div>
         <div class="head__gap"></div>
-        <arena-button variant="ghost" size="sm" icon="ph-bold ph-share-network">Share</arena-button>
-        <arena-button variant="ghost" size="sm" icon="ph-bold ph-robot">Automate</arena-button>
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</arena-button>
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-robot">Automate</arena-button>
       </div>
 
       <nav class="views" aria-label="Views">
@@ -99,7 +99,7 @@ const CRUMBS: ArenaCrumb[] = [
           </button>
         }
         <span class="views__gap"></span>
-        <arena-icon-button icon="ph-bold ph-plus" label="Add a view" size="sm" />
+        <arena-icon-button icon="ph-bold ph-plus" label="Add a view" class="arena-size-sm" />
       </nav>
 
       <div class="body">
@@ -117,7 +117,7 @@ const CRUMBS: ArenaCrumb[] = [
       (run)="run($event)"
     />
 
-    <arena-toast-host placement="bottom-end">
+    <arena-toast-host>
       @for (toast of toasts.toasts(); track toast.id) {
         <arena-toast [tone]="toast.tone" [title]="toast.title" (close)="toasts.dismiss(toast.id)" />
       }

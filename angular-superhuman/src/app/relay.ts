@@ -43,13 +43,13 @@ const SPLITS: ArenaSegmentOption[] = [
           <arena-icon-button
             [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
             [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
-            size="sm"
+            class="arena-size-sm"
             (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
           />
         </div>
 
         <div class="rail__compose">
-          <arena-button variant="primary" full icon="ph-bold ph-pencil-simple" size="sm">
+          <arena-button icon="ph-bold ph-pencil-simple" class="arena-fill arena-size-sm">
             Compose
           </arena-button>
         </div>
@@ -86,7 +86,7 @@ const SPLITS: ArenaSegmentOption[] = [
             ariaLabel="Which half of the inbox"
             [options]="splits"
             [value]="split()"
-            size="sm"
+            class="arena-size-sm"
             (change)="split.set($event)"
           />
         </div>
@@ -103,10 +103,10 @@ const SPLITS: ArenaSegmentOption[] = [
             <div class="read__title-row">
               <h1 class="read__subject">{{ open().subject }}</h1>
               <span class="read__actions">
-                <arena-icon-button icon="ph-bold ph-archive" label="Archive" size="sm" />
-                <arena-icon-button icon="ph-bold ph-clock-countdown" label="Snooze" size="sm" />
-                <arena-icon-button icon="ph-bold ph-trash" label="Delete" size="sm" />
-                <arena-icon-button icon="ph-bold ph-dots-three" label="More actions" size="sm" />
+                <arena-icon-button icon="ph-bold ph-archive" label="Archive" class="arena-size-sm" />
+                <arena-icon-button icon="ph-bold ph-clock-countdown" label="Snooze" class="arena-size-sm" />
+                <arena-icon-button icon="ph-bold ph-trash" label="Delete" class="arena-size-sm" />
+                <arena-icon-button icon="ph-bold ph-dots-three" label="More actions" class="arena-size-sm" />
               </span>
             </div>
             @if (open().labels.length) {
@@ -119,7 +119,7 @@ const SPLITS: ArenaSegmentOption[] = [
           </header>
 
           <div class="read__from">
-            <arena-avatar [src]="open().avatar" [name]="open().from" size="sm" />
+            <arena-avatar [src]="open().avatar" [name]="open().from" class="arena-size-sm" />
             <span class="read__who">
               <span class="read__name">{{ open().from }}</span>
               <span class="read__to">{{ 'to ' + open().to }}</span>
@@ -148,8 +148,8 @@ const SPLITS: ArenaSegmentOption[] = [
           }
 
           <footer class="read__reply">
-            <arena-button variant="primary" icon="ph-bold ph-arrow-bend-up-left" size="sm">Reply</arena-button>
-            <arena-button variant="secondary" icon="ph-bold ph-arrow-bend-double-up-right" size="sm">Forward</arena-button>
+            <arena-button icon="ph-bold ph-arrow-bend-up-left" class="arena-size-sm">Reply</arena-button>
+            <arena-button icon="ph-bold ph-arrow-bend-double-up-right" class="arena-emphasis-secondary arena-size-sm">Forward</arena-button>
             <span class="read__reply-hint">
               <app-cap>R</app-cap>
               <span class="rail__hint-text">to reply</span>

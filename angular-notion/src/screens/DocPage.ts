@@ -35,12 +35,12 @@ const PAGE_MENU: ArenaMenuItem[] = [
       <arena-breadcrumbs ariaLabel="Page location" [items]="crumbs" />
       <div class="topbar__actions">
         <span class="topbar__edited">Edited 12 minutes ago</span>
-        <arena-button variant="ghost" size="sm" icon="ph-bold ph-share-network">Share</arena-button>
-        <arena-icon-button icon="ph-bold ph-chat-circle" label="Comments" size="sm" />
-        <arena-icon-button icon="ph-bold ph-clock-counter-clockwise" label="Page history" size="sm" />
-        <arena-icon-button icon="ph-bold ph-star" label="Add to favourites" size="sm" />
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</arena-button>
+        <arena-icon-button icon="ph-bold ph-chat-circle" label="Comments" class="arena-size-sm" />
+        <arena-icon-button icon="ph-bold ph-clock-counter-clockwise" label="Page history" class="arena-size-sm" />
+        <arena-icon-button icon="ph-bold ph-star" label="Add to favourites" class="arena-size-sm" />
         <arena-menu align="end" [items]="menu">
-          <arena-icon-button trigger icon="ph-bold ph-dots-three" label="More actions" size="sm" />
+          <arena-icon-button trigger icon="ph-bold ph-dots-three" label="More actions" class="arena-size-sm" />
         </arena-menu>
       </div>
     </header>
@@ -61,7 +61,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
           <div class="prop">
             <span class="prop__key"><i class="ph-bold ph-user" aria-hidden="true"></i>Owner</span>
             <span class="prop__value">
-              <arena-avatar name="Marta Ilves" src="img/p1.jpg" size="xs" />
+              <arena-avatar name="Marta Ilves" src="img/p1.jpg" class="arena-size-xs" />
               Marta Ilves
             </span>
           </div>

@@ -13,17 +13,17 @@ import type { Screen } from '../Sidebar';
     <header class="topbar">
       <span class="topbar__title">Home</span>
       <div class="topbar__actions">
-        <arena-button variant="ghost" size="sm" icon="ph-bold ph-magnifying-glass" (click)="search.emit()">
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" (click)="search.emit()">
           Search
         </arena-button>
-        <arena-icon-button icon="ph-bold ph-gear" label="Settings" size="sm" />
+        <arena-icon-button icon="ph-bold ph-gear" label="Settings" class="arena-size-sm" />
       </div>
     </header>
 
     <div class="doc__scroll">
       <div class="home">
         <div class="home__greeting">
-          <arena-avatar name="Marta Ilves" src="img/p1.jpg" size="lg" />
+          <arena-avatar name="Marta Ilves" src="img/p1.jpg" class="arena-size-lg" />
           <div>
             <h1 class="home__hello">Good afternoon, Marta</h1>
             <p class="home__sub">Six pages changed in your workspace since you were last here.</p>
@@ -48,12 +48,12 @@ import type { Screen } from '../Sidebar';
           </div>
         </section>
 
-        <section class="home__section">
+        <section class="home__section" style="--arena-grid-min: calc(var(--sp-1) * 60)">
           <h2 class="home__section-title">
             <i class="ph-bold ph-cards-three" aria-hidden="true"></i>
             Start with a template
           </h2>
-          <arena-grid min="240px" gap="md">
+          <arena-grid>
             @for (template of templates; track template.id) {
               <arena-card [title]="template.title" interactive (click)="screenChange.emit('doc')">
                 <p class="template__blurb">

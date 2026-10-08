@@ -72,7 +72,7 @@ export function SearchScreen({
         {FACETS.map((facet) => (
           <ArenaTag
             key={facet.id}
-            tone={facets.includes(facet.id) ? 'primary' : 'neutral'}
+            className={facets.includes(facet.id) ? 'arena-accent-primary' : undefined}
             removable={facets.includes(facet.id)}
             onRemove={() => setFacets(facets.filter((one) => one !== facet.id))}
           >

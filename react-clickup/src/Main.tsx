@@ -95,17 +95,17 @@ function App() {
             ]}
           />
           <div className="bar__gap" />
-          <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-magnifying-glass" onClick={() => setPalette(true)}>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" onClick={() => setPalette(true)}>
             Search
           </ArenaButton>
-          <ArenaIconButton icon="ph-bold ph-bell" label="Notifications" size="sm" />
+          <ArenaIconButton icon="ph-bold ph-bell" label="Notifications" className="arena-size-sm" />
           <ArenaIconButton
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label="Switch appearance"
-            size="sm"
+            className="arena-size-sm"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           />
-          <ArenaAvatar name={PEOPLE.ada.name} src={PEOPLE.ada.image} size="sm" />
+          <ArenaAvatar name={PEOPLE.ada.name} src={PEOPLE.ada.image} className="arena-size-sm" />
         </header>
 
         <div className="head">
@@ -117,8 +117,8 @@ function App() {
             </div>
           </div>
           <div className="head__gap" />
-          <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-share-network">Share</ArenaButton>
-          <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-robot">Automate</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-robot">Automate</ArenaButton>
         </div>
 
         <nav className="views" aria-label="Views">
@@ -135,7 +135,7 @@ function App() {
             </button>
           ))}
           <span className="views__gap" />
-          <ArenaIconButton icon="ph-bold ph-plus" label="Add a view" size="sm" />
+          <ArenaIconButton icon="ph-bold ph-plus" label="Add a view" className="arena-size-sm" />
         </nav>
 
         <div className="body">
@@ -153,7 +153,7 @@ function App() {
         onRun={run}
       />
 
-      <ArenaToastHost placement="bottom-end">
+      <ArenaToastHost>
         {toasts.map((toast) => (
           <ArenaToast key={toast.id} tone={toast.tone} title={toast.title} onClose={() => dismiss(toast.id)} />
         ))}

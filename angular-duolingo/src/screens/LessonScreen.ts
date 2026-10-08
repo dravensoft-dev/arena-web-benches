@@ -51,9 +51,9 @@ type Phase = 'asking' | 'right' | 'wrong';
     <footer class="lesson__foot">
       @if (phase() === 'asking') {
         <div class="foot__row">
-          <arena-button variant="ghost" size="lg" (click)="next()">Skip</arena-button>
+          <arena-button class="arena-emphasis-ghost arena-size-lg" (click)="next()">Skip</arena-button>
           <span class="foot__gap"></span>
-          <arena-button size="lg" [disabled]="!picked()" (click)="check()">Check</arena-button>
+          <arena-button class="arena-size-lg" [disabled]="!picked()" (click)="check()">Check</arena-button>
         </div>
       }
 
@@ -67,7 +67,7 @@ type Phase = 'asking' | 'right' | 'wrong';
             </span>
           </span>
           <span class="foot__gap"></span>
-          <arena-button size="lg" (click)="next()">Continue</arena-button>
+          <arena-button class="arena-size-lg" (click)="next()">Continue</arena-button>
         </div>
       }
 
@@ -81,7 +81,7 @@ type Phase = 'asking' | 'right' | 'wrong';
             </span>
           </span>
           <span class="foot__gap"></span>
-          <arena-button size="lg" variant="danger" (click)="next()">Got it</arena-button>
+          <arena-button class="arena-size-lg" destructive (click)="next()">Got it</arena-button>
         </div>
       }
     </footer>

@@ -46,7 +46,7 @@ const SCOPE: ArenaStatDelta = { value: '+13', direction: 'up', tone: 'negative' 
   host: { style: 'display: contents' },
   template: `
     <arena-menu align="end" [items]="menu">
-      <arena-icon-button trigger icon="ph-bold ph-dots-three" [label]="'Actions for ' + name()" size="sm" />
+      <arena-icon-button trigger icon="ph-bold ph-dots-three" [label]="'Actions for ' + name()" class="arena-size-sm" />
     </arena-menu>
   `,
 })
@@ -68,9 +68,9 @@ export class CardActions {
     <div class="toolbar">
       <span class="toolbar__label">Sprint 32 &middot; 12 Aug to 26 Aug</span>
       <div class="toolbar__gap"></div>
-      <arena-button variant="ghost" size="sm" icon="ph-bold ph-calendar-blank">This sprint</arena-button>
-      <arena-button variant="ghost" size="sm" icon="ph-bold ph-arrow-clockwise">Refresh</arena-button>
-      <arena-button size="sm" icon="ph-bold ph-plus">Add widget</arena-button>
+      <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-calendar-blank">This sprint</arena-button>
+      <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-arrow-clockwise">Refresh</arena-button>
+      <arena-button class="arena-size-sm" icon="ph-bold ph-plus">Add widget</arena-button>
     </div>
 
     <div class="dash">

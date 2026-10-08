@@ -78,9 +78,9 @@ export function ListingScreen({
 
         <div className="buy arena-stack">
           <div className="buy__shop">
-            <ArenaAvatar src={one.shopAvatar} name={one.shop} size="sm" />
+            <ArenaAvatar src={one.shopAvatar} name={one.shop} className="arena-size-sm" />
             <span className="buy__shop-name">{one.shop}</span>
-            {one.mark === 'star-seller' ? <ArenaBadge tone="gold">Star Seller</ArenaBadge> : null}
+            {one.mark === 'star-seller' ? <ArenaBadge className="arena-accent-gold">Star Seller</ArenaBadge> : null}
           </div>
 
           <h1 className="buy__title">{one.title}</h1>
@@ -94,12 +94,11 @@ export function ListingScreen({
           <ArenaSelect label="Width" options={SIZES} value={size} onChange={setSize} />
           <ArenaSelect label="Quantity" options={QUANTITIES} value={quantity} onChange={setQuantity} />
 
-          <ArenaButton variant="primary" full icon="ph-bold ph-basket" onClick={() => onBasket(one.id)}>
+          <ArenaButton className="arena-fill" icon="ph-bold ph-basket" onClick={() => onBasket(one.id)}>
             Add to basket
           </ArenaButton>
           <ArenaButton
-            variant="secondary"
-            full
+            className="arena-emphasis-secondary arena-fill"
             icon={saved.includes(one.id) ? 'ph-fill ph-heart' : 'ph-bold ph-heart'}
             onClick={() => onSave(one.id)}
           >
@@ -120,7 +119,7 @@ export function ListingScreen({
 
       {more.length ? (
         <ArenaSection title="You may also like" eyebrow="Picked for you">
-          <ArenaScroller label="Items you may also like" itemWidth="var(--grid-min)">
+          <ArenaScroller label="Items you may also like" className="arena-scroller-item-md">
             {more.map((other) => (
               <ArenaScrollerItem key={other.id}>
                 <ListingCard

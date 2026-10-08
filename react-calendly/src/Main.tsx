@@ -54,7 +54,7 @@ function Openings() {
         <ArenaIconButton
           icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
           label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
-          size="sm"
+          className="arena-size-sm"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         />
       </div>
@@ -62,7 +62,7 @@ function Openings() {
       <ArenaMain>
         <div className="card">
           <aside className="who">
-            <ArenaAvatar src={HOST.avatar} name={HOST.name} size="lg" />
+            <ArenaAvatar src={HOST.avatar} name={HOST.name} className="arena-size-lg" />
             <p className="who__name">{HOST.name}</p>
             <h1 className="who__title">{EVENT.title}</h1>
             <ArenaKeyValue
@@ -83,8 +83,8 @@ function Openings() {
                   <div className="cal__head">
                     <span className="cal__month">{MONTH}</span>
                     <span className="cal__nav">
-                      <ArenaIconButton icon="ph-bold ph-caret-left" label="Previous month" size="sm" />
-                      <ArenaIconButton icon="ph-bold ph-caret-right" label="Next month" size="sm" />
+                      <ArenaIconButton icon="ph-bold ph-caret-left" label="Previous month" className="arena-size-sm" />
+                      <ArenaIconButton icon="ph-bold ph-caret-right" label="Next month" className="arena-size-sm" />
                     </span>
                   </div>
                   <div className="cal__grid" role="grid" aria-label={MONTH}>
@@ -113,7 +113,7 @@ function Openings() {
                   <p className="slots__day">Thursday 17 September</p>
                   <div className="slots__grid">
                     {SLOTS.map((one) => (
-                      <ArenaButton key={one} variant="secondary" full onClick={() => setSlot(one)}>
+                      <ArenaButton key={one} className="arena-emphasis-secondary arena-fill" onClick={() => setSlot(one)}>
                         {one}
                       </ArenaButton>
                     ))}
@@ -174,7 +174,7 @@ function Openings() {
               />
 
               <div className="form__foot">
-                <ArenaButton variant="primary" size="lg">Schedule the call</ArenaButton>
+                <ArenaButton className="arena-size-lg">Schedule the call</ArenaButton>
                 <p className="form__note">
                   By scheduling you agree to the terms. Nothing is charged.
                 </p>

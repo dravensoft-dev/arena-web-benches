@@ -32,7 +32,7 @@ function Node({ node, slot, onStart }: { node: PathNode; slot: number; onStart: 
       {node.state === 'active' ? (
         <ArenaProgressBar
           shape="radial"
-          size="lg"
+          className="arena-size-lg"
           showLabel={false}
           showPercentage={false}
           progressPercentage={node.progress ?? 0}
@@ -105,7 +105,7 @@ export function PathScreen({ onStart }: { onStart: () => void }) {
         </ArenaCard>
 
         <ArenaCard title="Ruby league" eyebrow="Top 10 advance">
-          <ArenaPeopleList label="Ruby league standings" ordered size="sm">
+          <ArenaPeopleList label="Ruby league standings" ordered className="arena-size-sm">
             {LEAGUE.slice(0, 5).map((leader) => (
               <ArenaPersonRow key={leader.rank} rank={leader.rank} name={leader.name}
                 src={leader.image} figure={`${leader.xp} XP`} current={leader.me} />
@@ -115,7 +115,7 @@ export function PathScreen({ onStart }: { onStart: () => void }) {
 
         <ArenaCard title="Unlock Super">
           <p className="rail__blurb">No ads, unlimited hearts, and a personalised practice hub.</p>
-          <ArenaButton full icon="ph-bold ph-crown-simple">Try 2 weeks free</ArenaButton>
+          <ArenaButton className="arena-fill" icon="ph-bold ph-crown-simple">Try 2 weeks free</ArenaButton>
         </ArenaCard>
       </aside>
     </div>

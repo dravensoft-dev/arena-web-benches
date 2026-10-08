@@ -22,7 +22,7 @@ export class Cap {}
         <span class="row__mark" aria-hidden="true">
           @if (item().starred) { <i class="ph-fill ph-star"></i> }
         </span>
-        <arena-avatar [src]="item().avatar" [name]="item().from" size="xs" />
+        <arena-avatar [src]="item().avatar" [name]="item().from" class="arena-size-xs" />
         <span class="row__text">
           <span class="row__top">
             <span class="row__from">{{ item().from }}</span>

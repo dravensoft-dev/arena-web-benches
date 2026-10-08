@@ -44,7 +44,7 @@ export function Assignees({ ids }: { ids: readonly string[] }) {
     <span className="stack" aria-label={ids.map((id) => PEOPLE[id].name).join(', ')}>
       {shown.map((id) => (
         <span key={id} className="stack__slot">
-          <ArenaAvatar name={PEOPLE[id].name} src={PEOPLE[id].image} size="xs" />
+          <ArenaAvatar name={PEOPLE[id].name} src={PEOPLE[id].image} className="arena-size-xs" />
         </span>
       ))}
       {rest > 0 && <span className="stack__more arena-num">+{rest}</span>}
@@ -69,12 +69,12 @@ export function Sidebar({ screen, onScreen }: { screen: Screen; onScreen: (next:
     <aside className="side">
       <div className="side__brand">
         <ArenaAppLogo
-          size="sm"
+          className="arena-size-sm"
           name="ClickUp"
           mark={<img src="img/brand-mark.svg" alt="" className="side__mark" />}
         />
         <span className="side__brand-gap" />
-        <ArenaIconButton icon="ph-bold ph-caret-up-down" label="Switch workspace" size="sm" />
+        <ArenaIconButton icon="ph-bold ph-caret-up-down" label="Switch workspace" className="arena-size-sm" />
       </div>
 
       <div className="side__quick">
@@ -119,12 +119,12 @@ export function Sidebar({ screen, onScreen }: { screen: Screen; onScreen: (next:
       </div>
 
       <div className="side__foot">
-        <ArenaAvatar name={PEOPLE.ada.name} src={PEOPLE.ada.image} size="sm" status="online" />
+        <ArenaAvatar name={PEOPLE.ada.name} src={PEOPLE.ada.image} className="arena-size-sm" status="online" />
         <span className="side__me">
           <span className="side__me-name">Ada Okonjo</span>
           <span className="side__me-role">Workspace owner</span>
         </span>
-        <ArenaIconButton icon="ph-bold ph-gear" label="Settings" size="sm" />
+        <ArenaIconButton icon="ph-bold ph-gear" label="Settings" className="arena-size-sm" />
       </div>
     </aside>
   );

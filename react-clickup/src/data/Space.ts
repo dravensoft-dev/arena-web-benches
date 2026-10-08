@@ -65,32 +65,32 @@ export const TAG_SLOT: Record<string, number> = {
 
 export const BURNDOWN_LABELS = ['Aug 1', 'Aug 4', 'Aug 7', 'Aug 10', 'Aug 13', 'Aug 16', 'Aug 19'];
 export const BURNDOWN = [
-  { label: 'Remaining', values: [96, 88, 81, 69, 58, 44, 31], slot: 1 },
-  { label: 'Ideal', values: [96, 80, 64, 48, 32, 16, 0], slot: 7 },
+  { label: 'Remaining', values: [96, 88, 81, 69, 58, 44, 31], colorId: 1 },
+  { label: 'Ideal', values: [96, 80, 64, 48, 32, 16, 0], colorId: 7 },
 ];
 
 export const THROUGHPUT_LABELS = ['Wk 27', 'Wk 28', 'Wk 29', 'Wk 30', 'Wk 31', 'Wk 32'];
 export const THROUGHPUT = [
-  { label: 'Shipped', values: [11, 14, 9, 17, 15, 19], slot: 5 },
-  { label: 'Reopened', values: [2, 1, 4, 1, 3, 1], slot: 6 },
+  { label: 'Shipped', values: [11, 14, 9, 17, 15, 19], colorId: 5 },
+  { label: 'Reopened', values: [2, 1, 4, 1, 3, 1], colorId: 6 },
 ];
 
 export const WORKLOAD_LABELS = ['Ada', 'Ben', 'Cai', 'Dia', 'Eli', 'Fay'];
-export const WORKLOAD = [{ label: 'Story points assigned', values: [24, 18, 34, 16, 39, 11], slot: 2 }];
+export const WORKLOAD = [{ label: 'Story points assigned', values: [24, 18, 34, 16, 39, 11], colorId: 2 }];
 
 export const STATUS_SPLIT_LABELS = STATUS_ORDER as readonly string[];
 export const STATUS_SPLIT = [
   {
     label: 'Tasks by status',
     values: STATUS_ORDER.map((status) => TASKS.filter((task) => task.status === status).length),
-    slots: STATUS_ORDER.map((status) => STATUS_SLOT[status]),
+    colorIds: STATUS_ORDER.map((status) => STATUS_SLOT[status]),
   },
 ];
 
-export type Activity = { id: string; actor: string; action: string; target: string; time: string; tone: 'accent' | 'success' | 'warning' | 'danger' | 'neutral' };
+export type Activity = { id: string; actor: string; action: string; target: string; time: string; tone?: 'success' | 'warning' | 'danger' | 'neutral' };
 
 export const ACTIVITY: Activity[] = [
-  { id: 'a1', actor: 'Ben Yusuf', action: 'moved to review', target: 'CU-201', time: '4m', tone: 'accent' },
+  { id: 'a1', actor: 'Ben Yusuf', action: 'moved to review', target: 'CU-201', time: '4m' },
   { id: 'a2', actor: 'Dia Novak', action: 'blocked', target: 'CU-255', time: '22m', tone: 'danger' },
   { id: 'a3', actor: 'Eli Ferrand', action: 'closed', target: 'CU-190', time: '1h', tone: 'success' },
   { id: 'a4', actor: 'Cai Wen', action: 'commented on', target: 'CU-233', time: '2h', tone: 'neutral' },

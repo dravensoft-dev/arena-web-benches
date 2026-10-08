@@ -19,7 +19,7 @@ export function ThreadRow({
         <span className="row__mark" aria-hidden="true">
           {item.starred ? <i className="ph-fill ph-star" /> : null}
         </span>
-        <ArenaAvatar src={item.avatar} name={item.from} size="xs" />
+        <ArenaAvatar src={item.avatar} name={item.from} className="arena-size-xs" />
         <span className="row__text">
           <span className="row__top">
             <span className="row__from">{item.from}</span>

@@ -34,14 +34,14 @@ export function DocPage() {
         <ArenaBreadcrumbs ariaLabel="Page location" items={CRUMBS} />
         <div className="topbar__actions">
           <span className="topbar__edited">Edited 12 minutes ago</span>
-          <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-share-network">Share</ArenaButton>
-          <ArenaIconButton icon="ph-bold ph-chat-circle" label="Comments" size="sm" />
-          <ArenaIconButton icon="ph-bold ph-clock-counter-clockwise" label="Page history" size="sm" />
-          <ArenaIconButton icon="ph-bold ph-star" label="Add to favourites" size="sm" />
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</ArenaButton>
+          <ArenaIconButton icon="ph-bold ph-chat-circle" label="Comments" className="arena-size-sm" />
+          <ArenaIconButton icon="ph-bold ph-clock-counter-clockwise" label="Page history" className="arena-size-sm" />
+          <ArenaIconButton icon="ph-bold ph-star" label="Add to favourites" className="arena-size-sm" />
           <ArenaMenu
             align="end"
             items={PAGE_MENU}
-            trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label="More actions" size="sm" />}
+            trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label="More actions" className="arena-size-sm" />}
           />
         </div>
       </header>
@@ -62,7 +62,7 @@ export function DocPage() {
             <div className="prop">
               <span className="prop__key"><i className="ph-bold ph-user" aria-hidden="true" />Owner</span>
               <span className="prop__value">
-                <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" size="xs" />
+                <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" className="arena-size-xs" />
                 Marta Ilves
               </span>
             </div>

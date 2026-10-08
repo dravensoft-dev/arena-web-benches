@@ -26,16 +26,16 @@ const KIND_ICON: Record<GridPost['kind'], string> = {
   template: `
     <header class="profile__head">
       <div class="profile__avatar">
-        <arena-avatar [name]="account.name" [src]="account.avatar" size="lg" />
+        <arena-avatar [name]="account.name" [src]="account.avatar" class="arena-size-lg" />
       </div>
 
       <div class="profile__meta">
         <div class="profile__row">
           <app-handle [handle]="account.handle" />
-          <arena-button size="sm">Follow</arena-button>
-          <arena-button variant="secondary" size="sm">Message</arena-button>
-          <arena-icon-button icon="ph-bold ph-user-plus" label="Add to close friends" size="sm" />
-          <arena-icon-button icon="ph-bold ph-dots-three" label="More options" size="sm" />
+          <arena-button class="arena-size-sm">Follow</arena-button>
+          <arena-button class="arena-emphasis-secondary arena-size-sm">Message</arena-button>
+          <arena-icon-button icon="ph-bold ph-user-plus" label="Add to close friends" class="arena-size-sm" />
+          <arena-icon-button icon="ph-bold ph-dots-three" label="More options" class="arena-size-sm" />
         </div>
 
         <ul class="profile__stats">

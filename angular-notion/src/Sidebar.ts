@@ -23,12 +23,12 @@ const SCREEN_OF: Record<string, Screen> = {
   host: { class: 'sidebar' },
   template: `
     <div class="sidebar__account">
-      <arena-avatar name="Acme Platform" size="sm" shape="rounded" src="img/brand-logo.svg" />
+      <arena-avatar name="Acme Platform" class="arena-size-sm" kind="team" src="img/brand-logo.svg" />
       <div class="sidebar__account-text">
         <span class="sidebar__workspace">Acme Platform</span>
         <span class="sidebar__plan">Team plan</span>
       </div>
-      <arena-icon-button icon="ph-bold ph-caret-up-down" label="Switch workspace" size="sm" />
+      <arena-icon-button icon="ph-bold ph-caret-up-down" label="Switch workspace" class="arena-size-sm" />
     </div>
 
     <div class="sidebar__quick">

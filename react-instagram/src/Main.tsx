@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArenaAvatar,
@@ -46,7 +47,8 @@ function PostDialog({ post, onClose }: { post: Post | null; onClose: () => void 
   const account = ACCOUNTS[post.handle];
 
   return (
-    <ArenaDialog open title={`Post by ${account.handle}`} width="min(1040px, 94vw)" onClose={onClose}>
+    <div style={{ display: 'contents', '--arena-dialog-width': 'min(calc(var(--sp-1) * 260), 94vw)' } as CSSProperties}>
+    <ArenaDialog open title={`Post by ${account.handle}`} onClose={onClose}>
       <div className="detail">
         <div className="detail__media">
           <Carousel media={post.media} alt={`Photo by ${account.handle}`} />
@@ -54,10 +56,10 @@ function PostDialog({ post, onClose }: { post: Post | null; onClose: () => void 
 
         <div className="detail__side">
           <header className="detail__head">
-            <ArenaAvatar name={account.name} src={account.avatar} size="sm" />
+            <ArenaAvatar name={account.name} src={account.avatar} className="arena-size-sm" />
             <Handle handle={post.handle} bold />
             <span className="post__gap" />
-            <ArenaButton variant="ghost" size="sm">Follow</ArenaButton>
+            <ArenaButton className="arena-emphasis-ghost arena-size-sm">Follow</ArenaButton>
           </header>
 
           <div className="detail__thread">
@@ -66,7 +68,7 @@ function PostDialog({ post, onClose }: { post: Post | null; onClose: () => void 
             </p>
             {post.comments.map((comment) => (
               <div key={comment.handle + comment.text} className="thread">
-                <ArenaAvatar name={ACCOUNTS[comment.handle].name} src={ACCOUNTS[comment.handle].avatar} size="xs" />
+                <ArenaAvatar name={ACCOUNTS[comment.handle].name} src={ACCOUNTS[comment.handle].avatar} className="arena-size-xs" />
                 <div className="thread__body">
                   <p className="post__comment"><Handle handle={comment.handle} bold /> {comment.text}</p>
                   <p className="thread__meta">
@@ -75,7 +77,7 @@ function PostDialog({ post, onClose }: { post: Post | null; onClose: () => void 
                     <span>Reply</span>
                   </p>
                 </div>
-                <ArenaIconButton icon="ph-bold ph-heart" label={`Like the comment by ${comment.handle}`} size="sm" />
+                <ArenaIconButton icon="ph-bold ph-heart" label={`Like the comment by ${comment.handle}`} className="arena-size-sm" />
               </div>
             ))}
           </div>
@@ -85,12 +87,13 @@ function PostDialog({ post, onClose }: { post: Post | null; onClose: () => void 
             <p className="post__when">{post.when}</p>
             <div className="post__add">
               <input className="post__input" placeholder="Add a comment..." aria-label="Add a comment" />
-              <ArenaButton variant="ghost" size="sm">Post</ArenaButton>
+              <ArenaButton className="arena-emphasis-ghost arena-size-sm">Post</ArenaButton>
             </div>
           </footer>
         </div>
       </div>
     </ArenaDialog>
+    </div>
   );
 }
 
@@ -135,7 +138,7 @@ function App() {
               aria-current={screen === 'profile' ? 'page' : undefined}
               onClick={() => { setActive('profile'); setScreen('profile'); }}
             >
-              <ArenaAvatar name={ME.name} src={ME.avatar} size="xs" />
+              <ArenaAvatar name={ME.name} src={ME.avatar} className="arena-size-xs" />
               <span className="nav__label">Profile</span>
             </button>
           </li>

@@ -100,7 +100,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
 
       <arena-sheet
         [open]="cartOpen()"
-        placement="end"
+        class="arena-placement-end"
         title="Your basket"
         dismissible
         (close)="cartOpen.set(false)"
@@ -111,7 +111,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
           <arena-key-value [rows]="rows()" [total]="total()" />
         }
         <div footer>
-          <arena-button variant="primary" full>Go to checkout</arena-button>
+          <arena-button class="arena-fill">Go to checkout</arena-button>
         </div>
       </arena-sheet>
     </div>

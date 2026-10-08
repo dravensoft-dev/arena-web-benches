@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prestart": "arena-to-prod --src src --src design --audit",
+    "prestart": "arena build --src src --src design && arena audit --src src --src design",
     "start": "ng serve --port 5201",
-    "prebuild": "arena-to-prod --src src --src design --audit --undrawn --strict=audit",
+    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
     "build": "ng build --base-href ./",
-    "measure": "arena-to-prod --src src --src design --audit --undrawn"
+    "measure": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
     "@angular/common": "^22.0.0",
@@ -15,7 +15,7 @@
     "@angular/core": "^22.0.0",
     "@angular/platform-browser": "^22.0.0",
     "@angular/cdk": "^22.0.0",
-    "@dravensoft/arena-angular": "11.0.0",
+    "@dravensoft/arena-angular": "file:../vendor/dravensoft-arena-angular-12.0.0.tgz",
     "@phosphor-icons/web": "^2.1.2",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1"

@@ -36,7 +36,7 @@ function CardActions({ name }: { name: string }) {
     <ArenaMenu
       align="end"
       items={CARD_MENU}
-      trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${name}`} size="sm" />}
+      trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${name}`} className="arena-size-sm" />}
     />
   );
 }
@@ -47,9 +47,9 @@ export function Dashboard() {
       <div className="toolbar">
         <span className="toolbar__label">Sprint 32 &middot; 12 Aug to 26 Aug</span>
         <div className="toolbar__gap" />
-        <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-calendar-blank">This sprint</ArenaButton>
-        <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-arrow-clockwise">Refresh</ArenaButton>
-        <ArenaButton size="sm" icon="ph-bold ph-plus">Add widget</ArenaButton>
+        <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-calendar-blank">This sprint</ArenaButton>
+        <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-arrow-clockwise">Refresh</ArenaButton>
+        <ArenaButton className="arena-size-sm" icon="ph-bold ph-plus">Add widget</ArenaButton>
       </div>
 
       <div className="dash">

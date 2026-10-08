@@ -68,9 +68,9 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
       <footer className="lesson__foot">
         {phase === 'asking' && (
           <div className="foot__row">
-            <ArenaButton variant="ghost" size="lg" onClick={next}>Skip</ArenaButton>
+            <ArenaButton className="arena-emphasis-ghost arena-size-lg" onClick={next}>Skip</ArenaButton>
             <span className="foot__gap" />
-            <ArenaButton size="lg" disabled={!picked} onClick={check}>Check</ArenaButton>
+            <ArenaButton className="arena-size-lg" disabled={!picked} onClick={check}>Check</ArenaButton>
           </div>
         )}
 
@@ -84,7 +84,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
               </span>
             </span>
             <span className="foot__gap" />
-            <ArenaButton size="lg" onClick={next}>Continue</ArenaButton>
+            <ArenaButton className="arena-size-lg" onClick={next}>Continue</ArenaButton>
           </div>
         )}
 
@@ -98,7 +98,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
               </span>
             </span>
             <span className="foot__gap" />
-            <ArenaButton size="lg" variant="danger" onClick={next}>Got it</ArenaButton>
+            <ArenaButton className="arena-size-lg" destructive onClick={next}>Got it</ArenaButton>
           </div>
         )}
       </footer>

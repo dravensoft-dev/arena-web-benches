@@ -31,11 +31,11 @@ const NAV: NavEntry[] = [
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ArenaAvatar, ArenaButton, ArenaDialog, ArenaIconButton, Carousel, Handle],
-  host: { style: 'display: contents' },
+  host: { style: 'display: contents; --arena-dialog-width: min(calc(var(--sp-1) * 260), 94vw)' },
   template: `
     @if (post(); as post) {
       @let account = accounts[post.handle];
-      <arena-dialog open [title]="'Post by ' + account.handle" width="min(1040px, 94vw)" (close)="close.emit()">
+      <arena-dialog open [title]="'Post by ' + account.handle" (close)="close.emit()">
         <div class="detail">
           <div class="detail__media">
             <app-carousel [media]="post.media" [alt]="'Photo by ' + account.handle" />
@@ -43,10 +43,10 @@ const NAV: NavEntry[] = [
 
           <div class="detail__side">
             <header class="detail__head">
-              <arena-avatar [name]="account.name" [src]="account.avatar" size="sm" />
+              <arena-avatar [name]="account.name" [src]="account.avatar" class="arena-size-sm" />
               <app-handle [handle]="post.handle" bold />
               <span class="post__gap"></span>
-              <arena-button variant="ghost" size="sm">Follow</arena-button>
+              <arena-button class="arena-emphasis-ghost arena-size-sm">Follow</arena-button>
             </header>
 
             <div class="detail__thread">
@@ -58,7 +58,7 @@ const NAV: NavEntry[] = [
                   <arena-avatar
                     [name]="accounts[comment.handle].name"
                     [src]="accounts[comment.handle].avatar"
-                    size="xs"
+                    class="arena-size-xs"
                   />
                   <div class="thread__body">
                     <p class="post__comment">
@@ -73,7 +73,7 @@ const NAV: NavEntry[] = [
                   <arena-icon-button
                     icon="ph-bold ph-heart"
                     [label]="'Like the comment by ' + comment.handle"
-                    size="sm"
+                    class="arena-size-sm"
                   />
                 </div>
               }
@@ -84,7 +84,7 @@ const NAV: NavEntry[] = [
               <p class="post__when">{{ post.when }}</p>
               <div class="post__add">
                 <input class="post__input" placeholder="Add a comment..." aria-label="Add a comment" />
-                <arena-button variant="ghost" size="sm">Post</arena-button>
+                <arena-button class="arena-emphasis-ghost arena-size-sm">Post</arena-button>
               </div>
             </footer>
           </div>
@@ -135,7 +135,7 @@ export class PostDialog {
             [attr.aria-current]="screen() === 'profile' ? 'page' : null"
             (click)="showProfile()"
           >
-            <arena-avatar [name]="me.name" [src]="me.avatar" size="xs" />
+            <arena-avatar [name]="me.name" [src]="me.avatar" class="arena-size-xs" />
             <span class="nav__label">Profile</span>
           </button>
         </li>

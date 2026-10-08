@@ -48,8 +48,8 @@ initArenaTheme({
 const COLUMNS = [
   { header: 'State' },
   { header: 'Rule' },
-  { header: 'Service', mono: true },
-  { header: 'For', align: 'right' as const, mono: true },
+  { header: 'Service', numeric: true },
+  { header: 'For', key: 'for', numeric: true },
 ];
 
 function Vantage() {
@@ -79,11 +79,11 @@ function Vantage() {
               <ArenaBadge tone="danger" dot>2 firing</ArenaBadge>
               <span className="board__gap" />
               <ArenaSelect label="Range" options={RANGES} value={range} onChange={setRange} />
-              <ArenaIconButton icon="ph-bold ph-arrows-clockwise" label="Refresh now" size="sm" />
+              <ArenaIconButton icon="ph-bold ph-arrows-clockwise" label="Refresh now" className="arena-size-sm" />
               <ArenaIconButton
                 icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
                 label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
-                size="sm"
+                className="arena-size-sm"
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               />
             </div>
@@ -174,7 +174,7 @@ function Vantage() {
             </ArenaChartCard>
           </div>
 
-          <section className="alerts" aria-label="Active alerts">
+          <section className="alerts" aria-label="Active alerts" style={{ "--arena-column-for-align": "right" } as React.CSSProperties}>
             <h2 className="alerts__title">Active alerts</h2>
             <ArenaTable label="Active alerts" columns={COLUMNS}>
               {ALERTS.map((one) => (

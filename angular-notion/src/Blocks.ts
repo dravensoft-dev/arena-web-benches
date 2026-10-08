@@ -87,7 +87,7 @@ export class Toggle {
         @case ('divider') { <hr class="block block--divider" /> }
         @case ('image') {
           <div class="block block--figure">
-            <arena-figure ratio="16 / 9" [caption]="block.caption">
+            <arena-figure class="arena-ratio-video" [caption]="block.caption">
               <img media [src]="block.src" [alt]="block.caption" />
             </arena-figure>
           </div>

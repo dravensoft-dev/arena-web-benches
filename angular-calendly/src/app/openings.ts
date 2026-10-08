@@ -30,7 +30,7 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
         <arena-icon-button
           [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
           [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
-          size="sm"
+          class="arena-size-sm"
           (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
         />
       </div>
@@ -38,7 +38,7 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
       <arena-main>
         <div class="card">
           <aside class="who">
-            <arena-avatar [src]="host.avatar" [name]="host.name" size="lg" />
+            <arena-avatar [src]="host.avatar" [name]="host.name" class="arena-size-lg" />
             <p class="who__name">{{ host.name }}</p>
             <h1 class="who__title">{{ event.title }}</h1>
             <arena-key-value [rows]="rows()" />
@@ -53,8 +53,8 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
                   <div class="cal__head">
                     <span class="cal__month">{{ month }}</span>
                     <span class="cal__nav">
-                      <arena-icon-button icon="ph-bold ph-caret-left" label="Previous month" size="sm" />
-                      <arena-icon-button icon="ph-bold ph-caret-right" label="Next month" size="sm" />
+                      <arena-icon-button icon="ph-bold ph-caret-left" label="Previous month" class="arena-size-sm" />
+                      <arena-icon-button icon="ph-bold ph-caret-right" label="Next month" class="arena-size-sm" />
                     </span>
                   </div>
                   <div class="cal__grid" role="grid" [attr.aria-label]="month">
@@ -82,7 +82,7 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
                   <p class="slots__day">Thursday 17 September</p>
                   <div class="slots__grid">
                     @for (one of slots; track one) {
-                      <arena-button variant="secondary" full (click)="slot.set(one)">{{ one }}</arena-button>
+                      <arena-button class="arena-emphasis-secondary arena-fill" (click)="slot.set(one)">{{ one }}</arena-button>
                     }
                   </div>
                 </div>
@@ -141,7 +141,7 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
               />
 
               <div class="form__foot">
-                <arena-button variant="primary" size="lg">Schedule the call</arena-button>
+                <arena-button class="arena-size-lg">Schedule the call</arena-button>
                 <p class="form__note">
                   By scheduling you agree to the terms. Nothing is charged.
                 </p>

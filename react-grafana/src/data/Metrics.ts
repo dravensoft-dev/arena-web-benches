@@ -12,17 +12,17 @@ export const HOURS = [
 ];
 
 export const LATENCY = [
-  { label: 'p50', values: [42, 41, 40, 44, 58, 71, 84, 79, 66, 61, 52, 46], slot: 2 as const },
-  { label: 'p95', values: [118, 112, 109, 126, 168, 214, 261, 248, 197, 176, 149, 131], slot: 1 as const },
-  { label: 'p99', values: [246, 231, 228, 268, 352, 468, 612, 574, 431, 388, 318, 274], slot: 6 as const },
+  { label: 'p50', values: [42, 41, 40, 44, 58, 71, 84, 79, 66, 61, 52, 46], colorId: 2 as const },
+  { label: 'p95', values: [118, 112, 109, 126, 168, 214, 261, 248, 197, 176, 149, 131], colorId: 1 as const },
+  { label: 'p99', values: [246, 231, 228, 268, 352, 468, 612, 574, 431, 388, 318, 274], colorId: 6 as const },
 ];
 
 export const REGIONS = ['eu-west', 'eu-north', 'us-east', 'us-west', 'ap-south', 'sa-east'];
 
 export const REQUESTS = [
-  { label: '2xx', values: [4820, 3910, 6240, 5180, 2960, 1740], slot: 7 as const },
-  { label: '4xx', values: [310, 244, 508, 392, 271, 118], slot: 4 as const },
-  { label: '5xx', values: [46, 21, 138, 62, 19, 8], slot: 1 as const },
+  { label: '2xx', values: [4820, 3910, 6240, 5180, 2960, 1740], colorId: 7 as const },
+  { label: '4xx', values: [310, 244, 508, 392, 271, 118], colorId: 4 as const },
+  { label: '5xx', values: [46, 21, 138, 62, 19, 8], colorId: 1 as const },
 ];
 
 export const BUDGET = [
@@ -34,14 +34,14 @@ export const BUDGET_LABELS = ['checkout', 'catalogue', 'identity', 'search', 'me
 export const ENDPOINTS = ['POST /orders', 'GET /catalogue', 'POST /auth', 'GET /search', 'GET /media', 'PUT /cart'];
 
 export const SLOWEST = [
-  { label: 'p99 ms', values: [612, 488, 401, 366, 289, 244], slot: 3 as const },
+  { label: 'p99 ms', values: [612, 488, 401, 366, 289, 244], colorId: 3 as const },
 ];
 
 export const HEALTH_AXES = ['Latency', 'Errors', 'Saturation', 'Traffic', 'Freshness', 'Cost'];
 
 export const HEALTH = [
-  { label: 'checkout', values: [62, 88, 54, 91, 76, 48], slot: 5 as const },
-  { label: 'catalogue', values: [84, 92, 71, 66, 88, 74], slot: 2 as const },
+  { label: 'checkout', values: [62, 88, 54, 91, 76, 48], colorId: 5 as const },
+  { label: 'catalogue', values: [84, 92, 71, 66, 88, 74], colorId: 2 as const },
 ];
 
 export const THROUGHPUT = [
@@ -49,7 +49,7 @@ export const THROUGHPUT = [
     label: 'edge nodes',
     x: [120, 240, 310, 420, 505, 610, 720, 810, 930, 1040],
     y: [38, 41, 47, 52, 61, 78, 96, 121, 168, 244],
-    slot: 8 as const,
+    colorId: 8 as const,
   },
 ];
 

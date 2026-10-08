@@ -30,13 +30,13 @@ const COLUMNS: ArenaTableColumn[] = [
   { header: 'Status' },
   { header: 'Owner' },
   { header: 'Tags' },
-  { header: 'Due', align: 'right' },
-  { header: 'Effort', align: 'right', mono: true },
+  { header: 'Due', key: 'due' },
+  { header: 'Effort', key: 'effort', numeric: true },
 ];
 
 const STATUS_TONE: Record<Task['status'], ArenaTagTone> = {
   'Not started': 'neutral',
-  'In progress': 'primary',
+  'In progress': 'neutral',
   'In review': 'warning',
   Done: 'success',
 };
@@ -70,7 +70,7 @@ function Toolbar({ query, onQuery }: { query: string; onQuery: (next: string) =>
           { label: 'Owner', icon: 'ph-bold ph-user' },
           { label: 'Due date', icon: 'ph-bold ph-calendar-blank' },
         ]}
-        trigger={<ArenaButton variant="ghost" size="sm" icon="ph-bold ph-funnel">Filter</ArenaButton>}
+        trigger={<ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</ArenaButton>}
       />
       <ArenaMenu
         align="end"
@@ -79,9 +79,9 @@ function Toolbar({ query, onQuery }: { query: string; onQuery: (next: string) =>
           { label: 'Due date', icon: 'ph-bold ph-sort-ascending' },
           { label: 'Effort', icon: 'ph-bold ph-sort-descending' },
         ]}
-        trigger={<ArenaButton variant="ghost" size="sm" icon="ph-bold ph-arrows-down-up">Sort</ArenaButton>}
+        trigger={<ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-arrows-down-up">Sort</ArenaButton>}
       />
-      <ArenaButton size="sm" icon="ph-bold ph-plus">New</ArenaButton>
+      <ArenaButton className="arena-size-sm" icon="ph-bold ph-plus">New</ArenaButton>
     </div>
   );
 }
@@ -93,7 +93,7 @@ function BoardCard({ task }: { task: Task }) {
       <Tags tags={task.tags} />
       <footer className="board__foot">
         <span className="board__owner">
-          <ArenaAvatar name={task.owner} src={task.ownerImage} size="xs" />
+          <ArenaAvatar name={task.owner} src={task.ownerImage} className="arena-size-xs" />
           {task.owner}
         </span>
         <span className="board__due arena-num">{task.due}</span>
@@ -113,8 +113,8 @@ export function DatabaseView() {
       <header className="topbar">
         <ArenaBreadcrumbs ariaLabel="Page location" items={CRUMBS} />
         <div className="topbar__actions">
-          <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-share-network">Share</ArenaButton>
-          <ArenaIconButton icon="ph-bold ph-dots-three" label="More actions" size="sm" />
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</ArenaButton>
+          <ArenaIconButton icon="ph-bold ph-dots-three" label="More actions" className="arena-size-sm" />
         </div>
       </header>
 
@@ -127,7 +127,7 @@ export function DatabaseView() {
             <h1 className="doc__title doc__title--db">Sprint tasks</h1>
           </div>
 
-          <div className="db__views">
+          <div className="db__views" style={{ '--arena-column-due-align': 'right', '--arena-column-effort-align': 'right' } as React.CSSProperties}>
             <ArenaTabs value={view} onChange={setView}>
               <ArenaTab value="table" label="Table">
                 <Toolbar query={query} onQuery={setQuery} />
@@ -140,10 +140,10 @@ export function DatabaseView() {
                           {task.name}
                         </span>
                       </ArenaTableCell>
-                      <ArenaTableCell><ArenaTag tone={STATUS_TONE[task.status]}>{task.status}</ArenaTag></ArenaTableCell>
+                      <ArenaTableCell><ArenaTag tone={STATUS_TONE[task.status]} className={task.status === 'In progress' ? 'arena-accent-primary' : undefined}>{task.status}</ArenaTag></ArenaTableCell>
                       <ArenaTableCell>
                         <span className="db__owner">
-                          <ArenaAvatar name={task.owner} src={task.ownerImage} size="xs" />
+                          <ArenaAvatar name={task.owner} src={task.ownerImage} className="arena-size-xs" />
                           {task.owner}
                         </span>
                       </ArenaTableCell>
@@ -162,8 +162,8 @@ export function DatabaseView() {
                     const column = rows.filter((task) => task.status === status);
                     return (
                       <ArenaBoardColumn key={status} title={status} count={column.length}
-                        action={<ArenaIconButton icon="ph-bold ph-plus" label={`Add to ${status}`} size="sm" />}
-                        footer={<ArenaButton variant="ghost" size="sm" icon="ph-bold ph-plus" full>New</ArenaButton>}>
+                        action={<ArenaIconButton icon="ph-bold ph-plus" label={`Add to ${status}`} className="arena-size-sm" />}
+                        footer={<ArenaButton className="arena-emphasis-ghost arena-size-sm arena-fill" icon="ph-bold ph-plus">New</ArenaButton>}>
                         {column.map((task) => <BoardCard key={task.id} task={task} />)}
                       </ArenaBoardColumn>
                     );

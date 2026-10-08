@@ -25,16 +25,16 @@ export function ProfileScreen({ onOpenGrid }: { onOpenGrid: (post: GridPost) => 
     <div className="profile">
       <header className="profile__head">
         <div className="profile__avatar">
-          <ArenaAvatar name={account.name} src={account.avatar} size="lg" />
+          <ArenaAvatar name={account.name} src={account.avatar} className="arena-size-lg" />
         </div>
 
         <div className="profile__meta">
           <div className="profile__row">
             <Handle handle={account.handle} />
-            <ArenaButton size="sm">Follow</ArenaButton>
-            <ArenaButton variant="secondary" size="sm">Message</ArenaButton>
-            <ArenaIconButton icon="ph-bold ph-user-plus" label="Add to close friends" size="sm" />
-            <ArenaIconButton icon="ph-bold ph-dots-three" label="More options" size="sm" />
+            <ArenaButton className="arena-size-sm">Follow</ArenaButton>
+            <ArenaButton className="arena-emphasis-secondary arena-size-sm">Message</ArenaButton>
+            <ArenaIconButton icon="ph-bold ph-user-plus" label="Add to close friends" className="arena-size-sm" />
+            <ArenaIconButton icon="ph-bold ph-dots-three" label="More options" className="arena-size-sm" />
           </div>
 
           <ul className="profile__stats">

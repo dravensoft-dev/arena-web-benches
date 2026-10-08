@@ -5,7 +5,9 @@ twice: once in React and once in Angular, from the same `arena.config.json` and 
 `design/` directory, so a difference between a pair is Arena answering the two layers
 differently rather than the app being written twice.
 
-Every bench installs Arena from npm. None of them reads the Arena tree.
+Every bench installs Arena from the two tarballs in `vendor/`, which `bun scripts/vendor.ts
+<arena>` packs from a built Arena tree. None of them reads the tree itself, and `vendor/` is not
+committed, so a clone runs `vendor.ts` before its first `bun install`.
 
 ## Running one
 
@@ -57,11 +59,12 @@ published site lists the addresses and embeds none of them.
 cd react-etsy && bun run measure
 ```
 
-`arena-to-prod --audit --undrawn`, which is where every figure in [`AUDIT.md`](./AUDIT.md) comes
-from. A `dev` runs it first anyway, so a bench cannot be served without being measured, and a
-`build` runs it under `--strict=audit`, so a half that reports a finding does not build and cannot
-be published. `measure` itself stays lenient, because it is the command this file's figures are
-read from and one that exits on the first report reports less.
+`arena build`, then `arena check`, `arena audit` and `arena usage`, which is where every figure
+in [`AUDIT.md`](./AUDIT.md) comes from. A `dev` builds and audits first anyway, so a bench cannot
+be served without being measured, and a `build` runs the audit under `--strict=audit`, so a half
+that reports a finding does not build and cannot be published. `measure` itself stays lenient,
+because it is the command this file's figures are read from and one that exits on the first report
+reports less.
 
 ## Packing them
 

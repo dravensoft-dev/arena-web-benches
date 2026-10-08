@@ -30,12 +30,12 @@ export function Sidebar({
   return (
     <aside className="sidebar">
       <div className="sidebar__account">
-        <ArenaAvatar name="Acme Platform" size="sm" shape="rounded" src="img/brand-logo.svg" />
+        <ArenaAvatar name="Acme Platform" className="arena-size-sm" kind="team" src="img/brand-logo.svg" />
         <div className="sidebar__account-text">
           <span className="sidebar__workspace">Acme Platform</span>
           <span className="sidebar__plan">Team plan</span>
         </div>
-        <ArenaIconButton icon="ph-bold ph-caret-up-down" label="Switch workspace" size="sm" />
+        <ArenaIconButton icon="ph-bold ph-caret-up-down" label="Switch workspace" className="arena-size-sm" />
       </div>
 
       <div className="sidebar__quick">

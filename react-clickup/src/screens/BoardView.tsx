@@ -11,14 +11,14 @@ function Card({ task }: { task: Task }) {
         <span className="kcard__id arena-num">{task.id}</span>
         <PriorityFlag priority={task.priority} />
         <span className="kcard__gap" />
-        <ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${task.name}`} size="sm" />
+        <ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${task.name}`} className="arena-size-sm" />
       </header>
 
       <p className="kcard__name">{task.name}</p>
       <Tags tags={task.tags} />
 
       {task.progress > 0 && task.progress < 100 && (
-        <ArenaProgressBar label={`${task.name} progress`} progressPercentage={task.progress} size="sm" showLabel={false} showPercentage={false} />
+        <ArenaProgressBar label={`${task.name} progress`} progressPercentage={task.progress} className="arena-size-sm" showLabel={false} showPercentage={false} />
       )}
 
       <footer className="kcard__foot">
@@ -38,9 +38,9 @@ export function BoardView() {
       <div className="toolbar">
         <span className="toolbar__label">Grouped by status</span>
         <div className="toolbar__gap" />
-        <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-funnel">Filter</ArenaButton>
-        <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-users-three">Me mode</ArenaButton>
-        <ArenaButton size="sm" icon="ph-bold ph-plus">Add task</ArenaButton>
+        <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</ArenaButton>
+        <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-users-three">Me mode</ArenaButton>
+        <ArenaButton className="arena-size-sm" icon="ph-bold ph-plus">Add task</ArenaButton>
       </div>
 
       <ArenaBoard label="Sprint 32 tasks by status">
@@ -50,8 +50,8 @@ export function BoardView() {
           return (
             <ArenaBoardColumn key={status} title={status} count={column.length}
               summary={`${points} pts`} colorId={STATUS_SLOT[status]}
-              action={<ArenaIconButton icon="ph-bold ph-plus" label={`Add a task to ${status}`} size="sm" />}
-              footer={<ArenaButton variant="ghost" size="sm" icon="ph-bold ph-plus" full>Add task</ArenaButton>}>
+              action={<ArenaIconButton icon="ph-bold ph-plus" label={`Add a task to ${status}`} className="arena-size-sm" />}
+              footer={<ArenaButton className="arena-emphasis-ghost arena-size-sm arena-fill" icon="ph-bold ph-plus">Add task</ArenaButton>}>
               {column.map((task) => <Card key={task.id} task={task} />)}
             </ArenaBoardColumn>
           );

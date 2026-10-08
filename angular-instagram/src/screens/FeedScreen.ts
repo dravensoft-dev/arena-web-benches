@@ -48,7 +48,7 @@ const POST_MENU: ArenaMenuItem[] = [
             trigger
             icon="ph-bold ph-dots-three"
             [label]="'Options for ' + account().handle"
-            size="sm"
+            class="arena-size-sm"
           />
         </arena-menu>
       </header>
@@ -104,7 +104,7 @@ const POST_MENU: ArenaMenuItem[] = [
         }
         <div class="post__add">
           <input class="post__input" placeholder="Add a comment..." aria-label="Add a comment" />
-          <arena-button variant="ghost" size="sm">Post</arena-button>
+          <arena-button class="arena-emphasis-ghost arena-size-sm">Post</arena-button>
         </div>
       </div>
     </article>
@@ -153,8 +153,8 @@ export class PostCard {
   host: { class: 'feed' },
   template: `
     <div class="feed__col">
-      <div class="rail">
-        <arena-scroller label="Stories" behaviour="snap" itemWidth="var(--sp-20)">
+      <div class="rail" style="--arena-scroller-item: var(--sp-20)">
+        <arena-scroller label="Stories" behaviour="snap">
           @for (story of stories; track story.handle) {
             <arena-scroller-item>
               <app-story-ring [handle]="story.handle" [seen]="story.seen" [live]="story.live" />
@@ -170,23 +170,23 @@ export class PostCard {
 
     <aside class="aside">
       <div class="aside__me">
-        <arena-avatar [name]="me.name" [src]="me.avatar" size="lg" />
+        <arena-avatar [name]="me.name" [src]="me.avatar" class="arena-size-lg" />
         <span class="aside__me-text">
           <app-handle [handle]="me.handle" bold />
           <span class="aside__me-name">{{ me.name }}</span>
         </span>
-        <arena-button variant="ghost" size="sm">Switch</arena-button>
+        <arena-button class="arena-emphasis-ghost arena-size-sm">Switch</arena-button>
       </div>
 
       <div class="aside__head">
         <span class="aside__title">Suggested for you</span>
-        <arena-button variant="ghost" size="sm">See all</arena-button>
+        <arena-button class="arena-emphasis-ghost arena-size-sm">See all</arena-button>
       </div>
 
       <arena-people-list label="Suggested accounts">
         @for (handle of suggestions; track handle) {
           <arena-person-row [name]="handle" [src]="accounts[handle].avatar" secondary="Followed by marisol.b">
-            <arena-button action variant="ghost" size="sm">Follow</arena-button>
+            <arena-button action class="arena-emphasis-ghost arena-size-sm">Follow</arena-button>
           </arena-person-row>
         }
       </arena-people-list>

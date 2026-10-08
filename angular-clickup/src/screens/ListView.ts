@@ -67,13 +67,13 @@ const ROW_MENU: ArenaMenuItem[] = [
     <span class="row__cell"><app-priority-flag [priority]="task().priority" /></span>
     <span class="row__cell row__cell--date arena-num">{{ task().due }}</span>
     <span class="row__cell row__cell--bar">
-      <arena-progress-bar [label]="task().name + ' progress'" [progressPercentage]="task().progress" size="sm" [showLabel]="false" [showPercentage]="false" />
+      <arena-progress-bar [label]="task().name + ' progress'" [progressPercentage]="task().progress" class="arena-size-sm" [showLabel]="false" [showPercentage]="false" />
     </span>
     <span class="row__cell row__cell--tags"><app-tags [tags]="task().tags" /></span>
     <span class="row__cell row__cell--pts arena-num">{{ task().points }}</span>
     <span class="row__cell">
       <arena-menu align="end" [items]="menu">
-        <arena-icon-button trigger icon="ph-bold ph-dots-three" [label]="'Actions for ' + task().name" size="sm" />
+        <arena-icon-button trigger icon="ph-bold ph-dots-three" [label]="'Actions for ' + task().name" class="arena-size-sm" />
       </arena-menu>
     </span>
   `,
@@ -101,15 +101,15 @@ export class Row {
         [options]="groupings"
         [value]="grouping()"
         (change)="grouping.set($event)"
-        size="sm"
+        class="arena-size-sm"
       />
       <div class="toolbar__gap"></div>
       <div class="toolbar__search">
         <arena-input type="search" placeholder="Search tasks" icon="ph-bold ph-magnifying-glass" [value]="query()" (change)="query.set($event)" />
       </div>
-      <arena-button variant="ghost" size="sm" icon="ph-bold ph-funnel">Filter</arena-button>
-      <arena-button variant="ghost" size="sm" icon="ph-bold ph-eye">Show</arena-button>
-      <arena-button size="sm" icon="ph-bold ph-plus">Add task</arena-button>
+      <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</arena-button>
+      <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-eye">Show</arena-button>
+      <arena-button class="arena-size-sm" icon="ph-bold ph-plus">Add task</arena-button>
     </div>
 
     <div class="list">
@@ -123,7 +123,7 @@ export class Row {
               <span class="group__count arena-num">{{ group(status).length }}</span>
               <span class="group__gap"></span>
               <span class="group__points arena-num">{{ points(status) }} pts</span>
-              <arena-icon-button icon="ph-bold ph-plus" [label]="'Add a task to ' + status" size="sm" />
+              <arena-icon-button icon="ph-bold ph-plus" [label]="'Add a task to ' + status" class="arena-size-sm" />
             </header>
 
             <div class="group__head-row">

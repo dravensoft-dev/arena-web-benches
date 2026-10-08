@@ -57,7 +57,7 @@ function Row({
       <span className="row__cell"><PriorityFlag priority={task.priority} /></span>
       <span className="row__cell row__cell--date arena-num">{task.due}</span>
       <span className="row__cell row__cell--bar">
-        <ArenaProgressBar label={`${task.name} progress`} progressPercentage={task.progress} size="sm" showLabel={false} showPercentage={false} />
+        <ArenaProgressBar label={`${task.name} progress`} progressPercentage={task.progress} className="arena-size-sm" showLabel={false} showPercentage={false} />
       </span>
       <span className="row__cell row__cell--tags"><Tags tags={task.tags} /></span>
       <span className="row__cell row__cell--pts arena-num">{task.points}</span>
@@ -71,7 +71,7 @@ function Row({
             { divider: true },
             { label: 'Delete', icon: 'ph-bold ph-trash', destructive: true },
           ]}
-          trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${task.name}`} size="sm" />}
+          trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${task.name}`} className="arena-size-sm" />}
         />
       </span>
     </div>
@@ -96,15 +96,15 @@ export function ListView() {
           options={GROUPINGS}
           value={grouping}
           onChange={setGrouping}
-          size="sm"
+          className="arena-size-sm"
         />
         <div className="toolbar__gap" />
         <div className="toolbar__search">
           <ArenaInput type="search" placeholder="Search tasks" icon="ph-bold ph-magnifying-glass" value={query} onChange={setQuery} />
         </div>
-        <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-funnel">Filter</ArenaButton>
-        <ArenaButton variant="ghost" size="sm" icon="ph-bold ph-eye">Show</ArenaButton>
-        <ArenaButton size="sm" icon="ph-bold ph-plus">Add task</ArenaButton>
+        <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</ArenaButton>
+        <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-eye">Show</ArenaButton>
+        <ArenaButton className="arena-size-sm" icon="ph-bold ph-plus">Add task</ArenaButton>
       </div>
 
       <div className="list">
@@ -121,7 +121,7 @@ export function ListView() {
                 <span className="group__count arena-num">{group.length}</span>
                 <span className="group__gap" />
                 <span className="group__points arena-num">{points} pts</span>
-                <ArenaIconButton icon="ph-bold ph-plus" label={`Add a task to ${status}`} size="sm" />
+                <ArenaIconButton icon="ph-bold ph-plus" label={`Add a task to ${status}`} className="arena-size-sm" />
               </header>
 
               <div className="group__head-row">

@@ -12,7 +12,7 @@ import { ACHIEVEMENTS, LEAGUE, STATS } from '../data/Course';
   host: { class: 'profile' },
   template: `
     <header class="profile__head">
-      <arena-avatar name="Juno Reyes" src="img/l4.jpg" size="lg" />
+      <arena-avatar name="Juno Reyes" src="img/l4.jpg" class="arena-size-lg" />
       <div class="profile__who">
         <h1 class="profile__name">Juno Reyes</h1>
         <p class="profile__handle">juno_reyes &middot; Joined March 2024</p>
