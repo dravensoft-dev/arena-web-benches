@@ -1415,5 +1415,101 @@
         "alpha": 1
       }
     }
+  },
+  "tt-key": {
+    "$type": "keyword",
+    "$value": "none"
+  },
+  "ink-figure": {
+    "$type": "color",
+    "$value": "{color.base-content}"
+  },
+  "hue-danger-on-ink": {
+    "$type": "color",
+    "$value": "{color.error-content}"
+  },
+  "hue-info-on-ink": {
+    "$type": "color",
+    "$value": "{color.info-content}"
+  },
+  "hue-success-on-ink": {
+    "$type": "color",
+    "$value": "{color.success-content}"
+  },
+  "hue-warning-on-ink": {
+    "$type": "color",
+    "$value": "{color.warning-content}"
+  },
+  "heat-step-1": {
+    "$type": "color",
+    "$value": "{color.heat-1}"
+  },
+  "heat-step-2": {
+    "$type": "color",
+    "$value": "{color.heat-2}"
+  },
+  "heat-step-3": {
+    "$type": "color",
+    "$value": "{color.heat-3}"
+  },
+  "heat-step-4": {
+    "$type": "color",
+    "$value": "{color.heat-4}"
+  },
+  "heat-step-5": {
+    "$type": "color",
+    "$value": "{color.heat-5}"
+  },
+  "pad-band-x": {
+    "$type": "dimension",
+    "$value": "{gutter}"
+  },
+  "pad-band-y": {
+    "$type": "dimension",
+    "$value": "{sp.3}"
+  },
+  "size-sm-badge-pad-x": {
+    "$type": "dimension",
+    "$value": "{sp.1}"
+  },
+  "size-sm-badge-pad-y": {
+    "$type": "dimension",
+    "$value": "{sp.0}"
+  },
+  "size-sm-badge-step": {
+    "$type": "dimension",
+    "$value": "{dz.text-2xs}"
+  },
+  "timeline-dot": {
+    "$type": "dimension",
+    "$value": "{sp.5}"
+  },
+  "ff-key": {
+    "$type": "fontFamily",
+    "$value": "{font.body}"
+  },
+  "ink-key": {
+    "$type": "color",
+    "$value": "{color.base-content}"
+  },
+  "pad-key-y": {
+    "$type": "dimension",
+    "$value": "{sp.1}"
+  },
+  "ink-link": {
+    "$type": "color",
+    "$value": "{color.base-content}"
+  },
+  "ink-action": {
+    "$type": "color",
+    "$value": "{color.base-content}"
+  },
+  "pad-nav-row-x": {
+    "$type": "dimension",
+    "$value": "{sp.4}"
+  },
+  "pad-nav-row-y": {
+    "$type": "dimension",
+    "$value": "{sp.3}"
   }
 }
