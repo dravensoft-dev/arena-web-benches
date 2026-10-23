@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
-import { ArenaAvatar, ArenaButton, ArenaIconButton } from '@dravensoft/arena-angular';
+import { ArenaAvatar, ArenaButton, ArenaIcon, ArenaIconButton } from '@dravensoft/arena-angular';
 import { Handle } from '../Pieces';
 import { ACCOUNTS, HIGHLIGHTS, PROFILE_GRID, writeCount } from '../data/Feed';
 import type { GridPost } from '../data/Feed';
@@ -21,7 +21,7 @@ const KIND_ICON: Record<GridPost['kind'], string> = {
   selector: 'app-profile-screen',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar, ArenaButton, ArenaIconButton, Handle],
+  imports: [ArenaAvatar, ArenaButton, ArenaIcon, ArenaIconButton, Handle],
   host: { class: 'profile' },
   template: `
     <header class="profile__head">
@@ -64,7 +64,7 @@ const KIND_ICON: Record<GridPost['kind'], string> = {
         </button>
       }
       <button type="button" class="hl__item">
-        <span class="hl__ring hl__ring--new"><i class="ph-bold ph-plus" aria-hidden="true"></i></span>
+        <span class="hl__ring hl__ring--new"><arena-icon icon="ph-bold ph-plus" /></span>
         <span class="hl__label">New</span>
       </button>
     </div>
@@ -77,7 +77,7 @@ const KIND_ICON: Record<GridPost['kind'], string> = {
           [attr.aria-current]="tab() === entry.id ? 'page' : null"
           (click)="tab.set(entry.id)"
         >
-          <i class="{{ entry.icon }} ptabs__icon" aria-hidden="true"></i>
+          <span class="ptabs__icon" aria-hidden="true"><arena-icon [icon]="entry.icon" /></span>
           {{ entry.label }}
         </button>
       }
@@ -88,11 +88,11 @@ const KIND_ICON: Record<GridPost['kind'], string> = {
         <button type="button" class="cell" (click)="openGrid.emit(post)">
           <img [src]="post.src" alt="" class="cell__img" />
           @if (kindIcon[post.kind]) {
-            <i class="{{ kindIcon[post.kind] }} cell__kind" aria-hidden="true"></i>
+            <span class="cell__kind" aria-hidden="true"><arena-icon [icon]="kindIcon[post.kind]" /></span>
           }
           <span class="cell__over">
-            <span class="cell__stat"><i class="ph-fill ph-heart" aria-hidden="true"></i>{{ writeCount(post.likes) }}</span>
-            <span class="cell__stat"><i class="ph-fill ph-chat-circle" aria-hidden="true"></i>{{ post.comments }}</span>
+            <span class="cell__stat"><arena-icon icon="ph-fill ph-heart" />{{ writeCount(post.likes) }}</span>
+            <span class="cell__stat"><arena-icon icon="ph-fill ph-chat-circle" />{{ post.comments }}</span>
           </span>
         </button>
       }

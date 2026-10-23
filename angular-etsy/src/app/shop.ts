@@ -5,6 +5,7 @@ import {
   ArenaBrand,
   ArenaButton,
   ArenaFooter,
+  ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaKeyValue,
@@ -25,7 +26,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   imports: [
-    ArenaActions, ArenaAppBar, ArenaBrand, ArenaButton, ArenaFooter, ArenaIconButton,
+    ArenaActions, ArenaAppBar, ArenaBrand, ArenaButton, ArenaFooter, ArenaIcon, ArenaIconButton,
     ArenaInput, ArenaKeyValue, ArenaMain, ArenaNav, ArenaSheet, ArenaSiteFooter,
     ArenaSkipLink, SearchScreen, ListingScreen,
   ],
@@ -35,7 +36,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
 
       <arena-app-bar>
         <a brand class="brand" href="/" (click)="home($event)">
-          <i class="ph-fill ph-storefront brand__glyph" aria-hidden="true"></i>
+          <span class="brand__glyph" aria-hidden="true"><arena-icon icon="ph-fill ph-storefront" /></span>
           <span class="brand__word">Maker&apos;s Row</span>
         </a>
         <div nav class="search">

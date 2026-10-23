@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArenaFigure } from '@dravensoft/arena-react';
+import { ArenaFigure, ArenaIcon } from '@dravensoft/arena-react';
 import { money, reviewCount } from './data/Shop';
 import type { Listing } from './data/Shop';
 
@@ -20,7 +20,7 @@ export function Stars({ rating, reviews }: { rating: number; reviews: number }) 
       <span className="arena-sr-only">{`Rated ${rating} out of 5 from ${reviews} reviews`}</span>
       <span className="stars__row" aria-hidden="true">
         {[0, 1, 2, 3, 4].map((n) => (
-          <i key={n} className={n < whole ? 'ph-fill ph-star' : 'ph-bold ph-star'} />
+          <ArenaIcon key={n} icon={n < whole ? 'ph-fill ph-star' : 'ph-bold ph-star'} />
         ))}
       </span>
       <span className="stars__count arena-num" aria-hidden="true">{`(${reviewCount(reviews)})`}</span>
@@ -75,7 +75,7 @@ export function ListingCard({
         aria-pressed={saved}
         onClick={() => onSave(listing.id)}
       >
-        <i className={saved ? 'ph-fill ph-heart' : 'ph-bold ph-heart'} aria-hidden="true" />
+        <ArenaIcon icon={saved ? 'ph-fill ph-heart' : 'ph-bold ph-heart'} />
         <span className="arena-sr-only">
           {saved ? `Remove ${listing.title} from favourites` : `Add ${listing.title} to favourites`}
         </span>

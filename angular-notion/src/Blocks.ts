@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
-import { ArenaCheckbox, ArenaFigure, ArenaMedia } from '@dravensoft/arena-angular';
+import { ArenaCheckbox, ArenaFigure, ArenaIcon, ArenaMedia } from '@dravensoft/arena-angular';
 import type { Block } from './data/Workspace';
 
 @Component({
@@ -28,11 +28,12 @@ export class Todo {
   selector: 'app-toggle',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ArenaIcon],
   host: { style: 'display: contents' },
   template: `
     <details class="block block--toggle">
       <summary class="toggle__summary">
-        <i class="ph-bold ph-caret-right toggle__caret" aria-hidden="true"></i>
+        <span class="toggle__caret" aria-hidden="true"><arena-icon icon="ph-bold ph-caret-right" /></span>
         <span>{{ text() }}</span>
       </summary>
       <p class="toggle__body">{{ body() }}</p>
@@ -48,7 +49,7 @@ export class Toggle {
   selector: 'app-blocks',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaFigure, ArenaMedia, Todo, Toggle],
+  imports: [ArenaFigure, ArenaIcon, ArenaMedia, Todo, Toggle],
   host: { class: 'blocks' },
   template: `
     @for (block of blocks(); track $index) {
@@ -73,7 +74,7 @@ export class Toggle {
         @case ('quote') { <blockquote class="block block--quote">{{ block.text }}</blockquote> }
         @case ('callout') {
           <aside class="block block--callout">
-            <i class="{{ block.icon }} callout__icon" aria-hidden="true"></i>
+            <span class="callout__icon" aria-hidden="true"><arena-icon [icon]="block.icon" /></span>
             <p class="callout__text">{{ block.text }}</p>
           </aside>
         }

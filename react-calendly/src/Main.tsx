@@ -4,7 +4,9 @@ import {
   ArenaAvatar,
   ArenaButton,
   ArenaCheckbox,
+  ArenaIcon,
   ArenaIconButton,
+  ArenaIconsProvider,
   ArenaInput,
   ArenaKeyValue,
   ArenaMain,
@@ -16,10 +18,8 @@ import {
   useArenaTheme,
 } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import '@phosphor-icons/web/bold';
-import '@phosphor-icons/web/fill';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -133,7 +133,7 @@ function Openings() {
           ) : (
             <section className="form" aria-label="Your details">
               <button type="button" className="form__back" onClick={() => setSlot(null)}>
-                <i className="ph-bold ph-arrow-left" aria-hidden="true" />
+                <ArenaIcon icon="ph-bold ph-arrow-left" />
                 {' Back to the calendar'}
               </button>
               <h2 className="form__title">Enter your details</h2>
@@ -187,4 +187,4 @@ function Openings() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<Openings />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><Openings /></ArenaIconsProvider>);

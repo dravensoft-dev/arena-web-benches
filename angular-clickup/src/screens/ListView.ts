@@ -3,6 +3,7 @@ import {
   ArenaBulkActionBar,
   ArenaButton,
   ArenaCheckbox,
+  ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaMenu,
@@ -43,22 +44,22 @@ const ROW_MENU: ArenaMenuItem[] = [
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ArenaCheckbox, ArenaIconButton, ArenaMenu, ArenaProgressBar, Assignees, PriorityFlag,
+    ArenaCheckbox, ArenaIcon, ArenaIconButton, ArenaMenu, ArenaProgressBar, Assignees, PriorityFlag,
     StatusPill, Tags,
   ],
   host: { class: 'row', '[attr.data-checked]': "checked() ? 'yes' : 'no'" },
   template: `
     <span class="row__check"><arena-checkbox [checked]="checked()" (change)="check.emit($event)" /></span>
-    <span class="row__grip"><i class="ph-bold ph-dots-six-vertical" aria-hidden="true"></i></span>
+    <span class="row__grip"><arena-icon icon="ph-bold ph-dots-six-vertical" /></span>
     <span class="row__name">
       <span class="row__title">{{ task().name }}</span>
       <span class="row__meta">
         <span class="row__id arena-num">{{ task().id }}</span>
         @if (task().subtasks > 0) {
-          <span class="row__chip"><i class="ph-bold ph-tree-structure" aria-hidden="true"></i>{{ task().subtasks }}</span>
+          <span class="row__chip"><arena-icon icon="ph-bold ph-tree-structure" />{{ task().subtasks }}</span>
         }
         @if (task().comments > 0) {
-          <span class="row__chip"><i class="ph-bold ph-chat-circle" aria-hidden="true"></i>{{ task().comments }}</span>
+          <span class="row__chip"><arena-icon icon="ph-bold ph-chat-circle" />{{ task().comments }}</span>
         }
       </span>
     </span>
@@ -90,7 +91,7 @@ export class Row {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ArenaBulkActionBar, ArenaButton, ArenaIconButton, ArenaInput, ArenaSegmentedControl, Row,
+    ArenaBulkActionBar, ArenaButton, ArenaIcon, ArenaIconButton, ArenaInput, ArenaSegmentedControl, Row,
     StatusDot,
   ],
   host: { class: 'screen' },
@@ -117,7 +118,7 @@ export class Row {
         @if (group(status).length > 0) {
           <section class="group">
             <header class="group__head" [style.borderInlineStartColor]="edge(status)">
-              <i class="ph-bold ph-caret-down group__caret" aria-hidden="true"></i>
+              <span class="group__caret" aria-hidden="true"><arena-icon icon="ph-bold ph-caret-down" /></span>
               <app-status-dot [status]="status" />
               <h2 class="group__name">{{ status }}</h2>
               <span class="group__count arena-num">{{ group(status).length }}</span>

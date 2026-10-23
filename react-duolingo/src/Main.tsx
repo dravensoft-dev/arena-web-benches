@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArenaIconButton, initArenaTheme, useArenaTheme } from '@dravensoft/arena-react';
+import { ArenaIcon, ArenaIconButton, ArenaIconsProvider, initArenaTheme, useArenaTheme } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -60,7 +60,7 @@ function App() {
                   if (item.id === 'path' || item.id === 'profile') setScreen(item.id as Screen);
                 }}
               >
-                <i className={`${item.icon} nav__icon`} aria-hidden="true" data-slot={item.slot} />
+                <span className="nav__icon" aria-hidden="true" data-slot={item.slot}><ArenaIcon icon={item.icon} /></span>
                 <span className="nav__label">{item.label}</span>
               </button>
             </li>
@@ -84,4 +84,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<App />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><App /></ArenaIconsProvider>);

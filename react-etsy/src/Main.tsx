@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client';
 import {
   ArenaAppBar,
   ArenaButton,
+  ArenaIcon,
   ArenaIconButton,
+  ArenaIconsProvider,
   ArenaInput,
   ArenaKeyValue,
   ArenaMain,
@@ -14,10 +16,8 @@ import {
   useArenaTheme,
 } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import '@phosphor-icons/web/bold';
-import '@phosphor-icons/web/fill';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -63,7 +63,7 @@ function Shop() {
       <ArenaAppBar
         brand={
           <a className="brand" href="/" onClick={(event) => { event.preventDefault(); setOpen(null); }}>
-            <i className="ph-fill ph-storefront brand__glyph" aria-hidden="true" />
+            <span className="brand__glyph" aria-hidden="true"><ArenaIcon icon="ph-fill ph-storefront" /></span>
             <span className="brand__word">Maker&apos;s Row</span>
           </a>
         }
@@ -150,4 +150,4 @@ function Shop() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<Shop />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><Shop /></ArenaIconsProvider>);

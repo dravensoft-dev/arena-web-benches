@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, output } from '@angular/core';
-import { ArenaAvatar, ArenaButton, ArenaCard, ArenaGrid, ArenaIconButton } from '@dravensoft/arena-angular';
+import { ArenaAvatar, ArenaButton, ArenaCard, ArenaGrid, ArenaIcon, ArenaIconButton } from '@dravensoft/arena-angular';
 import { RECENT, TEMPLATES } from '../data/Workspace';
 import type { Screen } from '../Sidebar';
 
@@ -7,7 +7,7 @@ import type { Screen } from '../Sidebar';
   selector: 'app-home',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar, ArenaButton, ArenaCard, ArenaGrid, ArenaIconButton],
+  imports: [ArenaAvatar, ArenaButton, ArenaCard, ArenaGrid, ArenaIcon, ArenaIconButton],
   host: { class: 'doc' },
   template: `
     <header class="topbar">
@@ -32,14 +32,14 @@ import type { Screen } from '../Sidebar';
 
         <section class="home__section">
           <h2 class="home__section-title">
-            <i class="ph-bold ph-clock-counter-clockwise" aria-hidden="true"></i>
+            <arena-icon icon="ph-bold ph-clock-counter-clockwise" />
             Recently visited
           </h2>
           <div class="home__rail">
             @for (page of recent; track page.id) {
               <button type="button" class="recent" (click)="screenChange.emit(page.id === 'tasks' ? 'database' : 'doc')">
                 <span class="recent__cover"></span>
-                <span class="recent__icon"><i [class]="page.icon" aria-hidden="true"></i></span>
+                <span class="recent__icon"><arena-icon [icon]="page.icon" /></span>
                 <span class="recent__title">{{ page.title }}</span>
                 <span class="recent__meta">{{ page.where }}</span>
                 <span class="recent__meta recent__meta--dim">{{ page.when }}</span>
@@ -50,14 +50,14 @@ import type { Screen } from '../Sidebar';
 
         <section class="home__section" style="--arena-grid-min: calc(var(--sp-1) * 60)">
           <h2 class="home__section-title">
-            <i class="ph-bold ph-cards-three" aria-hidden="true"></i>
+            <arena-icon icon="ph-bold ph-cards-three" />
             Start with a template
           </h2>
           <arena-grid>
             @for (template of templates; track template.id) {
               <arena-card [title]="template.title" interactive (click)="screenChange.emit('doc')">
                 <p class="template__blurb">
-                  <i class="{{ template.icon }} template__icon" aria-hidden="true"></i>
+                  <span class="template__icon" aria-hidden="true"><arena-icon [icon]="template.icon" /></span>
                   {{ template.blurb }}
                 </p>
               </arena-card>

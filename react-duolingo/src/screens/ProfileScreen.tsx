@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArenaAvatar, ArenaButton, ArenaCard, ArenaPeopleList, ArenaPersonRow, arenaCatColor } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaButton, ArenaIcon, ArenaCard, ArenaPeopleList, ArenaPersonRow, arenaCatColor } from '@dravensoft/arena-react';
 import { ACHIEVEMENTS, LEAGUE, STATS } from '../data/Course';
 
 export function ProfileScreen() {
@@ -25,7 +25,7 @@ export function ProfileScreen() {
           {STATS.map((stat) => (
             <div key={stat.id} className="stat">
               <span className="stat__icon" style={{ color: arenaCatColor(stat.slot) }}>
-                <i className={stat.icon} aria-hidden="true" />
+                <ArenaIcon icon={stat.icon} />
               </span>
               <span className="stat__body">
                 <span className="stat__value arena-num">{stat.value}</span>
@@ -44,7 +44,7 @@ export function ProfileScreen() {
             return (
               <div key={ach.id} className="ach">
                 <span className="ach__badge" style={{ background: arenaCatColor(ach.slot) }}>
-                  <i className={ach.icon} aria-hidden="true" />
+                  <ArenaIcon icon={ach.icon} />
                   <span className="ach__level arena-num">{ach.level}</span>
                 </span>
                 <span className="ach__body">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArenaAvatar, ArenaButton, ArenaIconButton } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaButton, ArenaIcon, ArenaIconButton } from '@dravensoft/arena-react';
 import { Handle } from '../Pieces';
 import { ACCOUNTS, HIGHLIGHTS, PROFILE_GRID, writeCount } from '../data/Feed';
 import type { GridPost } from '../data/Feed';
@@ -63,7 +63,7 @@ export function ProfileScreen({ onOpenGrid }: { onOpenGrid: (post: GridPost) => 
           </button>
         ))}
         <button type="button" className="hl__item">
-          <span className="hl__ring hl__ring--new"><i className="ph-bold ph-plus" aria-hidden="true" /></span>
+          <span className="hl__ring hl__ring--new"><ArenaIcon icon="ph-bold ph-plus" /></span>
           <span className="hl__label">New</span>
         </button>
       </div>
@@ -77,7 +77,7 @@ export function ProfileScreen({ onOpenGrid }: { onOpenGrid: (post: GridPost) => 
             aria-current={tab === entry.id ? 'page' : undefined}
             onClick={() => setTab(entry.id)}
           >
-            <i className={`${entry.icon} ptabs__icon`} aria-hidden="true" />
+            <span className="ptabs__icon" aria-hidden="true"><ArenaIcon icon={entry.icon} /></span>
             {entry.label}
           </button>
         ))}
@@ -88,11 +88,11 @@ export function ProfileScreen({ onOpenGrid }: { onOpenGrid: (post: GridPost) => 
           <button key={post.id} type="button" className="cell" onClick={() => onOpenGrid(post)}>
             <img src={post.src} alt="" className="cell__img" />
             {KIND_ICON[post.kind] && (
-              <i className={`${KIND_ICON[post.kind]} cell__kind`} aria-hidden="true" />
+              <span className="cell__kind" aria-hidden="true"><ArenaIcon icon={KIND_ICON[post.kind]} /></span>
             )}
             <span className="cell__over">
-              <span className="cell__stat"><i className="ph-fill ph-heart" aria-hidden="true" />{writeCount(post.likes)}</span>
-              <span className="cell__stat"><i className="ph-fill ph-chat-circle" aria-hidden="true" />{post.comments}</span>
+              <span className="cell__stat"><ArenaIcon icon="ph-fill ph-heart" />{writeCount(post.likes)}</span>
+              <span className="cell__stat"><ArenaIcon icon="ph-fill ph-chat-circle" />{post.comments}</span>
             </span>
           </button>
         ))}

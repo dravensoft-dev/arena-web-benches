@@ -1,4 +1,4 @@
-@import './icons.generated.css';
+@import './arena.package.generated.css';
 @import './arena.generated.css';
 @import './plugin.generated.css';
 
@@ -378,7 +378,7 @@
   gap: var(--sp-2);
 }
 
-.db__name i { color: var(--mute); }
+.db__name svg { color: var(--mute); }
 
 .tags { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
 

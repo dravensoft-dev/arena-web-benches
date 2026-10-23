@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import {
   ArenaAvatar,
   ArenaButton,
+  ArenaIcon,
   ArenaIconButton,
   ArenaMenu,
   ArenaPeopleList,
@@ -59,15 +60,15 @@ function PostCard({ post, onOpen }: { post: Post; onOpen: (post: Post) => void }
           aria-pressed={liked}
           onClick={() => setLiked(!liked)}
         >
-          <i className={liked ? 'ph-fill ph-heart' : 'ph-bold ph-heart'} aria-hidden="true" />
+          <span className="act__heart" aria-hidden="true"><ArenaIcon icon={liked ? 'ph-fill ph-heart' : 'ph-bold ph-heart'} /></span>
           <span className="arena-sr-only">Like</span>
         </button>
         <button type="button" className="act" onClick={() => onOpen(post)}>
-          <i className="ph-bold ph-chat-circle" aria-hidden="true" />
+          <ArenaIcon icon="ph-bold ph-chat-circle" />
           <span className="arena-sr-only">Comment</span>
         </button>
         <button type="button" className="act">
-          <i className="ph-bold ph-paper-plane-tilt" aria-hidden="true" />
+          <ArenaIcon icon="ph-bold ph-paper-plane-tilt" />
           <span className="arena-sr-only">Share</span>
         </button>
         <span className="post__gap" />
@@ -78,7 +79,7 @@ function PostCard({ post, onOpen }: { post: Post; onOpen: (post: Post) => void }
           aria-pressed={saved}
           onClick={() => setSaved(!saved)}
         >
-          <i className={saved ? 'ph-fill ph-bookmark-simple' : 'ph-bold ph-bookmark-simple'} aria-hidden="true" />
+          <ArenaIcon icon={saved ? 'ph-fill ph-bookmark-simple' : 'ph-bold ph-bookmark-simple'} />
           <span className="arena-sr-only">Save</span>
         </button>
       </div>

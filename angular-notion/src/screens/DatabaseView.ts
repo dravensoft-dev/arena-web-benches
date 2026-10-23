@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import {
   ArenaAction, ArenaAvatar, ArenaBoard, ArenaBoardColumn, ArenaBreadcrumbs, ArenaButton,
-  ArenaFooter, ArenaIconButton, ArenaInput, ArenaMenu, ArenaTab, ArenaTable, ArenaTableCell,
+  ArenaFooter, ArenaIcon, ArenaIconButton, ArenaInput, ArenaMenu, ArenaTab, ArenaTable, ArenaTableCell,
   ArenaTableRow, ArenaTabs, ArenaTag,
 } from '@dravensoft/arena-angular';
 import type {
@@ -127,7 +127,7 @@ export class BoardCard {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ArenaAction, ArenaAvatar, ArenaBoard, ArenaBoardColumn, ArenaBreadcrumbs, ArenaButton,
-    ArenaFooter, ArenaIconButton, ArenaTab, ArenaTable, ArenaTableCell, ArenaTableRow, ArenaTabs,
+    ArenaFooter, ArenaIcon, ArenaIconButton, ArenaTab, ArenaTable, ArenaTableCell, ArenaTableRow, ArenaTabs,
     ArenaTag, BoardCard, Tags, Toolbar,
   ],
   host: { class: 'doc' },
@@ -144,13 +144,13 @@ export class BoardCard {
       <div class="db">
         <div class="db__head">
           <div class="doc__icon doc__icon--inline">
-            <i class="ph-fill ph-kanban" aria-hidden="true"></i>
+            <arena-icon icon="ph-fill ph-kanban" />
           </div>
           <h1 class="doc__title doc__title--db">Sprint tasks</h1>
         </div>
 
         <div class="db__views" style="--arena-column-due-align: right; --arena-column-effort-align: right">
-          <arena-tabs [value]="view()" (change)="view.set($event)">
+          <arena-tabs [value]="view()" (valueChange)="view.set($event)">
             <arena-tab value="table" label="Table">
               <app-toolbar [query]="query()" (queryChange)="query.set($event)" />
               <arena-table label="Sprint tasks" [columns]="columns">
@@ -158,7 +158,7 @@ export class BoardCard {
                   <tr arena-table-row interactive>
                     <td arena-table-cell>
                       <span class="db__name">
-                        <i class="ph-bold ph-file-text" aria-hidden="true"></i>
+                        <arena-icon icon="ph-bold ph-file-text" />
                         {{ task.name }}
                       </span>
                     </td>

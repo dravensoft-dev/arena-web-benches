@@ -1,5 +1,5 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
-import { ArenaAvatar, ArenaBadge, ArenaIconButton } from '@dravensoft/arena-angular';
+import { ArenaAvatar, ArenaBadge, ArenaIcon, ArenaIconButton } from '@dravensoft/arena-angular';
 import { ACCOUNTS } from './data/Feed';
 
 /* A story ring is a gradient stroke around an avatar, and its state is whether it has been
@@ -36,8 +36,9 @@ export class StoryRing {
   selector: 'app-handle',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ArenaIcon],
   host: { class: 'handle', '[attr.data-bold]': `bold() ? 'yes' : 'no'` },
-  template: `{{ account().handle }}@if (account().verified) {<i class="ph-fill ph-seal-check handle__tick" aria-hidden="true" title="Verified"></i>}`,
+  template: `{{ account().handle }}@if (account().verified) {<span class="handle__tick" aria-hidden="true" title="Verified"><arena-icon icon="ph-fill ph-seal-check" /></span>}`,
 })
 export class Handle {
   readonly handle = input.required<string>();

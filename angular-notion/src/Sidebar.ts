@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import {
-  ArenaAvatar, ArenaIconButton, ArenaSideNav, ArenaSideNavCollapsible, ArenaSideNavItem,
+  ArenaAvatar, ArenaIcon, ArenaIconButton, ArenaSideNav, ArenaSideNavCollapsible, ArenaSideNavItem,
   ArenaSideNavSection,
 } from '@dravensoft/arena-angular';
 
@@ -17,7 +17,7 @@ const SCREEN_OF: Record<string, Screen> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ArenaAvatar, ArenaIconButton, ArenaSideNav, ArenaSideNavCollapsible, ArenaSideNavItem,
+    ArenaAvatar, ArenaIcon, ArenaIconButton, ArenaSideNav, ArenaSideNavCollapsible, ArenaSideNavItem,
     ArenaSideNavSection,
   ],
   host: { class: 'sidebar' },
@@ -33,16 +33,16 @@ const SCREEN_OF: Record<string, Screen> = {
 
     <div class="sidebar__quick">
       <button type="button" class="quick" (click)="search.emit()">
-        <i class="ph-bold ph-magnifying-glass quick__icon" aria-hidden="true"></i>
+        <span class="quick__icon" aria-hidden="true"><arena-icon icon="ph-bold ph-magnifying-glass" /></span>
         <span>Search</span>
         <kbd class="quick__key arena-num">Ctrl K</kbd>
       </button>
       <button type="button" class="quick" (click)="screenChange.emit('home')">
-        <i class="ph-bold ph-house quick__icon" aria-hidden="true"></i>
+        <span class="quick__icon" aria-hidden="true"><arena-icon icon="ph-bold ph-house" /></span>
         <span>Home</span>
       </button>
       <button type="button" class="quick">
-        <i class="ph-bold ph-tray quick__icon" aria-hidden="true"></i>
+        <span class="quick__icon" aria-hidden="true"><arena-icon icon="ph-bold ph-tray" /></span>
         <span>Inbox</span>
         <span class="quick__count arena-num">3</span>
       </button>
@@ -83,7 +83,7 @@ const SCREEN_OF: Record<string, Screen> = {
 
     <div class="sidebar__foot">
       <button type="button" class="quick">
-        <i class="ph-bold ph-plus quick__icon" aria-hidden="true"></i>
+        <span class="quick__icon" aria-hidden="true"><arena-icon icon="ph-bold ph-plus" /></span>
         <span>New page</span>
       </button>
     </div>

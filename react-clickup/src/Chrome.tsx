@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ArenaAppLogo,
   ArenaAvatar,
+  ArenaIcon,
   ArenaIconButton,
   ArenaSideNav,
   ArenaSideNavCollapsible,
@@ -27,11 +28,11 @@ export function StatusPill({ status }: { status: Status }) {
 export function PriorityFlag({ priority }: { priority: Priority }) {
   return (
     <ArenaTooltip label={`${priority} priority`}>
-      <i
-        className="ph-fill ph-flag flag"
+      <span
+        className="flag"
         style={{ color: arenaCatColor(PRIORITY_SLOT[priority]) }}
         aria-hidden="true"
-      />
+      ><ArenaIcon icon="ph-fill ph-flag" /></span>
     </ArenaTooltip>
   );
 }
@@ -78,10 +79,10 @@ export function Sidebar({ screen, onScreen }: { screen: Screen; onScreen: (next:
       </div>
 
       <div className="side__quick">
-        <button type="button" className="q"><i className="ph-bold ph-house q__i" aria-hidden="true" />Home</button>
-        <button type="button" className="q"><i className="ph-bold ph-tray q__i" aria-hidden="true" />Inbox<span className="q__n arena-num">7</span></button>
-        <button type="button" className="q"><i className="ph-bold ph-magnifying-glass q__i" aria-hidden="true" />Search<kbd className="q__k arena-num">Ctrl K</kbd></button>
-        <button type="button" className="q"><i className="ph-bold ph-clock-counter-clockwise q__i" aria-hidden="true" />Recents</button>
+        <button type="button" className="q"><span className="q__i" aria-hidden="true"><ArenaIcon icon="ph-bold ph-house" /></span>Home</button>
+        <button type="button" className="q"><span className="q__i" aria-hidden="true"><ArenaIcon icon="ph-bold ph-tray" /></span>Inbox<span className="q__n arena-num">7</span></button>
+        <button type="button" className="q"><span className="q__i" aria-hidden="true"><ArenaIcon icon="ph-bold ph-magnifying-glass" /></span>Search<kbd className="q__k arena-num">Ctrl K</kbd></button>
+        <button type="button" className="q"><span className="q__i" aria-hidden="true"><ArenaIcon icon="ph-bold ph-clock-counter-clockwise" /></span>Recents</button>
       </div>
 
       <div className="side__tree">

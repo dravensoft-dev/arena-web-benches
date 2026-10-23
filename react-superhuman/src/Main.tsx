@@ -5,7 +5,9 @@ import {
   ArenaButton,
   ArenaCommandPalette,
   ArenaFigure,
+  ArenaIcon,
   ArenaIconButton,
+  ArenaIconsProvider,
   ArenaInput,
   ArenaMain,
   ArenaSegmentedControl,
@@ -17,10 +19,8 @@ import {
   useArenaTheme,
 } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import '@phosphor-icons/web/bold';
-import '@phosphor-icons/web/fill';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -58,7 +58,7 @@ function Relay() {
     <div className="mail">
       <aside className="rail">
         <div className="rail__head">
-          <i className="ph-fill ph-paper-plane-tilt rail__glyph" aria-hidden="true" />
+          <span className="rail__glyph" aria-hidden="true"><ArenaIcon icon="ph-fill ph-paper-plane-tilt" /></span>
           <span className="rail__word">Relay</span>
           <span className="rail__gap" />
           <ArenaIconButton
@@ -188,4 +188,4 @@ function Relay() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<Relay />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><Relay /></ArenaIconsProvider>);

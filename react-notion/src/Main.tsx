@@ -3,13 +3,14 @@ import { createRoot } from 'react-dom/client';
 import {
   ArenaCommandPalette,
   ArenaIconButton,
+  ArenaIconsProvider,
   initArenaTheme,
   useArenaTheme,
 } from '@dravensoft/arena-react';
 import type { ArenaCommand } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -95,4 +96,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<App />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><App /></ArenaIconsProvider>);

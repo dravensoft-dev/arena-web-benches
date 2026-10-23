@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArenaAvatar, ArenaButton, ArenaCard, ArenaGrid, ArenaIconButton } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaButton, ArenaCard, ArenaGrid, ArenaIcon, ArenaIconButton } from '@dravensoft/arena-react';
 import { RECENT, TEMPLATES } from '../data/Workspace';
 import type { Screen } from '../Sidebar';
 
@@ -28,7 +28,7 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
 
           <section className="home__section">
             <h2 className="home__section-title">
-              <i className="ph-bold ph-clock-counter-clockwise" aria-hidden="true" />
+              <ArenaIcon icon="ph-bold ph-clock-counter-clockwise" />
               Recently visited
             </h2>
             <div className="home__rail">
@@ -40,7 +40,7 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
                   onClick={() => onScreen(page.id === 'tasks' ? 'database' : 'doc')}
                 >
                   <span className="recent__cover" />
-                  <span className="recent__icon"><i className={page.icon} aria-hidden="true" /></span>
+                  <span className="recent__icon"><ArenaIcon icon={page.icon} /></span>
                   <span className="recent__title">{page.title}</span>
                   <span className="recent__meta">{page.where}</span>
                   <span className="recent__meta recent__meta--dim">{page.when}</span>
@@ -51,14 +51,14 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
 
           <section className="home__section" style={{ '--arena-grid-min': 'calc(var(--sp-1) * 60)' } as React.CSSProperties}>
             <h2 className="home__section-title">
-              <i className="ph-bold ph-cards-three" aria-hidden="true" />
+              <ArenaIcon icon="ph-bold ph-cards-three" />
               Start with a template
             </h2>
             <ArenaGrid>
               {TEMPLATES.map((template) => (
                 <ArenaCard key={template.id} title={template.title} interactive onClick={() => onScreen('doc')}>
                   <p className="template__blurb">
-                    <i className={`${template.icon} template__icon`} aria-hidden="true" />
+                    <span className="template__icon" aria-hidden="true"><ArenaIcon icon={template.icon} /></span>
                     {template.blurb}
                   </p>
                 </ArenaCard>

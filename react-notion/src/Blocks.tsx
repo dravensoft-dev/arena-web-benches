@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArenaCheckbox, ArenaFigure } from '@dravensoft/arena-react';
+import { ArenaCheckbox, ArenaFigure, ArenaIcon } from '@dravensoft/arena-react';
 import type { Block } from './data/Workspace';
 
 function Todo({ text, done }: { text: string; done: boolean }) {
@@ -15,7 +15,7 @@ function Toggle({ text, body }: { text: string; body: string }) {
   return (
     <details className="block block--toggle">
       <summary className="toggle__summary">
-        <i className="ph-bold ph-caret-right toggle__caret" aria-hidden="true" />
+        <span className="toggle__caret" aria-hidden="true"><ArenaIcon icon="ph-bold ph-caret-right" /></span>
         <span>{text}</span>
       </summary>
       <p className="toggle__body">{body}</p>
@@ -58,7 +58,7 @@ export function Blocks({ blocks }: { blocks: readonly Block[] }) {
           case 'callout':
             return (
               <aside key={key} className="block block--callout">
-                <i className={`${block.icon} callout__icon`} aria-hidden="true" />
+                <span className="callout__icon" aria-hidden="true"><ArenaIcon icon={block.icon} /></span>
                 <p className="callout__text">{block.text}</p>
               </aside>
             );

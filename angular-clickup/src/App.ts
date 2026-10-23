@@ -4,6 +4,7 @@ import {
   ArenaBreadcrumbs,
   ArenaButton,
   ArenaCommandPalette,
+  ArenaIcon,
   ArenaIconButton,
   ArenaThemeService,
   ArenaToast,
@@ -46,8 +47,8 @@ const CRUMBS: ArenaCrumb[] = [
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaCommandPalette, ArenaIconButton, ArenaToast,
-    ArenaToastHost, BoardView, Dashboard, ListView, Sidebar,
+    ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaCommandPalette, ArenaIcon, ArenaIconButton,
+    ArenaToast, ArenaToastHost, BoardView, Dashboard, ListView, Sidebar,
   ],
   host: {
     class: 'app',
@@ -75,7 +76,7 @@ const CRUMBS: ArenaCrumb[] = [
 
       <div class="head">
         <div class="head__title">
-          <span class="head__icon"><i class="ph-fill ph-rocket-launch" aria-hidden="true"></i></span>
+          <span class="head__icon"><arena-icon icon="ph-fill ph-rocket-launch" /></span>
           <div>
             <h1 class="head__h1">Sprint 32</h1>
             <p class="head__sub">12 tasks &middot; 5 people &middot; ends in 11 days</p>
@@ -94,7 +95,7 @@ const CRUMBS: ArenaCrumb[] = [
             [attr.aria-current]="screen() === tab.id ? 'page' : null"
             (click)="screen.set(tab.id)"
           >
-            <i class="{{ tab.icon }} views__icon" aria-hidden="true"></i>
+            <span class="views__icon" aria-hidden="true"><arena-icon [icon]="tab.icon" /></span>
             {{ tab.label }}
           </button>
         }

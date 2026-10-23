@@ -3,6 +3,7 @@ import {
   ArenaAvatar,
   ArenaBreadcrumbs,
   ArenaButton,
+  ArenaIcon,
   ArenaIconButton,
   ArenaMenu,
 } from '@dravensoft/arena-react';
@@ -53,25 +54,25 @@ export function DocPage() {
 
         <div className="doc__body">
           <div className="doc__icon">
-            <i className={PAGE_ICON} aria-hidden="true" />
+            <ArenaIcon icon={PAGE_ICON} />
           </div>
 
           <h1 className="doc__title">{PAGE_TITLE}</h1>
 
           <div className="doc__props">
             <div className="prop">
-              <span className="prop__key"><i className="ph-bold ph-user" aria-hidden="true" />Owner</span>
+              <span className="prop__key"><ArenaIcon icon="ph-bold ph-user" />Owner</span>
               <span className="prop__value">
                 <ArenaAvatar name="Marta Ilves" src="img/p1.jpg" className="arena-size-xs" />
                 Marta Ilves
               </span>
             </div>
             <div className="prop">
-              <span className="prop__key"><i className="ph-bold ph-tag" aria-hidden="true" />Area</span>
+              <span className="prop__key"><ArenaIcon icon="ph-bold ph-tag" />Area</span>
               <span className="prop__value">Platform</span>
             </div>
             <div className="prop">
-              <span className="prop__key"><i className="ph-bold ph-calendar-blank" aria-hidden="true" />Reviewed</span>
+              <span className="prop__key"><ArenaIcon icon="ph-bold ph-calendar-blank" />Reviewed</span>
               <span className="prop__value">Aug 12, 2026</span>
             </div>
           </div>
@@ -79,7 +80,7 @@ export function DocPage() {
           <Blocks blocks={DOC_BLOCKS} />
 
           <div className="doc__add">
-            <i className="ph-bold ph-plus" aria-hidden="true" />
+            <ArenaIcon icon="ph-bold ph-plus" />
             <span>Click here to continue writing, or press the slash key for commands</span>
           </div>
         </div>

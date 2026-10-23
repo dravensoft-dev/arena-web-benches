@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { ArenaAvatar, ArenaTag } from '@dravensoft/arena-angular';
+import { ArenaAvatar, ArenaIcon, ArenaTag } from '@dravensoft/arena-angular';
 import type { ArenaCatSlot } from '@dravensoft/arena-angular';
 import type { Thread } from '../data/Mail';
 
@@ -15,12 +15,12 @@ export class Cap {}
   selector: 'app-thread-row',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
-  imports: [ArenaAvatar, ArenaTag],
+  imports: [ArenaAvatar, ArenaIcon, ArenaTag],
   template: `
     <li class="row" [attr.data-unread]="item().unread" [attr.aria-current]="current() ? 'true' : null">
       <button type="button" class="row__hit" (click)="openThread.emit(item().id)">
         <span class="row__mark" aria-hidden="true">
-          @if (item().starred) { <i class="ph-fill ph-star"></i> }
+          @if (item().starred) { <arena-icon icon="ph-fill ph-star" /> }
         </span>
         <arena-avatar [src]="item().avatar" [name]="item().from" class="arena-size-xs" />
         <span class="row__text">
@@ -31,7 +31,7 @@ export class Cap {}
             @for (label of item().labels; track label; let index = $index) {
               <arena-tag [colorId]="slot(index)">{{ label }}</arena-tag>
             }
-            @if (item().attachments.length) { <i class="ph-bold ph-paperclip row__clip" aria-hidden="true"></i> }
+            @if (item().attachments.length) { <span class="row__clip" aria-hidden="true"><arena-icon icon="ph-bold ph-paperclip" /></span> }
             <span class="row__at arena-num">{{ item().at }}</span>
           </span>
           <span class="row__line">

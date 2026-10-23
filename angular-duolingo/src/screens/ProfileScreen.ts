@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
-  ArenaAvatar, ArenaButton, ArenaCard, ArenaPeopleList, ArenaPersonRow, arenaCatColor,
+  ArenaAvatar, ArenaButton, ArenaCard, ArenaIcon, ArenaPeopleList, ArenaPersonRow, arenaCatColor,
 } from '@dravensoft/arena-angular';
 import { ACHIEVEMENTS, LEAGUE, STATS } from '../data/Course';
 
@@ -8,7 +8,7 @@ import { ACHIEVEMENTS, LEAGUE, STATS } from '../data/Course';
   selector: 'app-profile-screen',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar, ArenaButton, ArenaCard, ArenaPeopleList, ArenaPersonRow],
+  imports: [ArenaAvatar, ArenaButton, ArenaCard, ArenaIcon, ArenaPeopleList, ArenaPersonRow],
   host: { class: 'profile' },
   template: `
     <header class="profile__head">
@@ -29,7 +29,7 @@ import { ACHIEVEMENTS, LEAGUE, STATS } from '../data/Course';
         @for (stat of stats; track stat.id) {
           <div class="stat">
             <span class="stat__icon" [style.color]="cat(stat.slot)">
-              <i [class]="stat.icon" aria-hidden="true"></i>
+              <arena-icon [icon]="stat.icon" />
             </span>
             <span class="stat__body">
               <span class="stat__value arena-num">{{ stat.value }}</span>
@@ -46,7 +46,7 @@ import { ACHIEVEMENTS, LEAGUE, STATS } from '../data/Course';
         @for (ach of achievements; track ach.id) {
           <div class="ach">
             <span class="ach__badge" [style.background]="cat(ach.slot)">
-              <i [class]="ach.icon" aria-hidden="true"></i>
+              <arena-icon [icon]="ach.icon" />
               <span class="ach__level arena-num">{{ ach.level }}</span>
             </span>
             <span class="ach__body">

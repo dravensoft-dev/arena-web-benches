@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArenaButton, ArenaIconButton, arenaCatColor } from '@dravensoft/arena-react';
+import { ArenaButton, ArenaIcon, ArenaIconButton, arenaCatColor } from '@dravensoft/arena-react';
 import { HEARTS, QUESTION } from '../data/Course';
 
 type Phase = 'asking' | 'right' | 'wrong';
@@ -30,7 +30,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
         <div className="bar" role="progressbar" aria-valuenow={45} aria-valuemin={0} aria-valuemax={100} aria-label="Lesson progress">
           <span className="bar__fill" style={{ inlineSize: '45%' }} />
         </div>
-        <span className="chip chip--hearts"><i className="ph-fill ph-heart" aria-hidden="true" />{HEARTS}</span>
+        <span className="chip chip--hearts"><ArenaIcon icon="ph-fill ph-heart" />{HEARTS}</span>
       </header>
 
       <main className="lesson__body">
@@ -38,7 +38,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
 
         <p className="lesson__sentence">
           <button type="button" className="speak">
-            <i className="ph-fill ph-speaker-high" aria-hidden="true" />
+            <ArenaIcon icon="ph-fill ph-speaker-high" />
             <span className="arena-sr-only">Play the sentence</span>
           </button>
           {QUESTION.sentence}
@@ -56,7 +56,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
               onClick={() => setPicked(choice.id)}
             >
               <span className="choice__art" style={{ color: arenaCatColor(index + 1) }}>
-                <i className={choice.image} aria-hidden="true" />
+                <ArenaIcon icon={choice.image} />
               </span>
               <span className="choice__label">{choice.label}</span>
               <span className="choice__key arena-num">{index + 1}</span>
@@ -77,7 +77,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
         {phase === 'right' && (
           <div className="foot__row foot__row--right">
             <span className="verdict">
-              <span className="verdict__mark"><i className="ph-bold ph-check" aria-hidden="true" /></span>
+              <span className="verdict__mark"><ArenaIcon icon="ph-bold ph-check" /></span>
               <span className="verdict__text">
                 <strong>Nicely done</strong>
                 <span>{chosen?.label} means {chosen?.hint}</span>
@@ -91,7 +91,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
         {phase === 'wrong' && (
           <div className="foot__row foot__row--wrong">
             <span className="verdict">
-              <span className="verdict__mark"><i className="ph-bold ph-x" aria-hidden="true" /></span>
+              <span className="verdict__mark"><ArenaIcon icon="ph-bold ph-x" /></span>
               <span className="verdict__text">
                 <strong>Not quite</strong>
                 <span>The answer is <em>la cuenta</em>, the bill</span>

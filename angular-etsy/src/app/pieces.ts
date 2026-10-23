@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { ArenaFigure, ArenaMedia, ArenaOverlay, isArenaPrimaryActivation } from '@dravensoft/arena-angular';
+import { ArenaFigure, ArenaIcon, ArenaMedia, ArenaOverlay, isArenaPrimaryActivation } from '@dravensoft/arena-angular';
 import { money, reviewCount } from '../data/Shop';
 import type { Listing } from '../data/Shop';
 
@@ -22,6 +22,7 @@ export class Mark {
 
 @Component({
   selector: 'app-stars',
+  imports: [ArenaIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   template: `
@@ -29,7 +30,7 @@ export class Mark {
       <span class="arena-sr-only">{{ 'Rated ' + rating() + ' out of 5 from ' + reviews() + ' reviews' }}</span>
       <span class="stars__row" aria-hidden="true">
         @for (n of [0, 1, 2, 3, 4]; track n) {
-          <i [class]="n < whole() ? 'ph-fill ph-star' : 'ph-bold ph-star'"></i>
+          <arena-icon [icon]="n < whole() ? 'ph-fill ph-star' : 'ph-bold ph-star'" />
         }
       </span>
       <span class="stars__count arena-num" aria-hidden="true">{{ '(' + count() + ')' }}</span>
@@ -72,7 +73,7 @@ export class Price {
   selector: 'app-listing-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
-  imports: [ArenaFigure, ArenaMedia, ArenaOverlay, Mark, Stars, Price],
+  imports: [ArenaFigure, ArenaIcon, ArenaMedia, ArenaOverlay, Mark, Stars, Price],
   template: `
     <article class="card">
       <a class="card__link" [href]="'/listing/' + listing().id" (click)="open($event)">
@@ -93,7 +94,7 @@ export class Price {
         </span>
       </a>
       <button type="button" class="save" [attr.aria-pressed]="saved()" (click)="save.emit(listing().id)">
-        <i [class]="saved() ? 'ph-fill ph-heart' : 'ph-bold ph-heart'" aria-hidden="true"></i>
+        <arena-icon [icon]="saved() ? 'ph-fill ph-heart' : 'ph-bold ph-heart'" />
         <span class="arena-sr-only">
           {{ saved() ? 'Remove ' + listing().title + ' from favourites' : 'Add ' + listing().title + ' to favourites' }}
         </span>

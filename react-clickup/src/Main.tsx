@@ -5,7 +5,9 @@ import {
   ArenaBreadcrumbs,
   ArenaButton,
   ArenaCommandPalette,
+  ArenaIcon,
   ArenaIconButton,
+  ArenaIconsProvider,
   ArenaToast,
   ArenaToastHost,
   initArenaTheme,
@@ -14,8 +16,8 @@ import {
 } from '@dravensoft/arena-react';
 import type { ArenaCommand } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -110,7 +112,7 @@ function App() {
 
         <div className="head">
           <div className="head__title">
-            <span className="head__icon"><i className="ph-fill ph-rocket-launch" aria-hidden="true" /></span>
+            <span className="head__icon"><ArenaIcon icon="ph-fill ph-rocket-launch" /></span>
             <div>
               <h1 className="head__h1">Sprint 32</h1>
               <p className="head__sub">12 tasks &middot; 5 people &middot; ends in 11 days</p>
@@ -130,7 +132,7 @@ function App() {
               aria-current={screen === tab.id ? 'page' : undefined}
               onClick={() => setScreen(tab.id)}
             >
-              <i className={`${tab.icon} views__icon`} aria-hidden="true" />
+              <span className="views__icon" aria-hidden="true"><ArenaIcon icon={tab.icon} /></span>
               {tab.label}
             </button>
           ))}
@@ -162,4 +164,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<App />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><App /></ArenaIconsProvider>);

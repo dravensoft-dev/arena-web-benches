@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import {
-  ArenaAction, ArenaBoard, ArenaBoardColumn, ArenaButton, ArenaFooter, ArenaIconButton,
+  ArenaAction, ArenaBoard, ArenaBoardColumn, ArenaButton, ArenaFooter, ArenaIcon, ArenaIconButton,
   ArenaProgressBar,
 } from '@dravensoft/arena-angular';
 import type { ArenaCatSlot } from '@dravensoft/arena-angular';
@@ -12,7 +12,7 @@ import type { Status, Task } from '../data/Space';
   selector: 'app-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaIconButton, ArenaProgressBar, Assignees, PriorityFlag, Tags],
+  imports: [ArenaIcon, ArenaIconButton, ArenaProgressBar, Assignees, PriorityFlag, Tags],
   host: { style: 'display: contents' },
   template: `
     <article class="kcard">
@@ -33,8 +33,8 @@ import type { Status, Task } from '../data/Space';
       <footer class="kcard__foot">
         <app-assignees [ids]="task().assignees" />
         <span class="kcard__gap"></span>
-        <span class="kcard__stat"><i class="ph-bold ph-chat-circle" aria-hidden="true"></i>{{ task().comments }}</span>
-        <span class="kcard__stat"><i class="ph-bold ph-tree-structure" aria-hidden="true"></i>{{ task().subtasks }}</span>
+        <span class="kcard__stat"><arena-icon icon="ph-bold ph-chat-circle" />{{ task().comments }}</span>
+        <span class="kcard__stat"><arena-icon icon="ph-bold ph-tree-structure" />{{ task().subtasks }}</span>
         <span class="kcard__due arena-num">{{ task().due }}</span>
       </footer>
     </article>

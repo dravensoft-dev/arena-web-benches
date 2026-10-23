@@ -15,18 +15,37 @@
             "browser": "src/main.ts",
             "polyfills": [],
             "tsConfig": "tsconfig.json",
-            "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles.css"]
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
+              {
+                "glob": "icons-*.svg",
+                "input": "src"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ]
           },
           "configurations": {
-            "production": { "optimization": true, "outputHashing": "all" },
-            "development": { "optimization": false, "sourceMap": true }
+            "production": {
+              "optimization": true,
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true
+            }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": { "buildTarget": "angular-clickup-bench:build:development" }
+          "options": {
+            "buildTarget": "angular-clickup-bench:build:development"
+          }
         }
       }
     }

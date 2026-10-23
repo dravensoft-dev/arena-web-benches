@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import {
-  ArenaButton, ArenaCard, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar, arenaCatColor,
+  ArenaButton, ArenaCard, ArenaIcon, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar, arenaCatColor,
 } from '@dravensoft/arena-angular';
 import {
   GEMS,
@@ -20,7 +20,7 @@ import type { PathNode, Unit } from '../data/Course';
   selector: 'div[app-node]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaProgressBar, NgTemplateOutlet],
+  imports: [ArenaIcon, ArenaProgressBar, NgTemplateOutlet],
   host: { class: 'node', '[style.margin-inline-start]': "'calc(var(--sp-12) * ' + node().offset + ')'" },
   template: `
     @if (node().state === 'active') {
@@ -48,7 +48,7 @@ import type { PathNode, Unit } from '../data/Course';
         [attr.aria-label]="node().label + ', ' + node().state"
         (click)="start.emit()"
       >
-        <i [class]="node().state === 'locked' ? 'ph-fill ph-lock-simple' : icon[node().kind]" aria-hidden="true"></i>
+        <arena-icon [icon]="node().state === 'locked' ? 'ph-fill ph-lock-simple' : icon[node().kind]" />
       </button>
     </ng-template>
   `,
@@ -68,7 +68,7 @@ export class Node {
   selector: 'section[app-unit]',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Node],
+  imports: [ArenaIcon, Node],
   host: { class: 'unit' },
   template: `
     <header class="unit__head" [style.background]="cat(unit().slot)">
@@ -79,7 +79,7 @@ export class Node {
       </div>
       <!-- On one line: Angular keeps a collapsed space around a text node where JSX drops the
            whitespace outright when it holds a newline. FINDINGS.md, difference 1. -->
-      <button type="button" class="unit__guide"><i class="ph-fill ph-book-open-text" aria-hidden="true"></i>Guidebook</button>
+      <button type="button" class="unit__guide"><arena-icon icon="ph-fill ph-book-open-text" />Guidebook</button>
     </header>
 
     <div class="path">
@@ -100,7 +100,7 @@ export class UnitBlock {
   selector: 'app-path-screen',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaButton, ArenaCard, ArenaPeopleList, ArenaPersonRow, UnitBlock],
+  imports: [ArenaButton, ArenaCard, ArenaIcon, ArenaPeopleList, ArenaPersonRow, UnitBlock],
   host: { class: 'path-screen' },
   template: `
     <div class="path-screen__main">
@@ -111,15 +111,15 @@ export class UnitBlock {
 
     <aside class="rail">
       <div class="rail__row">
-        <span class="chip chip--streak"><i class="ph-fill ph-fire" aria-hidden="true"></i>{{ streak }}</span>
-        <span class="chip chip--gems"><i class="ph-fill ph-diamond" aria-hidden="true"></i>{{ gems }}</span>
-        <span class="chip chip--hearts"><i class="ph-fill ph-heart" aria-hidden="true"></i>{{ hearts }}<span class="chip__of">/{{ heartMax }}</span></span>
+        <span class="chip chip--streak"><arena-icon icon="ph-fill ph-fire" />{{ streak }}</span>
+        <span class="chip chip--gems"><arena-icon icon="ph-fill ph-diamond" />{{ gems }}</span>
+        <span class="chip chip--hearts"><arena-icon icon="ph-fill ph-heart" />{{ hearts }}<span class="chip__of">/{{ heartMax }}</span></span>
       </div>
 
       <arena-card title="Daily quest">
         <div class="quest">
           <span class="quest__icon" [style.background]="cat(4)">
-            <i class="ph-fill ph-lightning" aria-hidden="true"></i>
+            <arena-icon icon="ph-fill ph-lightning" />
           </span>
           <div class="quest__body">
             <p class="quest__name">Earn {{ xpGoal }} XP</p>

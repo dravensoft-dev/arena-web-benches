@@ -4,6 +4,7 @@ import {
   ArenaButton,
   ArenaCommandPalette,
   ArenaFigure,
+  ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaMain,
@@ -29,7 +30,7 @@ const SPLITS: ArenaSegmentOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   imports: [
-    ArenaAvatar, ArenaButton, ArenaCommandPalette, ArenaFigure, ArenaIconButton, ArenaInput,
+    ArenaAvatar, ArenaButton, ArenaCommandPalette, ArenaFigure, ArenaIcon, ArenaIconButton, ArenaInput,
     ArenaMain, ArenaMedia, ArenaSegmentedControl, ArenaSideNav, ArenaSideNavItem,
     ArenaSideNavSection, ArenaTag, Cap, ThreadRow,
   ],
@@ -37,7 +38,7 @@ const SPLITS: ArenaSegmentOption[] = [
     <div class="mail">
       <aside class="rail">
         <div class="rail__head">
-          <i class="ph-fill ph-paper-plane-tilt rail__glyph" aria-hidden="true"></i>
+          <span class="rail__glyph" aria-hidden="true"><arena-icon icon="ph-fill ph-paper-plane-tilt" /></span>
           <span class="rail__word">Relay</span>
           <span class="rail__gap"></span>
           <arena-icon-button

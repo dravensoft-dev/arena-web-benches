@@ -1,5 +1,8 @@
 node_modules/
 dist/
 src/arena.generated.css
-src/icons.generated.css
 src/plugin.generated.css
+src/arena.package.generated.css
+src/arena.icons.generated.js
+src/arena.icons.generated.d.ts
+src/icons-*.svg

@@ -3,6 +3,7 @@ import {
   ArenaBulkActionBar,
   ArenaButton,
   ArenaCheckbox,
+  ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaMenu,
@@ -39,16 +40,16 @@ function Row({
   return (
     <div className="row" data-checked={checked ? 'yes' : 'no'}>
       <span className="row__check"><ArenaCheckbox checked={checked} onChange={(next) => onCheck(task.id, next)} /></span>
-      <span className="row__grip"><i className="ph-bold ph-dots-six-vertical" aria-hidden="true" /></span>
+      <span className="row__grip"><ArenaIcon icon="ph-bold ph-dots-six-vertical" /></span>
       <span className="row__name">
         <span className="row__title">{task.name}</span>
         <span className="row__meta">
           <span className="row__id arena-num">{task.id}</span>
           {task.subtasks > 0 && (
-            <span className="row__chip"><i className="ph-bold ph-tree-structure" aria-hidden="true" />{task.subtasks}</span>
+            <span className="row__chip"><ArenaIcon icon="ph-bold ph-tree-structure" />{task.subtasks}</span>
           )}
           {task.comments > 0 && (
-            <span className="row__chip"><i className="ph-bold ph-chat-circle" aria-hidden="true" />{task.comments}</span>
+            <span className="row__chip"><ArenaIcon icon="ph-bold ph-chat-circle" />{task.comments}</span>
           )}
         </span>
       </span>
@@ -115,7 +116,7 @@ export function ListView() {
           return (
             <section key={status} className="group">
               <header className="group__head" style={{ borderInlineStartColor: arenaCatColor(STATUS_SLOT[status]) }}>
-                <i className="ph-bold ph-caret-down group__caret" aria-hidden="true" />
+                <span className="group__caret" aria-hidden="true"><ArenaIcon icon="ph-bold ph-caret-down" /></span>
                 <StatusDot status={status} />
                 <h2 className="group__name">{status}</h2>
                 <span className="group__count arena-num">{group.length}</span>

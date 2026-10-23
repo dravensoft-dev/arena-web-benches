@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import {
   ArenaAppLogo,
   ArenaAvatar,
+  ArenaIcon,
   ArenaIconButton,
   ArenaSideNav,
   ArenaSideNavCollapsible,
@@ -45,11 +46,11 @@ export class StatusPill {
   selector: 'app-priority-flag',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaTooltip],
+  imports: [ArenaIcon, ArenaTooltip],
   host: { style: 'display: contents' },
   template: `
     <arena-tooltip [label]="priority() + ' priority'">
-      <i class="ph-fill ph-flag flag" [style.color]="ink()" aria-hidden="true"></i>
+      <span class="flag" [style.color]="ink()" aria-hidden="true"><arena-icon icon="ph-fill ph-flag" /></span>
     </arena-tooltip>
   `,
 })
@@ -104,7 +105,7 @@ const SCREEN_OF: Record<string, Screen> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ArenaAppLogo, ArenaAvatar, ArenaIconButton, ArenaSideNav, ArenaSideNavCollapsible,
+    ArenaAppLogo, ArenaAvatar, ArenaIcon, ArenaIconButton, ArenaSideNav, ArenaSideNavCollapsible,
     ArenaSideNavItem, ArenaSideNavSection,
   ],
   host: { class: 'side' },
@@ -118,10 +119,10 @@ const SCREEN_OF: Record<string, Screen> = {
     </div>
 
     <div class="side__quick">
-      <button type="button" class="q"><i class="ph-bold ph-house q__i" aria-hidden="true"></i>Home</button>
-      <button type="button" class="q"><i class="ph-bold ph-tray q__i" aria-hidden="true"></i>Inbox<span class="q__n arena-num">7</span></button>
-      <button type="button" class="q"><i class="ph-bold ph-magnifying-glass q__i" aria-hidden="true"></i>Search<kbd class="q__k arena-num">Ctrl K</kbd></button>
-      <button type="button" class="q"><i class="ph-bold ph-clock-counter-clockwise q__i" aria-hidden="true"></i>Recents</button>
+      <button type="button" class="q"><span class="q__i" aria-hidden="true"><arena-icon icon="ph-bold ph-house" /></span>Home</button>
+      <button type="button" class="q"><span class="q__i" aria-hidden="true"><arena-icon icon="ph-bold ph-tray" /></span>Inbox<span class="q__n arena-num">7</span></button>
+      <button type="button" class="q"><span class="q__i" aria-hidden="true"><arena-icon icon="ph-bold ph-magnifying-glass" /></span>Search<kbd class="q__k arena-num">Ctrl K</kbd></button>
+      <button type="button" class="q"><span class="q__i" aria-hidden="true"><arena-icon icon="ph-bold ph-clock-counter-clockwise" /></span>Recents</button>
     </div>
 
     <div class="side__tree">

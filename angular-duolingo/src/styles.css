@@ -1,4 +1,4 @@
-@import './icons.generated.css';
+@import './arena.package.generated.css';
 @import './arena.generated.css';
 @import './plugin.generated.css';
 
@@ -194,9 +194,9 @@
   color: var(--ink-heading);
 }
 
-.chip--streak i { color: var(--color-cat-6); font-size: var(--icon-lg); }
-.chip--gems i { color: var(--color-cat-2); font-size: var(--icon-lg); }
-.chip--hearts i { color: var(--color-error); font-size: var(--icon-lg); }
+.chip--streak svg { color: var(--color-cat-6); font-size: var(--icon-lg); }
+.chip--gems svg { color: var(--color-cat-2); font-size: var(--icon-lg); }
+.chip--hearts svg { color: var(--color-error); font-size: var(--icon-lg); }
 .chip__of { color: var(--mute); }
 
 .quest { display: flex; align-items: center; gap: var(--sp-3); }

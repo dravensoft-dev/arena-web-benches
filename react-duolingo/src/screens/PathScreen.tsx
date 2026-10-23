@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArenaAvatar, ArenaButton, ArenaCard, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar, arenaCatColor } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaButton, ArenaIcon, ArenaCard, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar, arenaCatColor } from '@dravensoft/arena-react';
 import {
   GEMS,
   HEARTS,
@@ -24,7 +24,7 @@ function Node({ node, slot, onStart }: { node: PathNode; slot: number; onStart: 
       aria-label={`${node.label}, ${node.state}`}
       onClick={onStart}
     >
-      <i className={node.state === 'locked' ? 'ph-fill ph-lock-simple' : NODE_ICON[node.kind]} aria-hidden="true" />
+      <ArenaIcon icon={node.state === 'locked' ? 'ph-fill ph-lock-simple' : NODE_ICON[node.kind]} />
     </button>
   );
   return (
@@ -56,7 +56,7 @@ function UnitBlock({ unit, onStart }: { unit: Unit; onStart: () => void }) {
           <p className="unit__blurb">{unit.blurb}</p>
         </div>
         <button type="button" className="unit__guide">
-          <i className="ph-fill ph-book-open-text" aria-hidden="true" />
+          <ArenaIcon icon="ph-fill ph-book-open-text" />
           Guidebook
         </button>
       </header>
@@ -81,10 +81,10 @@ export function PathScreen({ onStart }: { onStart: () => void }) {
 
       <aside className="rail">
         <div className="rail__row">
-          <span className="chip chip--streak"><i className="ph-fill ph-fire" aria-hidden="true" />{STREAK}</span>
-          <span className="chip chip--gems"><i className="ph-fill ph-diamond" aria-hidden="true" />{GEMS}</span>
+          <span className="chip chip--streak"><ArenaIcon icon="ph-fill ph-fire" />{STREAK}</span>
+          <span className="chip chip--gems"><ArenaIcon icon="ph-fill ph-diamond" />{GEMS}</span>
           <span className="chip chip--hearts">
-            <i className="ph-fill ph-heart" aria-hidden="true" />{HEARTS}
+            <ArenaIcon icon="ph-fill ph-heart" />{HEARTS}
             <span className="chip__of">/{HEART_MAX}</span>
           </span>
         </div>
@@ -92,7 +92,7 @@ export function PathScreen({ onStart }: { onStart: () => void }) {
         <ArenaCard title="Daily quest">
           <div className="quest">
             <span className="quest__icon" style={{ background: arenaCatColor(4) }}>
-              <i className="ph-fill ph-lightning" aria-hidden="true" />
+              <ArenaIcon icon="ph-fill ph-lightning" />
             </span>
             <div className="quest__body">
               <p className="quest__name">Earn {XP_GOAL} XP</p>

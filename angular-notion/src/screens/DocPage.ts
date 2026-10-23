@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
-  ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaIconButton, ArenaMenu,
+  ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaIcon, ArenaIconButton, ArenaMenu,
 } from '@dravensoft/arena-angular';
 import type { ArenaCrumb, ArenaMenuItem } from '@dravensoft/arena-angular';
 import { Blocks } from '../Blocks';
@@ -28,7 +28,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
   selector: 'app-doc-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaIconButton, ArenaMenu, Blocks],
+  imports: [ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaIcon, ArenaIconButton, ArenaMenu, Blocks],
   host: { class: 'doc' },
   template: `
     <header class="topbar">
@@ -52,25 +52,25 @@ const PAGE_MENU: ArenaMenuItem[] = [
 
       <div class="doc__body">
         <div class="doc__icon">
-          <i [class]="icon" aria-hidden="true"></i>
+          <arena-icon [icon]="icon" />
         </div>
 
         <h1 class="doc__title">{{ title }}</h1>
 
         <div class="doc__props">
           <div class="prop">
-            <span class="prop__key"><i class="ph-bold ph-user" aria-hidden="true"></i>Owner</span>
+            <span class="prop__key"><arena-icon icon="ph-bold ph-user" />Owner</span>
             <span class="prop__value">
               <arena-avatar name="Marta Ilves" src="img/p1.jpg" class="arena-size-xs" />
               Marta Ilves
             </span>
           </div>
           <div class="prop">
-            <span class="prop__key"><i class="ph-bold ph-tag" aria-hidden="true"></i>Area</span>
+            <span class="prop__key"><arena-icon icon="ph-bold ph-tag" />Area</span>
             <span class="prop__value">Platform</span>
           </div>
           <div class="prop">
-            <span class="prop__key"><i class="ph-bold ph-calendar-blank" aria-hidden="true"></i>Reviewed</span>
+            <span class="prop__key"><arena-icon icon="ph-bold ph-calendar-blank" />Reviewed</span>
             <span class="prop__value">Aug 12, 2026</span>
           </div>
         </div>
@@ -78,7 +78,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
         <app-blocks [blocks]="blocks" />
 
         <div class="doc__add">
-          <i class="ph-bold ph-plus" aria-hidden="true"></i>
+          <arena-icon icon="ph-bold ph-plus" />
           <span>Click here to continue writing, or press the slash key for commands</span>
         </div>
       </div>

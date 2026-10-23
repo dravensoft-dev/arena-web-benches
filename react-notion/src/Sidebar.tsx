@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ArenaAvatar,
+  ArenaIcon,
   ArenaIconButton,
   ArenaSideNav,
   ArenaSideNavCollapsible,
@@ -40,16 +41,16 @@ export function Sidebar({
 
       <div className="sidebar__quick">
         <button type="button" className="quick" onClick={onSearch}>
-          <i className="ph-bold ph-magnifying-glass quick__icon" aria-hidden="true" />
+          <span className="quick__icon" aria-hidden="true"><ArenaIcon icon="ph-bold ph-magnifying-glass" /></span>
           <span>Search</span>
           <kbd className="quick__key arena-num">Ctrl K</kbd>
         </button>
         <button type="button" className="quick" onClick={() => onScreen('home')}>
-          <i className="ph-bold ph-house quick__icon" aria-hidden="true" />
+          <span className="quick__icon" aria-hidden="true"><ArenaIcon icon="ph-bold ph-house" /></span>
           <span>Home</span>
         </button>
         <button type="button" className="quick">
-          <i className="ph-bold ph-tray quick__icon" aria-hidden="true" />
+          <span className="quick__icon" aria-hidden="true"><ArenaIcon icon="ph-bold ph-tray" /></span>
           <span>Inbox</span>
           <span className="quick__count arena-num">3</span>
         </button>
@@ -97,7 +98,7 @@ export function Sidebar({
 
       <div className="sidebar__foot">
         <button type="button" className="quick">
-          <i className="ph-bold ph-plus quick__icon" aria-hidden="true" />
+          <span className="quick__icon" aria-hidden="true"><ArenaIcon icon="ph-bold ph-plus" /></span>
           <span>New page</span>
         </button>
       </div>

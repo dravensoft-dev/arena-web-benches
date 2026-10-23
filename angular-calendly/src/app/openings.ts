@@ -3,6 +3,7 @@ import {
   ArenaAvatar,
   ArenaButton,
   ArenaCheckbox,
+  ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaKeyValue,
@@ -21,7 +22,7 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   imports: [
-    ArenaAvatar, ArenaButton, ArenaCheckbox, ArenaIconButton, ArenaInput, ArenaKeyValue,
+    ArenaAvatar, ArenaButton, ArenaCheckbox, ArenaIcon, ArenaIconButton, ArenaInput, ArenaKeyValue,
     ArenaMain, ArenaRadio, ArenaRadioGroup, ArenaSelect, ArenaTextarea,
   ],
   template: `
@@ -100,7 +101,7 @@ import { DAYS, EVENT, GUESTS, HOST, MONTH, SLOTS, WEEKDAYS, ZONES } from '../dat
           } @else {
             <section class="form" aria-label="Your details">
               <button type="button" class="form__back" (click)="slot.set(null)">
-                <i class="ph-bold ph-arrow-left" aria-hidden="true"></i>
+                <arena-icon icon="ph-bold ph-arrow-left" />
                 {{ ' Back to the calendar' }}
               </button>
               <h2 class="form__title">Enter your details</h2>

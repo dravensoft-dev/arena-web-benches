@@ -2,3 +2,6 @@ node_modules
 dist
 .angular
 src/*.generated.css
+src/arena.icons.generated.js
+src/arena.icons.generated.d.ts
+src/icons-*.svg

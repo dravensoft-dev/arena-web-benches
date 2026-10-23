@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
-import { ArenaButton, ArenaIconButton, arenaCatColor } from '@dravensoft/arena-angular';
+import { ArenaButton, ArenaIcon, ArenaIconButton, arenaCatColor } from '@dravensoft/arena-angular';
 import { HEARTS, QUESTION } from '../data/Course';
 
 type Phase = 'asking' | 'right' | 'wrong';
@@ -8,7 +8,7 @@ type Phase = 'asking' | 'right' | 'wrong';
   selector: 'app-lesson-screen',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaButton, ArenaIconButton],
+  imports: [ArenaButton, ArenaIcon, ArenaIconButton],
   host: { class: 'lesson', '[attr.data-phase]': 'phase()' },
   template: `
     <header class="lesson__top">
@@ -16,7 +16,7 @@ type Phase = 'asking' | 'right' | 'wrong';
       <div class="bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" aria-label="Lesson progress">
         <span class="bar__fill" style="inline-size: 45%"></span>
       </div>
-      <span class="chip chip--hearts"><i class="ph-fill ph-heart" aria-hidden="true"></i>{{ hearts }}</span>
+      <span class="chip chip--hearts"><arena-icon icon="ph-fill ph-heart" />{{ hearts }}</span>
     </header>
 
     <main class="lesson__body">
@@ -24,7 +24,7 @@ type Phase = 'asking' | 'right' | 'wrong';
 
       <!-- The sentence sits against the closing tags: see FINDINGS.md, difference 1. -->
       <p class="lesson__sentence"><button type="button" class="speak">
-          <i class="ph-fill ph-speaker-high" aria-hidden="true"></i>
+          <arena-icon icon="ph-fill ph-speaker-high" />
           <span class="arena-sr-only">Play the sentence</span>
         </button>{{ question.sentence }}</p>
 
@@ -39,7 +39,7 @@ type Phase = 'asking' | 'right' | 'wrong';
             (click)="picked.set(choice.id)"
           >
             <span class="choice__art" [style.color]="cat(index + 1)">
-              <i [class]="choice.image" aria-hidden="true"></i>
+              <arena-icon [icon]="choice.image" />
             </span>
             <span class="choice__label">{{ choice.label }}</span>
             <span class="choice__key arena-num">{{ index + 1 }}</span>
@@ -60,7 +60,7 @@ type Phase = 'asking' | 'right' | 'wrong';
       @if (phase() === 'right') {
         <div class="foot__row foot__row--right">
           <span class="verdict">
-            <span class="verdict__mark"><i class="ph-bold ph-check" aria-hidden="true"></i></span>
+            <span class="verdict__mark"><arena-icon icon="ph-bold ph-check" /></span>
             <span class="verdict__text">
               <strong>Nicely done</strong>
               <span>{{ chosen()?.label }} means {{ chosen()?.hint }}</span>
@@ -74,7 +74,7 @@ type Phase = 'asking' | 'right' | 'wrong';
       @if (phase() === 'wrong') {
         <div class="foot__row foot__row--wrong">
           <span class="verdict">
-            <span class="verdict__mark"><i class="ph-bold ph-x" aria-hidden="true"></i></span>
+            <span class="verdict__mark"><arena-icon icon="ph-bold ph-x" /></span>
             <span class="verdict__text">
               <strong>Not quite</strong>
               <span>The answer is <em>la cuenta</em>, the bill</span>

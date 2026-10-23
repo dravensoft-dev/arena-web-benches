@@ -5,13 +5,15 @@ import {
   ArenaAvatar,
   ArenaButton,
   ArenaDialog,
+  ArenaIcon,
   ArenaIconButton,
+  ArenaIconsProvider,
   initArenaTheme,
   useArenaTheme,
 } from '@dravensoft/arena-react';
 
-import '@phosphor-icons/web/regular';
-import './icons.generated.css';
+import { ARENA_SPRITE } from './arena.icons.generated.js';
+import './arena.package.generated.css';
 import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
@@ -126,7 +128,7 @@ function App() {
                   if (item.screen) setScreen(item.screen);
                 }}
               >
-                <i className={active === item.id ? item.fill : item.icon} aria-hidden="true" />
+                <ArenaIcon icon={active === item.id ? item.fill : item.icon} />
                 <span className="nav__label">{item.label}</span>
               </button>
             </li>
@@ -146,11 +148,11 @@ function App() {
 
         <div className="nav__foot">
           <button type="button" className="nav__item" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-            <i className={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'} aria-hidden="true" />
+            <ArenaIcon icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'} />
             <span className="nav__label">Appearance</span>
           </button>
           <button type="button" className="nav__item">
-            <i className="ph-bold ph-list" aria-hidden="true" />
+            <ArenaIcon icon="ph-bold ph-list" />
             <span className="nav__label">More</span>
           </button>
         </div>
@@ -168,4 +170,4 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<App />);
+createRoot(document.getElementById('root')!).render(<ArenaIconsProvider href={ARENA_SPRITE}><App /></ArenaIconsProvider>);

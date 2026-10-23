@@ -3,6 +3,7 @@ import {
   ArenaAvatar,
   ArenaButton,
   ArenaDialog,
+  ArenaIcon,
   ArenaIconButton,
   ArenaThemeService,
 } from '@dravensoft/arena-angular';
@@ -105,7 +106,7 @@ export class PostDialog {
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar, FeedScreen, PostDialog, ProfileScreen],
+  imports: [ArenaAvatar, ArenaIcon, FeedScreen, PostDialog, ProfileScreen],
   host: { class: 'app' },
   template: `
     <nav class="nav" aria-label="Primary">
@@ -123,7 +124,7 @@ export class PostDialog {
               [attr.aria-current]="active() === item.id ? 'page' : null"
               (click)="pick(item)"
             >
-              <i [class]="active() === item.id ? item.fill : item.icon" aria-hidden="true"></i>
+              <arena-icon [icon]="active() === item.id ? item.fill : item.icon" />
               <span class="nav__label">{{ item.label }}</span>
             </button>
           </li>
@@ -143,11 +144,11 @@ export class PostDialog {
 
       <div class="nav__foot">
         <button type="button" class="nav__item" (click)="toggleTheme()">
-          <i [class]="themeIcon()" aria-hidden="true"></i>
+          <arena-icon [icon]="themeIcon()" />
           <span class="nav__label">Appearance</span>
         </button>
         <button type="button" class="nav__item">
-          <i class="ph-bold ph-list" aria-hidden="true"></i>
+          <arena-icon icon="ph-bold ph-list" />
           <span class="nav__label">More</span>
         </button>
       </div>

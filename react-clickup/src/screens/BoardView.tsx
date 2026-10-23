@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArenaBoard, ArenaBoardColumn, ArenaButton, ArenaIconButton, ArenaProgressBar } from '@dravensoft/arena-react';
+import { ArenaBoard, ArenaBoardColumn, ArenaButton, ArenaIcon, ArenaIconButton, ArenaProgressBar } from '@dravensoft/arena-react';
 import { Assignees, PriorityFlag, Tags } from '../Chrome';
 import { STATUS_ORDER, STATUS_SLOT, TASKS } from '../data/Space';
 import type { Status, Task } from '../data/Space';
@@ -24,8 +24,8 @@ function Card({ task }: { task: Task }) {
       <footer className="kcard__foot">
         <Assignees ids={task.assignees} />
         <span className="kcard__gap" />
-        <span className="kcard__stat"><i className="ph-bold ph-chat-circle" aria-hidden="true" />{task.comments}</span>
-        <span className="kcard__stat"><i className="ph-bold ph-tree-structure" aria-hidden="true" />{task.subtasks}</span>
+        <span className="kcard__stat"><ArenaIcon icon="ph-bold ph-chat-circle" />{task.comments}</span>
+        <span className="kcard__stat"><ArenaIcon icon="ph-bold ph-tree-structure" />{task.subtasks}</span>
         <span className="kcard__due arena-num">{task.due}</span>
       </footer>
     </article>

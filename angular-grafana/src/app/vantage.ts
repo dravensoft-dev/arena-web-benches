@@ -6,6 +6,7 @@ import {
   ArenaChartCard,
   ArenaDoughnutChart,
   ArenaHorizontalBarChart,
+  ArenaIcon,
   ArenaIconButton,
   ArenaLineChart,
   ArenaMain,
@@ -40,7 +41,7 @@ const COLUMNS: ArenaTableColumn[] = [
   host: { style: 'display: contents' },
   imports: [
     ArenaAlert, ArenaBadge, ArenaBarChart, ArenaChartCard, ArenaDoughnutChart,
-    ArenaHorizontalBarChart, ArenaIconButton, ArenaLineChart, ArenaMain, ArenaRadarChart,
+    ArenaHorizontalBarChart, ArenaIcon, ArenaIconButton, ArenaLineChart, ArenaMain, ArenaRadarChart,
     ArenaScatterChart, ArenaSelect, ArenaSideNav, ArenaSideNavItem, ArenaStatCard,
     ArenaTable, ArenaTableCell, ArenaTableRow, ArenaTag,
   ],
@@ -48,7 +49,7 @@ const COLUMNS: ArenaTableColumn[] = [
     <div class="console">
       <aside class="rail">
         <div class="rail__head">
-          <i class="ph-fill ph-pulse rail__glyph" aria-hidden="true"></i>
+          <span class="rail__glyph" aria-hidden="true"><arena-icon icon="ph-fill ph-pulse" /></span>
           <span class="rail__word">Vantage</span>
         </div>
         <arena-side-nav ariaLabel="Dashboards" [active]="board()" (nav)="board.set($event)">

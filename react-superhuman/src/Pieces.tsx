@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArenaAvatar, ArenaTag } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaIcon, ArenaTag } from '@dravensoft/arena-react';
 import type { Thread } from './data/Mail';
 
 export function Cap({ children }: { children: React.ReactNode }) {
@@ -17,7 +17,7 @@ export function ThreadRow({
     <li className="row" data-unread={item.unread} aria-current={current ? 'true' : undefined}>
       <button type="button" className="row__hit" onClick={() => onOpen(item.id)}>
         <span className="row__mark" aria-hidden="true">
-          {item.starred ? <i className="ph-fill ph-star" /> : null}
+          {item.starred ? <ArenaIcon icon="ph-fill ph-star" /> : null}
         </span>
         <ArenaAvatar src={item.avatar} name={item.from} className="arena-size-xs" />
         <span className="row__text">
@@ -28,7 +28,7 @@ export function ThreadRow({
             {item.labels.map((label, index) => (
               <ArenaTag key={label} colorId={((index % 8) + 1) as 1}>{label}</ArenaTag>
             ))}
-            {item.attachments.length ? <i className="ph-bold ph-paperclip row__clip" aria-hidden="true" /> : null}
+            {item.attachments.length ? <span className="row__clip" aria-hidden="true"><ArenaIcon icon="ph-bold ph-paperclip" /></span> : null}
             <span className="row__at arena-num">{item.at}</span>
           </span>
           <span className="row__line">

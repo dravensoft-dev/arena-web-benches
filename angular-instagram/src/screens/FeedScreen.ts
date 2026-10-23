@@ -3,6 +3,7 @@ import {
   ArenaAction,
   ArenaAvatar,
   ArenaButton,
+  ArenaIcon,
   ArenaIconButton,
   ArenaMenu,
   ArenaPeopleList,
@@ -28,7 +29,7 @@ const POST_MENU: ArenaMenuItem[] = [
   selector: 'app-post-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaButton, ArenaIconButton, ArenaMenu, Carousel, Handle, StoryRing],
+  imports: [ArenaButton, ArenaIcon, ArenaIconButton, ArenaMenu, Carousel, Handle, StoryRing],
   host: { style: 'display: contents' },
   template: `
     <article class="post">
@@ -63,15 +64,15 @@ const POST_MENU: ArenaMenuItem[] = [
           [attr.aria-pressed]="liked()"
           (click)="liked.set(!liked())"
         >
-          <i [class]="liked() ? 'ph-fill ph-heart' : 'ph-bold ph-heart'" aria-hidden="true"></i>
+          <span class="act__heart" aria-hidden="true"><arena-icon [icon]="liked() ? 'ph-fill ph-heart' : 'ph-bold ph-heart'" /></span>
           <span class="arena-sr-only">Like</span>
         </button>
         <button type="button" class="act" (click)="open.emit(post())">
-          <i class="ph-bold ph-chat-circle" aria-hidden="true"></i>
+          <arena-icon icon="ph-bold ph-chat-circle" />
           <span class="arena-sr-only">Comment</span>
         </button>
         <button type="button" class="act">
-          <i class="ph-bold ph-paper-plane-tilt" aria-hidden="true"></i>
+          <arena-icon icon="ph-bold ph-paper-plane-tilt" />
           <span class="arena-sr-only">Share</span>
         </button>
         <span class="post__gap"></span>
@@ -82,7 +83,7 @@ const POST_MENU: ArenaMenuItem[] = [
           [attr.aria-pressed]="saved()"
           (click)="saved.set(!saved())"
         >
-          <i [class]="saved() ? 'ph-fill ph-bookmark-simple' : 'ph-bold ph-bookmark-simple'" aria-hidden="true"></i>
+          <arena-icon [icon]="saved() ? 'ph-fill ph-bookmark-simple' : 'ph-bold ph-bookmark-simple'" />
           <span class="arena-sr-only">Save</span>
         </button>
       </div>

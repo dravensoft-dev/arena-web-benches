@@ -3,6 +3,7 @@ import {
   ArenaAvatar,
   ArenaBreadcrumbs,
   ArenaButton,
+  ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaMenu,
@@ -122,13 +123,13 @@ export function DatabaseView() {
         <div className="db">
           <div className="db__head">
             <div className="doc__icon doc__icon--inline">
-              <i className="ph-fill ph-kanban" aria-hidden="true" />
+              <ArenaIcon icon="ph-fill ph-kanban" />
             </div>
             <h1 className="doc__title doc__title--db">Sprint tasks</h1>
           </div>
 
           <div className="db__views" style={{ '--arena-column-due-align': 'right', '--arena-column-effort-align': 'right' } as React.CSSProperties}>
-            <ArenaTabs value={view} onChange={setView}>
+            <ArenaTabs value={view} onValueChange={setView}>
               <ArenaTab value="table" label="Table">
                 <Toolbar query={query} onQuery={setQuery} />
                 <ArenaTable label="Sprint tasks" columns={COLUMNS}>
@@ -136,7 +137,7 @@ export function DatabaseView() {
                     <ArenaTableRow key={task.id} interactive>
                       <ArenaTableCell>
                         <span className="db__name">
-                          <i className="ph-bold ph-file-text" aria-hidden="true" />
+                          <ArenaIcon icon="ph-bold ph-file-text" />
                           {task.name}
                         </span>
                       </ArenaTableCell>

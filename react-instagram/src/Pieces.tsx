@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArenaAvatar, ArenaBadge, ArenaIconButton } from '@dravensoft/arena-react';
+import { ArenaAvatar, ArenaBadge, ArenaIcon, ArenaIconButton } from '@dravensoft/arena-react';
 import { ACCOUNTS } from './data/Feed';
 
 /* A story ring is a gradient stroke around an avatar, and its state is whether it has been
@@ -36,7 +36,7 @@ export function Handle({ handle, bold }: { handle: string; bold?: boolean }) {
   return (
     <span className="handle" data-bold={bold ? 'yes' : 'no'}>
       {account.handle}
-      {account.verified && <i className="ph-fill ph-seal-check handle__tick" aria-hidden="true" title="Verified" />}
+      {account.verified && <span className="handle__tick" aria-hidden="true" title="Verified"><ArenaIcon icon="ph-fill ph-seal-check" /></span>}
     </span>
   );
 }

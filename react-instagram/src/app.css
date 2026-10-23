@@ -64,7 +64,7 @@
 
 .nav__item:hover { background: var(--fill-surface-sunken); }
 .nav__item:active { transform: scale(var(--press-scale)); }
-.nav__item i { font-size: var(--fs-h3); }
+.nav__item svg { font-size: var(--fs-h3); }
 .nav__item[aria-current='page'] .nav__label { font-weight: var(--fw-bold); }
 
 .nav__foot { display: grid; gap: var(--sp-1); }
@@ -237,7 +237,7 @@
 }
 
 .act:active { transform: scale(var(--press-scale)); }
-.act[data-on='yes'] i.ph-heart { color: var(--color-error); }
+.act[data-on='yes'] .act__heart { color: var(--color-error); }
 
 .post__body { display: grid; gap: var(--sp-2); }
 

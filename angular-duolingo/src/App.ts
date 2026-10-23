@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ArenaIconButton, ArenaThemeService } from '@dravensoft/arena-angular';
+import { ArenaIcon, ArenaIconButton, ArenaThemeService } from '@dravensoft/arena-angular';
 import { PathScreen } from './screens/PathScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
@@ -19,7 +19,7 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaIconButton, LessonScreen, PathScreen, ProfileScreen],
+  imports: [ArenaIcon, ArenaIconButton, LessonScreen, PathScreen, ProfileScreen],
   // The React shell returns a different root element per branch: `<div className="app">` for the
   // two shell screens and `<div className="lesson">` for the lesson. An Angular host element is
   // always in the document, so the layout class is a conditional binding rather than a branch.
@@ -42,7 +42,7 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
                 [attr.aria-current]="screen() === item.id ? 'page' : null"
                 (click)="go(item.id)"
               >
-                <i class="{{ item.icon }} nav__icon" aria-hidden="true" [attr.data-slot]="item.slot"></i>
+                <span class="nav__icon" aria-hidden="true" [attr.data-slot]="item.slot"><arena-icon [icon]="item.icon" /></span>
                 <span class="nav__label">{{ item.label }}</span>
               </button>
             </li>
