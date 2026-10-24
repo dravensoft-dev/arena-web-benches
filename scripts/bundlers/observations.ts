@@ -106,8 +106,8 @@ function jsApart(from: RunKey, after: RunKey, byName: boolean): (ctx: Context) =
   return (ctx) => {
     const first = built(ctx, from);
     const second = built(ctx, after);
-    const found = files(first.out, '.js').filter((f) => holdsArena(f.text, ctx) && (!byName || f.name.startsWith('arena-')));
-    if (found.length === 0) return pass(false, `no .js${byName ? ' named arena-…' : ''} holds Arena's modules in '${from}'`);
+    const found = files(first.out, '.js').filter((f) => holdsArena(f.text, ctx) && !holdsApp(f.text, ctx) && (!byName || f.name.startsWith('arena-')));
+    if (found.length === 0) return pass(false, `no .js${byName ? ' named arena-…' : ''} holds Arena's modules without the app's code in '${from}'`);
     const kept = found.filter((f) => keeps(second.out, f));
     return pass(kept.length > 0, kept.length > 0
       ? `${list(kept.map((f) => f.rel))} holds Arena's modules and keeps its name and bytes in '${after}'`
@@ -130,7 +130,10 @@ function sheetApart(ctx: Context): Verdict {
     : `${list(found.map((f) => f.rel))} holds the package sheet alone but changes name or bytes in app-text or app-sheet`);
 }
 
-/** "no `.css` holds the package sheet alone" in the run `key`. */
+/**
+ * "no `.css` holds the package sheet alone" in the run `key`. A probe that does not build throws (strict on purpose):
+ * a build that fails measures nothing about where the sheet goes, so it surfaces as a contradiction with its detail.
+ */
 function noSheetAlone(key: RunKey): (ctx: Context) => Verdict {
   return (ctx) => {
     const found = sheetAlone(built(ctx, key).out, ctx);

@@ -158,3 +158,10 @@ test('a failed build is not read as a pass for a claim about its output', () => 
   expect(judged.holds).toBe(false);
   expect(judged.detail).toContain("'js-only-test' did not build");
 });
+
+test('js-apart fails when the file holding Arena also holds the app, even unchanged between runs', () => {
+  const both = () => output({ 'arena-AAAA1111.js': ARENA + APP });
+  expect(judge(one('rollup.js-apart'), ctx({ recipe: both(), 'app-text': both() })).holds).toBe(false);
+  const parcel = () => output({ 'bundler.parcel-AAAA1111.js': ARENA + APP });
+  expect(judge(one('parcel.js-apart'), ctx({ recipe: parcel(), 'app-text': parcel() })).holds).toBe(false);
+});
