@@ -1,0 +1,160 @@
+import { afterAll, expect, test } from 'bun:test';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { judge, OBSERVATIONS, type Built, type Context, type Observation } from './observations.ts';
+
+const roots: string[] = [];
+afterAll(() => roots.forEach((path) => rmSync(path, { recursive: true, force: true })));
+
+const F6 = [
+  'rollup.js-apart', 'rollup.no-css', 'rollup.sprite-not-copied',
+  'vite7.js-apart', 'vite7.sheet-apart', 'vite7.sheet-by-name',
+  'vite8.js-apart', 'vite8.sheet-apart', 'vite8.sheet-by-name',
+  'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied',
+  'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type',
+  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto',
+  'parcel.needs-package-exports', 'parcel.js-apart', 'parcel.sheet-stops', 'parcel.react-with-app', 'parcel.shared-stem',
+  'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
+  'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
+  'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
+  'next.js-apart', 'next.sheet-apart', 'next.sprite-public',
+];
+const F6B = ['rollup.linked-sheets', 'rolldown.linked-sheets', 'parcel.linked-sheets'];
+
+const one = (id: string): Observation => OBSERVATIONS.find((o) => o.id === id)!;
+
+/** An output directory holding `files`, as a `Built`. */
+function output(files: Record<string, string>, ok = true, log = ''): Built {
+  const root = mkdtempSync(join(tmpdir(), 'obs-'));
+  roots.push(root);
+  for (const [name, text] of Object.entries(files)) {
+    mkdirSync(dirname(join(root, name)), { recursive: true });
+    writeFileSync(join(root, name), text);
+  }
+  return { ok, out: root, log };
+}
+
+const ctx = (runs: Context['runs'], dir = '.'): Context => ({ dir, layer: 'react', packageSelector: '.arena-pkg', appSelector: '.app-own', runs });
+
+const ARENA = 'x({"data-arena-part":1});';
+const APP = "globalThis.__appMarker='a';";
+const PKG = '.arena-pkg{color:red}';
+const APPCSS = '.app-own{color:blue}';
+
+test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot', () => {
+  expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual([...F6, ...F6B].sort());
+  for (const o of OBSERVATIONS) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
+  expect(OBSERVATIONS.filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
+    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', ...F6B].sort(),
+  );
+});
+
+test('rollup.js-apart holds when arena-*.js keeps its bytes, and fails when the app change moves it', () => {
+  const plain = output({ 'arena-AAAA1111.js': ARENA, 'index-BBBB2222.js': APP });
+  const same = output({ 'arena-AAAA1111.js': ARENA, 'index-CCCC3333.js': APP + ' ' });
+  const moved = output({ 'arena-ZZZZ9999.js': ARENA + ' ', 'index-CCCC3333.js': APP });
+  const o = one('rollup.js-apart');
+  expect(judge(o, ctx({ recipe: plain, 'app-text': same })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: plain, 'app-text': moved })).holds).toBe(false);
+});
+
+test('vite7.js-apart reads js-recipe and js-recipe:app-text (R7-1)', () => {
+  const a = output({ 'assets/arena-AAAA1111.js': ARENA });
+  const b = output({ 'assets/arena-AAAA1111.js': ARENA });
+  const o = one('vite7.js-apart');
+  expect(o.needs).toEqual(['js-recipe', 'js-recipe:app-text']);
+  expect(judge(o, ctx({ 'js-recipe': a, 'js-recipe:app-text': b })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: a, 'app-text': b })).detail).toContain("run 'js-recipe' is missing");
+});
+
+test('parcel.js-apart finds Arena by content, whatever the stem', () => {
+  const a = output({ 'bundler.parcel-AAAA1111.js': ARENA, 'index-BBBB2222.js': APP });
+  const b = output({ 'bundler.parcel-AAAA1111.js': ARENA, 'index-CCCC3333.js': APP + ' ' });
+  expect(judge(one('parcel.js-apart'), ctx({ recipe: a, 'app-text': b })).holds).toBe(true);
+  expect(judge(one('rollup.js-apart'), ctx({ recipe: a, 'app-text': b })).holds).toBe(false);
+});
+
+test('vite7.sheet-apart holds on a sheet of its own that survives both app changes, fails when the sheet moves', () => {
+  const recipe = output({ 'pkg-AAAA1111.css': PKG, 'app-BBBB2222.css': APPCSS });
+  const kept = output({ 'pkg-AAAA1111.css': PKG, 'app-CCCC3333.css': APPCSS + ' ' });
+  const merged = output({ 'one-DDDD4444.css': PKG + APPCSS });
+  const o = one('vite7.sheet-apart');
+  expect(judge(o, ctx({ recipe, 'app-text': kept, 'app-sheet': kept })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: merged, 'app-text': kept, 'app-sheet': kept })).holds).toBe(false);
+  expect(judge(o, ctx({ recipe, 'app-text': kept, 'app-sheet': merged })).holds).toBe(false);
+});
+
+test('webpack.one-css-without counts the css of plain', () => {
+  const o = one('webpack.one-css-without');
+  expect(judge(o, ctx({ plain: output({ 'main.css': PKG }) })).holds).toBe(true);
+  expect(judge(o, ctx({ plain: output({ 'a.css': PKG, 'b.css': APPCSS }) })).holds).toBe(false);
+});
+
+test('rolldown.css-refused holds on a failed probe whose output carries the message', () => {
+  const o = one('rolldown.css-refused');
+  expect(judge(o, ctx({ 'css-import': output({}, false, 'Error: bundling CSS is not supported') })).holds).toBe(true);
+  expect(judge(o, ctx({ 'css-import': output({}, false, 'Error: other') })).holds).toBe(false);
+  expect(judge(o, ctx({ 'css-import': output({}, true, '') })).holds).toBe(false);
+});
+
+test('bun.outdir-kept holds on two entry files after the twice probe', () => {
+  const o = one('bun.outdir-kept');
+  expect(judge(o, ctx({ twice: output({ 'a.js': APP, 'b.js': APP.replace("'a'", "'b'") }) })).holds).toBe(true);
+  expect(judge(o, ctx({ twice: output({ 'b.js': APP }) })).holds).toBe(false);
+});
+
+test('parcel.shared-stem holds on two shared bundles of one stem and not on two stems', () => {
+  const o = one('parcel.shared-stem');
+  const same = output({ 'index-AAAA1111.js': APP, 'bundler.parcel-BBBB2222.js': ARENA, 'bundler.parcel-CCCC3333.js': 'x' });
+  const apart = output({ 'index-AAAA1111.js': APP, 'bundler.parcel-BBBB2222.js': ARENA, 'other.parcel-CCCC3333.js': 'x' });
+  expect(judge(o, ctx({ recipe: same })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: apart })).holds).toBe(false);
+});
+
+test('rollup.sprite-not-copied fails when the recipe output holds a sprite', () => {
+  const o = one('rollup.sprite-not-copied');
+  expect(judge(o, ctx({ recipe: output({ 'index.js': APP }) })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: output({ 'index.js': APP, 'icons-abc123.svg': '<svg/>' }) })).holds).toBe(false);
+});
+
+test('a record row never contradicts and says its outcome', () => {
+  const o = one('next.sprite-public');
+  const yes = judge(o, ctx({ recipe: output({ 'icons-abc123.svg': '<svg/>' }) }));
+  const no = judge(o, ctx({ recipe: output({ 'index.html': '' }) }));
+  expect([yes.outcome, yes.holds, no.outcome, no.holds]).toEqual([true, true, false, true]);
+  expect(yes.detail).toContain('yes');
+  expect(no.detail).toBe('no');
+});
+
+test('the linked-sheets rows record that the package sheet imports package specifiers', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'obs-dir-'));
+  roots.push(dir);
+  mkdirSync(join(dir, 'src'));
+  writeFileSync(join(dir, 'src', 'arena.package.generated.css'), "/* GENERATED */\n@import '@dravensoft/arena-react/css/reset.css';\n");
+  const result = judge(one('parcel.linked-sheets'), ctx({}, dir));
+  expect(result.outcome).toBe(true);
+  expect(result.holds).toBe(true);
+  writeFileSync(join(dir, 'src', 'arena.package.generated.css'), "@import './reset.css';\n");
+  expect(judge(one('parcel.linked-sheets'), ctx({}, dir)).outcome).toBe(false);
+});
+
+test('a missing run, an unreadable output and a throwing check are failed outcomes with the message, never a crash', () => {
+  const o = one('bun.one-css');
+  const missing = judge(o, ctx({}));
+  expect([missing.outcome, missing.holds]).toEqual([false, false]);
+  expect(missing.detail).toContain("'recipe'");
+  const gone = judge(o, ctx({ recipe: { ok: true, out: join(tmpdir(), 'obs-does-not-exist'), log: '' } }));
+  expect(gone.holds).toBe(false);
+  expect(gone.detail.length).toBeGreaterThan(0);
+  const boom: Observation = { ...o, check: () => { throw new Error('boom'); } };
+  expect(judge(boom, ctx({}))).toMatchObject({ outcome: false, holds: false, detail: 'boom' });
+  const record: Observation = { ...boom, expect: 'record' };
+  expect(judge(record, ctx({}))).toMatchObject({ outcome: false, holds: true, detail: 'boom' });
+});
+
+test('a failed build is not read as a pass for a claim about its output', () => {
+  const judged = judge(one('vite7.sheet-by-name'), ctx({ 'js-only-test': output({}, false, 'Error: x') }));
+  expect(judged.holds).toBe(false);
+  expect(judged.detail).toContain("'js-only-test' did not build");
+});
