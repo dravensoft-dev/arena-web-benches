@@ -10,7 +10,7 @@ export type ViteFlavour = {
   /** The package under the root's `node_modules` whose `bin/vite.js` runs. */
   pkg: string;
   /** The `output` option as the page writes it, per variant that names Arena. */
-  output: { recipe: string; 'js-only-test': string };
+  output: { recipe: string; 'js-only-test': string; 'js-recipe': string };
 };
 
 const configName = (id: string): string => `.bundler.${id}.config.mjs`;
@@ -50,7 +50,7 @@ function angularPage(dir: string): string {
 }
 
 function config(flavour: ViteFlavour, layer: Layer, variant: 'plain' | 'recipe' | Probe, dir: string): string {
-  const output = variant === 'recipe' ? flavour.output.recipe : variant === 'js-only-test' ? flavour.output['js-only-test'] : '';
+  const output = variant === 'recipe' ? flavour.output.recipe : variant === 'js-only-test' || variant === 'js-recipe' ? flavour.output[variant] : '';
   const rollupOptions = output ? `rollupOptions: { output: ${output} }, ` : '';
   if (layer === 'react') {
     return `export default {
@@ -85,7 +85,7 @@ export function viteDriver(flavour: ViteFlavour): Driver {
     id: flavour.id,
     layers: ['react', 'angular'],
     out: 'dist',
-    probes: ['js-only-test'],
+    probes: ['js-only-test', 'js-recipe'],
     bundle(dir: string, layer: Layer, variant) {
       const out = join(dir, 'dist');
       rmSync(out, { recursive: true, force: true });

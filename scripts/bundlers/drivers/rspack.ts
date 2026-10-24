@@ -1,3 +1,3 @@
-import { webpackDriver } from './webpack.ts';
+import { webpackDriver } from './webpack-family.ts';
 
 export default webpackDriver({ id: 'rspack', probe: 'no-css-auto' });

@@ -29,6 +29,7 @@ export type Mutation = 'none' | 'app-text' | 'app-sheet' | 'arena-patch';
 export type Probe =
   | 'css-import'
   | 'js-only-test'
+  | 'js-recipe'
   | 'untyped-group'
   | 'no-css-auto'
   | 'no-package-exports'
