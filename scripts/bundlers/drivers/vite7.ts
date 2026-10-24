@@ -1,6 +1,6 @@
 import { viteDriver } from './vite.ts';
 
-// rollup.md, "How do I keep the package sheet in a file of its own?", Vite 7, verbatim; the probe is the first
+// rollup.md, "How do I keep the package sheet in a file of its own?", Vite 7, verbatim (with `ARENA_SHEET_PLUGIN`, vite.ts); the probe is the first
 // function of "How do I keep Arena's JS in a chunk of its own?", which tests `node_modules` only. That function is
 // the page's Vite 7 config byte for byte, so `js-recipe` is the same text.
 const jsApart = `{
@@ -11,9 +11,9 @@ export default viteDriver({
   id: 'vite7',
   pkg: 'vite7',
   output: {
-    recipe: `{
-  manualChunks: (id) => (/node_modules[\\\\/](react|react-dom|scheduler)[\\\\/]/.test(id) ? 'react'
-    : /arena-react|arena\\.package\\.generated\\.css/.test(id) ? 'arena' : undefined),
+    recipe: String.raw`{
+  manualChunks: (id) => (/node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id) ? 'react'
+    : /node_modules[\\/]@dravensoft[\\/]arena-|arena\.package\.generated\.css/.test(id) ? 'arena' : undefined),
 }`,
     'js-only-test': jsApart,
     'js-recipe': jsApart,

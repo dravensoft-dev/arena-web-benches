@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { BundlerId, Driver, Layer, Probe } from '../types.ts';
 import { pathToFileURL } from 'node:url';
@@ -12,6 +12,21 @@ export type ViteFlavour = {
   /** The `output` option as the page writes it, per variant that names Arena. */
   output: { recipe: string; 'js-only-test': string; 'js-recipe': string };
 };
+
+/**
+ * The `plugins` entry of the page's sheet config (rollup.md, "How do I keep the package sheet in a file of its own?"),
+ * Vite 7 and Vite 8 alike, verbatim. On Angular it takes the package sheet's `@import` out of `src/styles.css` and links
+ * the sheet from the page; on React it does nothing (no `src/styles.css`, no `styles.css` in the page).
+ */
+export const ARENA_SHEET_PLUGIN = String.raw`{
+  name: 'arena-sheet',
+  enforce: 'pre',
+  transform: (code, id) => (/[\\/]src[\\/]styles\.css$/.test(id)
+    ? code.replace(/@import\s+'\.\/arena\.package\.generated\.css';\s*/, '') : null),
+  transformIndexHtml: { order: 'pre', handler: (html) => (/styles\.css/.test(html)
+    ? [{ tag: 'link', attrs: { rel: 'stylesheet', href: '/src/arena.package.generated.css' }, injectTo: 'head-prepend' }]
+    : []) },
+}`;
 
 const configName = (id: string): string => `.bundler.${id}.config.mjs`;
 
@@ -51,12 +66,14 @@ function angularPage(dir: string): string {
 
 function config(flavour: ViteFlavour, layer: Layer, variant: 'plain' | 'recipe' | Probe, dir: string): string {
   const output = variant === 'recipe' ? flavour.output.recipe : variant === 'js-only-test' || variant === 'js-recipe' ? flavour.output[variant] : '';
+  const recipePlugin = variant === 'recipe' ? ARENA_SHEET_PLUGIN : '';
   const rollupOptions = output ? `rollupOptions: { output: ${output} }, ` : '';
   if (layer === 'react') {
     return `export default {
   root: 'src',
   base: './',
   publicDir: false,
+  plugins: [${recipePlugin}],
   build: { ${rollupOptions}outDir: '../dist', emptyOutDir: true },
 };
 `;
@@ -74,7 +91,7 @@ export default {
   root: here + '/.bundler.vite',
   base: './',
   publicDir: false,
-  plugins: [angular({ tsconfig: here + '/tsconfig.json', workspaceRoot: here })],
+  plugins: [angular({ tsconfig: here + '/tsconfig.json', workspaceRoot: here })${recipePlugin ? `, ${recipePlugin}` : ''}],
   build: { ${rollupOptions}outDir: '../dist', emptyOutDir: true, target: 'es2022' },
 };
 `;
@@ -97,6 +114,10 @@ export function viteDriver(flavour: ViteFlavour): Driver {
       if (layer === 'angular') {
         mkdirSync(join(dir, '.bundler.vite'), { recursive: true });
         writeFileSync(join(dir, '.bundler.vite', 'index.html'), angularPage(dir));
+        // Plumbing of this driver, not of the recipe: the page sits in the ignored `.bundler.vite/`, so the `/src/...` link the
+        // recipe's plugin writes (an adopter's page sits at the project root) needs `src` beside it.
+        rmSync(join(dir, '.bundler.vite', 'src'), { recursive: true, force: true });
+        symlinkSync('../src', join(dir, '.bundler.vite', 'src'));
         writeFileSync(join(dir, '.bundler.preload.mjs'), PRELOAD);
         args.unshift('--import', './.bundler.preload.mjs');
         env = { BENCH_HOOKS: JSON.stringify({ dir: pathToFileURL(resolve(dir)).href, vite: flavour.pkg }) };

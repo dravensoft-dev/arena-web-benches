@@ -19,23 +19,27 @@ const linkerName = (id: string): string => `.bundler.${id}.linker.mjs`;
 const pageName = (id: string): string => `.bundler.${id}.html`;
 
 /**
- * The config of webpack.md ("How do I keep the package sheet in a file of its own?"), verbatim as an object body;
- * rspack takes it unchanged. Its `arena` group matches by name and takes the JS and the sheet alike, so it is a
- * different config from `jsApart`, not a superset of it. `untyped` drops the `type` line, the one the page says
- * the group needs.
+ * The sheet config of the page ("How do I keep the package sheet in a file of its own?"), verbatim as an object body,
+ * for webpack and rspack alike, on both halves: two groups, `arena` for the JS and `arenaSheet` for the sheet.
+ * rspack adds the `css/auto` rule and, on `@nx/angular-rspack`, the `styles` entry (`ARENA_STYLES`). `untyped` drops
+ * the `type` line of both groups, the probe of `webpack.group-needs-type`.
  */
-const sheetApart = (untyped: boolean): string => `experiments: { css: true },
+const sheetApart = (untyped: boolean): string => String.raw`experiments: { css: true },
   output: { cssFilename: '[name]-[contenthash:8].css', cssChunkFilename: '[name]-[contenthash:8].css' },
   optimization: { splitChunks: { chunks: 'all', cacheGroups: {
     default: false,
     defaultVendors: false,
-    react: { test: /node_modules[\\\\/](react|react-dom|scheduler)[\\\\/]/, name: 'react', enforce: true, priority: 20 },
-    arena: { test: /arena-react|arena\\.package\\.generated\\.css/, name: 'arena', enforce: true, priority: 10,${untyped ? '' : `
-      type: /^(javascript|css)/,`} },
+    react: { test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/, name: 'react', enforce: true, priority: 20 },
+    arena: { test: /node_modules[\\/]@dravensoft[\\/]arena-/, name: 'arena', enforce: true, priority: 10${untyped ? '' : ', type: /^javascript/'} },
+    arenaSheet: { test: /node_modules[\\/]@dravensoft[\\/]arena-|arena\.package\.generated\.css/, name: 'arena-sheet', enforce: true, priority: 10${untyped ? '' : ', type: /^css/'} },
   } } },`;
 
+/** The `styles` option of the page's rspack config on `@nx/angular-rspack`, verbatim: the sheet's chunk is an entry the builder links. */
+const ARENA_STYLES = String.raw`[{ input: 'src/arena.package.generated.css', bundleName: 'arena-sheet' }, 'src/styles.css']`;
+
 /** The JS config of the same page ("How do I keep Arena's JS in a chunk of its own?"), verbatim: probe `js-recipe`; rspack takes it unchanged. */
-const JS_FILES = `output: { filename: '[name]-[contenthash:8].js', chunkFilename: '[name]-[contenthash:8].js' },`;
+const JS_FILE_NAMES = `{ filename: '[name]-[contenthash:8].js', chunkFilename: '[name]-[contenthash:8].js' }`;
+const JS_FILES = `output: ${JS_FILE_NAMES},`;
 const jsApart = `${JS_FILES}
   optimization: { splitChunks: { chunks: 'all', cacheGroups: {
     arena: { test: /node_modules[\\\\/]@dravensoft[\\\\/]arena-/, name: 'arena', enforce: true },
@@ -69,23 +73,24 @@ function page(dir: string, layer: Layer): string {
  * `@angular/build:application`, and the page's rspack config is its `rspackConfigOverrides`, merged over its own.
  */
 function angularRspackConfig(variant: 'plain' | 'recipe' | Probe): string {
-  const overrides = variant === 'plain'
-    ? '{}'
-    : variant === 'js-recipe'
-    ? `{
-  ${jsApart}
-  module: { rules: [${CSS_AUTO}] },
-}`
-    : `{
-  ${sheetApart(false)}
-  ${JS_FILES}
-  module: { rules: [${variant === 'no-css-auto' ? '' : CSS_AUTO}] },
+  // The page's config is `recipe`; the bench adds the JS file names to its `output`, which already names the CSS files.
+  const recipe = variant === 'plain' ? '{}' : `{
+  ${variant === 'js-recipe' ? jsApart : sheetApart(false)}
+}`;
+  // `js-recipe` is the page's JS config, which carries no CSS rule; the sheet config carries `css/auto` (the probe drops it).
+  const rules = variant === 'plain' || variant === 'js-recipe' || variant === 'no-css-auto' ? [] : [CSS_AUTO];
+  const sheet = variant !== 'plain' && variant !== 'js-recipe';
+  const overrides = variant === 'plain' ? '{}' : `{
+  ...recipe,
+  output: { ...${JS_FILE_NAMES}, ...recipe.output },${rules.length > 0 ? `
+  module: { rules: [${rules.join(', ')}] },` : ''}
 }`;
   return `import { createConfig } from '@nx/angular-rspack';
 import { rspack } from '@rspack/core';
 import { resolve } from 'node:path';
 
 const root = process.cwd();
+const recipe = ${recipe};
 const [config] = await createConfig({
   options: {
     root,
@@ -95,7 +100,7 @@ const [config] = await createConfig({
     baseHref: './',
     tsConfig: resolve(root, 'tsconfig.json'),
     polyfills: [],
-    styles: ['src/styles.css'],
+    styles: ${sheet ? ARENA_STYLES : "['src/styles.css']"},
     assets: [{ glob: '**/*', input: 'public' }, { glob: 'icons-*.svg', input: 'src' }],
     outputPath: { base: 'dist', browser: '.' },
     outputHashing: 'all',
