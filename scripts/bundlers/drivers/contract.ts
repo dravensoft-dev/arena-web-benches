@@ -34,12 +34,14 @@ function filesText(root: string, suffix: string): string[] {
     .map((entry) => readFileSync(join(entry.parentPath, entry.name), 'utf8'));
 }
 
-/** The half rotation 0 assigns `driver` on `layer`. */
+/** The half rotation 0 assigns `driver` on `layer`; bun and esbuild have none in rotation 0 and are tried on calendly (brief). */
 export function halfOf(driver: Driver, layer: Layer): string {
   const t = table();
   const owner = [...assignment(t)].find(([, built]) => built[layer] === driver.id);
-  if (!owner) throw new Error(`rotation ${t.rotation} gives ${driver.id} no ${layer} half`);
-  return t.products.find((one) => one.product === owner[0])![layer];
+  const product = owner ? owner[0] : ['bun', 'esbuild'].includes(driver.id) ? 'calendly' : '';
+  const found = t.products.find((one) => one.product === product);
+  if (!found) throw new Error(`rotation ${t.rotation} gives ${driver.id} no ${layer} half`);
+  return found[layer];
 }
 
 /**

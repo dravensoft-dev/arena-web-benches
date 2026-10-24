@@ -9,13 +9,16 @@ export const rootOf = (dir: string): string => dirname(resolve(dir));
 /** The `file:` URL of this module, for a config written into a half that imports its plugins from here. */
 export const COMMON_URL = pathToFileURL(resolve(import.meta.filename)).href;
 
-/** Runs `node <args>` in `cwd`; the log is the command line and both streams, `ok` is exit code 0. */
-export function node(cwd: string, args: string[], env: Record<string, string> = {}): { ok: boolean; log: string } {
-  const run = spawnSync('node', args, { cwd, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, env: { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0', ...env } });
-  const text = `${run.stdout ?? ''}${run.stderr ?? ''}${run.error ? `\n${run.error.message}` : ''}`;
-  const log = `$ node ${args.join(' ')}\n${text.replace(/\x1b\[[0-9;]*m/g, '')}`;
-  return { ok: run.status === 0, log };
+/** Runs `<command> <args>` in `cwd`; the log is the command line and both streams, `ok` is exit code 0. */
+export function run(cwd: string, command: string, args: string[], env: Record<string, string> = {}): { ok: boolean; log: string } {
+  const done = spawnSync(command, args, { cwd, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, env: { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0', ...env } });
+  const text = `${done.stdout ?? ''}${done.stderr ?? ''}${done.error ? `\n${done.error.message}` : ''}`;
+  const log = `$ ${command} ${args.join(' ')}\n${text.replace(/\x1b\[[0-9;]*m/g, '')}`;
+  return { ok: done.status === 0, log };
 }
+
+/** Runs `node <args>` in `cwd`. */
+export const node = (cwd: string, args: string[], env: Record<string, string> = {}): { ok: boolean; log: string } => run(cwd, 'node', args, env);
 
 /** A rollup-family plugin: every `.css` module is an empty one, so the caller links the sheets from the page. */
 export function emptyCss() {
@@ -53,4 +56,17 @@ export function htmlPage(dir: string, entryName: string) {
       });
     },
   };
+}
+
+/**
+ * `src/index.html` of the half with its module script pointing at `script` (a path relative to the page, `./` added; several, one module script each, in order)
+ * and one `<link rel="stylesheet">` per sheet before `</head>`; the `<base href>` and the rest of the page untouched.
+ */
+export function pointedPage(dir: string, script: string | string[], sheets: string[] = []): string {
+  const tag = /<script\s+type="module"\s+src="[^"]*"\s*><\/script>/;
+  const html = readFileSync(join(dir, 'src', 'index.html'), 'utf8');
+  if (!tag.test(html)) throw new Error('src/index.html has no module script to point at the entry chunk');
+  const links = sheets.map((sheet) => `<link rel="stylesheet" href="./${sheet}">\n`).join('');
+  const scripts = [script].flat().map((file) => `<script type="module" src="./${file}"></script>`).join('\n    ');
+  return html.replace(tag, () => scripts).replace('</head>', () => `${links}</head>`);
 }

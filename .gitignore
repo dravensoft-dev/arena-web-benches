@@ -3,3 +3,7 @@ dist/
 vendor/
 .run-*/
 .bundler.*
+react-*/app/
+react-*/next.config.mjs
+react-*/.next/
+react-*/out/
