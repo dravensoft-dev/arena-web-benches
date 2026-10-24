@@ -1,7 +1,9 @@
 import { readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Driver, Layer } from '../types.ts';
-import { node, pointedPage } from './common.ts';
+import { compileAot } from '../angular-link.ts';
+import { HOOKS_URL } from './angular-hooks.ts';
+import { angularEntry, angularPage, node, pointedPage } from './common.ts';
 
 const CONFIG = '.bundler.esbuild.mjs';
 
@@ -29,23 +31,59 @@ await build({
 });
 `;
 
+/**
+ * The Angular half: the same build over what `ngc` compiled (AOT), the linker in an `onLoad` plugin. `recipe` defines
+ * `ngDevMode` as `false` (esbuild.md: an Angular bundle defines it itself); probe `no-define` leaves it out.
+ */
+function angularConfig(dir: string, defineDevMode: boolean): string {
+  return `import { build } from 'esbuild';
+import { buildLinker } from ${JSON.stringify(HOOKS_URL)};
+
+await build({
+  entryPoints: { main: ${JSON.stringify(angularEntry(dir))} },
+  bundle: true,
+  splitting: true,
+  format: 'esm',
+  outdir: 'dist',
+  entryNames: '[name]-[hash]',
+  chunkNames: 'chunk-[hash]',
+  assetNames: '[name]-[hash]',
+  minify: true,
+  target: 'es2022',
+  // arena-cdk.css imports the CDK overlay sheet, whose package exports name only the style condition.
+  conditions: ['style'],
+  plugins: [buildLinker(process.cwd())],
+  define: { 'process.env.NODE_ENV': '"production"'${defineDevMode ? ", ngDevMode: 'false'" : ''} },
+  logLevel: 'warning',
+});
+`;
+}
+
 const driver: Driver = {
   id: 'esbuild',
-  layers: ['react'],
+  layers: ['react', 'angular'],
   out: 'dist',
-  probes: [],
-  bundle(dir: string, layer: Layer) {
+  probes: ['no-define'],
+  bundle(dir: string, layer: Layer, variant) {
     const out = join(dir, 'dist');
     rmSync(out, { recursive: true, force: true });
-    if (layer !== 'react') return { ok: false, out, log: `esbuild builds no ${layer} half yet` };
-    writeFileSync(join(dir, CONFIG), reactConfig);
-    const run = node(resolve(dir), [CONFIG]);
+    if (layer === 'react' && variant === 'no-define') return { ok: false, out, log: 'no-define is an Angular probe: a React bundle has no ngDevMode' };
+    let compiled = '';
+    if (layer === 'angular') {
+      const aot = compileAot(dir);
+      if (!aot.ok) return { ok: false, out, log: aot.log };
+      compiled = aot.log;
+    }
+    writeFileSync(join(dir, CONFIG), layer === 'react' ? reactConfig : angularConfig(dir, variant !== 'no-define'));
+    const done = node(resolve(dir), [CONFIG]);
+    const run = { ok: done.ok, log: compiled + done.log };
     if (!run.ok) return { ok: false, out, log: run.log };
     // esbuild writes no page: the entry's `.js` and its one `.css` go into the half's own `index.html`.
     const files = readdirSync(out);
     const script = files.find((name) => /^main-.*\.js$/.test(name));
     if (!script) return { ok: false, out, log: `${run.log}\nno main-*.js in ${out}` };
-    writeFileSync(join(out, 'index.html'), pointedPage(dir, script, files.filter((name) => name.endsWith('.css'))));
+    const sheets = files.filter((name) => name.endsWith('.css'));
+    writeFileSync(join(out, 'index.html'), layer === 'react' ? pointedPage(dir, script, sheets) : angularPage(dir, script, sheets));
     return { ok: true, out, log: run.log };
   },
 };

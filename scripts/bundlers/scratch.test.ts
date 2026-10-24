@@ -88,6 +88,23 @@ describe('scratch', () => {
 });
 
 describe('static steps', () => {
+  test('a half whose styles.css carries the app rules gets them as a fourth sheet, linked last', () => {
+    const half = 'angular-clickup';
+    const dir = make(half, 't-link-rules', 'none');
+    const out = join(dir, 'out-test');
+    mkdirSync(out, { recursive: true });
+    writeFileSync(join(out, 'index.html'), '<!doctype html><html><head></head><body></body></html>');
+    expect(sheetOrder(dir, 'angular')).toEqual(['arena.package.generated.css', 'arena.generated.css', 'plugin.generated.css', 'app.css']);
+    linkSheets(dir, 'angular', out);
+    const styles = readFileSync(`${half}/src/styles.css`, 'utf8');
+    const rules = readFileSync(join(out, 'app.css'), 'utf8');
+    expect(rules).not.toMatch(/^@import/m);
+    expect(rules).toBe(styles.replace(/^@import[^\n]*\n/gm, ''));
+    expect(rules).toContain('.app {');
+    const html = readFileSync(join(out, 'index.html'), 'utf8');
+    expect([...html.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)].map((m) => m[1]).at(-1)).toBe('app.css');
+  });
+
   const order = ['arena.package.generated.css', 'arena.generated.css', 'plugin.generated.css', 'app.css'];
 
   test('sheetOrder is the entry\'s import order in both layers', () => {

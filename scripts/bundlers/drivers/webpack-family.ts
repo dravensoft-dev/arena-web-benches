@@ -1,7 +1,11 @@
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { BundlerId, Driver, Layer, Probe } from '../types.ts';
+import { pathToFileURL } from 'node:url';
 import { node } from './common.ts';
+
+/** The `file:` URL of angular-link.ts, which the loader written into a half imports. */
+const LINK_URL = pathToFileURL(resolve(import.meta.dirname, '..', 'angular-link.ts')).href;
 
 /** What differs between the webpack and rspack drivers. */
 export type WebpackFlavour = {
@@ -40,16 +44,12 @@ const jsApart = `${JS_FILES}
 /** rspack's one added rule, verbatim from the page. */
 const CSS_AUTO = `{ test: /\\.css$/, type: 'css/auto' }`;
 
-/** The Angular linker over a partially compiled package, as `ng build` runs it; a file without a declaration is returned as it is. */
-// The same linker call is task 10's `linkPartial` (angular-link.ts), which the rollup-family drivers share; keep the two alike.
-const LINKER = `import { transformAsync } from '@babel/core';
-import linker from '@angular/compiler-cli/linker/babel';
-export default async function (source, map) {
+/** The Angular linker over a partially compiled package, as `ng build` runs it, through the benches' one Babel call (`linkPartial`, angular-link.ts); a file without a declaration is returned as it is. */
+const LINKER = `import { linkPartial } from ${JSON.stringify(LINK_URL)};
+export default function (source, map) {
   const done = this.async();
-  if (!source.includes('ɵɵngDeclare')) return done(null, source, map);
   try {
-    const out = await transformAsync(source, { filename: this.resourcePath, babelrc: false, configFile: false, compact: false, sourceMaps: false, plugins: [linker] });
-    done(null, out.code, map);
+    done(null, linkPartial(source, this.resourcePath) ?? source, map);
   } catch (error) {
     done(error);
   }

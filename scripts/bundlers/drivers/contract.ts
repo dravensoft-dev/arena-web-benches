@@ -60,6 +60,8 @@ export function driverContract(driver: Driver, links: boolean, extra?: (layer: L
       expect(built.log).toBeString();
       if (!built.ok) throw new Error(`${driver.id} recipe on ${dir} failed:\n${built.log}`);
       extra?.(layer, built);
+      // An Angular bundle holds no partial declaration: the linker ran over every package that carried one.
+      if (layer === 'angular') for (const js of filesText(built.out, '.js')) expect(js).not.toContain('ɵɵngDeclare');
 
       const packageSelector = firstSelector(readFileSync(join(path, 'node_modules/@dravensoft', `arena-${layer}`, 'css/reset.css'), 'utf8'));
       // `app.css` is the app sheet (Review Focus 4); an Angular half without one carries its rules in `styles.css`.

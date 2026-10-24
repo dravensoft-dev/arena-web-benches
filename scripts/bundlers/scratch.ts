@@ -1,4 +1,4 @@
-import { appendFileSync, cpSync, readdirSync, realpathSync, rmSync } from 'node:fs';
+import { appendFileSync, cpSync, existsSync, readdirSync, realpathSync, rmSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 import type { Layer, Mutation } from './types.ts';
 
@@ -52,7 +52,11 @@ export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'
   });
 
   appendFileSync(join(to, entryOf(layer)), marker(mutation === 'app-text' ? `${dir} ·` : dir));
-  if (mutation === 'app-sheet') appendFileSync(join(to, 'src/app.css'), '\n.__app-sheet{order:1}\n');
+  if (mutation === 'app-sheet') {
+    // An Angular half without `app.css` carries the app's rules in `styles.css`; the sheet to change is that one.
+    const sheet = layer === 'angular' && !existsSync(join(to, 'src/app.css')) ? 'src/styles.css' : 'src/app.css';
+    appendFileSync(join(to, sheet), '\n.__app-sheet{order:1}\n');
+  }
   if (mutation === 'arena-patch') {
     const link = join(to, 'node_modules', '@dravensoft', `arena-${layer}`);
     const real = realpathSync(link);

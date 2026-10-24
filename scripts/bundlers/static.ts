@@ -10,14 +10,25 @@ export function finish(dir: string, layer: Layer, out: string): void {
   for (const name of readdirSync(src)) {
     if (/^icons-.*\.svg$/.test(name)) cpSync(join(src, name), join(out, name));
   }
-  if (layer === 'angular') cpSync(join(dir, 'public'), out, { recursive: true });
+  // A half without a `public/` has no assets to copy, as `angular.json` `assets` globs nothing there.
+  if (layer === 'angular' && existsSync(join(dir, 'public'))) cpSync(join(dir, 'public'), out, { recursive: true });
 }
 
-/** The four sheets in the order the entry imports them: React `Main.tsx` imports, Angular `styles.css` `@import`s. */
+const SHEET_IMPORT = /^@import\s+'\.\/([^']+\.css)';[ \t]*\r?\n?/gm;
+
+/** An Angular half without `src/app.css` carries its app rules in `styles.css`, after the `@import`s. */
+const carriesApp = (dir: string, layer: Layer): boolean => layer === 'angular' && !existsSync(join(dir, 'src', 'app.css'));
+
+/**
+ * The sheets in the order the entry imports them: React `Main.tsx` imports, Angular `styles.css` `@import`s. An Angular
+ * half whose `styles.css` carries the app rules after its imports has a fourth sheet, `app.css`, which `linkSheets`
+ * writes from that remainder (the place `app.css` takes in the other halves).
+ */
 export function sheetOrder(dir: string, layer: Layer): string[] {
   const text = readFileSync(join(dir, layer === 'react' ? entryOf('react') : 'src/styles.css'), 'utf8');
-  const pattern = layer === 'react' ? /^import\s+'\.\/([^']+\.css)';/gm : /^@import\s+'\.\/([^']+\.css)';/gm;
-  return [...text.matchAll(pattern)].map((m) => m[1]!);
+  const pattern = layer === 'react' ? /^import\s+'\.\/([^']+\.css)';/gm : SHEET_IMPORT;
+  const names = [...text.matchAll(pattern)].map((m) => m[1]!);
+  return carriesApp(dir, layer) ? [...names, 'app.css'] : names;
 }
 
 const IMPORT = /^@import\s+(?:'([^']+)'|"([^"]+)");[ \t]*$/gm;
@@ -48,8 +59,10 @@ function inline(file: string, modules: string, seen: Set<string>): string {
 export function linkSheets(dir: string, layer: Layer, out: string): void {
   const modules = join(dir, 'node_modules');
   const names = sheetOrder(dir, layer);
+  const remainder = carriesApp(dir, layer) ? readFileSync(join(dir, 'src', 'styles.css'), 'utf8').replace(SHEET_IMPORT, '') : '';
   for (const name of names) {
-    writeFileSync(join(out, basename(name)), inline(join(dir, 'src', name), modules, new Set()));
+    const own = carriesApp(dir, layer) && name === 'app.css';
+    writeFileSync(join(out, basename(name)), own ? remainder : inline(join(dir, 'src', name), modules, new Set()));
   }
   const page = join(out, 'index.html');
   const html = readFileSync(page, 'utf8');
