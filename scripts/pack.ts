@@ -2,14 +2,14 @@
  * it holds what the commit holds, so each bench's own .gitignore is the whole definition of
  * what a packed bench is, and no second list of exclusions exists to go stale. A dirty tree is
  * refused rather than packed, because a tarball that matches no commit cannot be produced again.
- * The pairs come from benches.json, which is the one place they are named, and only the tarballs
+ * The pairs come from bundlers.json, which is the one place they are named, and only the tarballs
  * are cleared: `build` writes the published halves into the same directory. */
 
 import { existsSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
-import { LAYERS, OUT, manifest } from './build.ts';
+import { LAYERS, OUT, products } from './build.ts';
 
-export const PRODUCTS = manifest().pairs.map(({ product }) => product);
+export const PRODUCTS = products().map(({ product }) => product);
 
 export const TARBALL = '.tar.gz';
 

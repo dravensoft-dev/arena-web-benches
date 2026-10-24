@@ -113,7 +113,7 @@ rather than a sheet.
   compile on `(change)`.
 - **Correction**: bump the version on `develop` to the next major when the first breaking change
   lands, so a pack of the tree never carries a published number.
-- **Closed when**: a pack of `develop` names a version npm has not published, and `benches.json`
+- **Closed when**: a pack of `develop` names a version npm has not published, and `arena-adopter.json`
   declares it.
 - **The bench**: draws every glyph through `ArenaIcon`, binds `activate` and `valueChange`, names
   its row checkboxes and answers no heat step, which is how it asks for what it already draws.

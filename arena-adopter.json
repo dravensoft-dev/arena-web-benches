@@ -1,0 +1,113 @@
+{
+  "arena": "12.1.1",
+  "name": "web-benches",
+  "title": "Web benches",
+  "description": "Eight products, each mocked twice, once in React and once in Angular, from the same arena.config.json and the same design directory, so a difference between a pair is Arena answering the two layers differently.",
+  "repository": "https://github.com/dravensoft-dev/arena-web-benches",
+  "sections": [
+    {
+      "heading": "Calendly",
+      "links": [
+        {
+          "label": "React",
+          "href": "calendly/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "calendly/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "ClickUp",
+      "links": [
+        {
+          "label": "React",
+          "href": "clickup/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "clickup/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "Duolingo",
+      "links": [
+        {
+          "label": "React",
+          "href": "duolingo/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "duolingo/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "Etsy",
+      "links": [
+        {
+          "label": "React",
+          "href": "etsy/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "etsy/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "Grafana",
+      "links": [
+        {
+          "label": "React",
+          "href": "grafana/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "grafana/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "Instagram",
+      "links": [
+        {
+          "label": "React",
+          "href": "instagram/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "instagram/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "Notion",
+      "links": [
+        {
+          "label": "React",
+          "href": "notion/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "notion/angular/"
+        }
+      ]
+    },
+    {
+      "heading": "Superhuman",
+      "links": [
+        {
+          "label": "React",
+          "href": "superhuman/react/"
+        },
+        {
+          "label": "Angular",
+          "href": "superhuman/angular/"
+        }
+      ]
+    }
+  ]
+}

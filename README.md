@@ -40,7 +40,7 @@ was drawn after; the marks and the artwork are its own.
 
 ```bash
 bun install
-bun run build      # dist/<product>/<layer>/, and benches.json beside them
+bun run build      # dist/<product>/<layer>/, and arena-adopter.json beside them
 bun run compare    # the eight pairs, each as two frames, on http://localhost:5100
 ```
 
@@ -72,5 +72,5 @@ reports less.
 `bun run pack vX.Y.Z` writes one `dist/arena-web-benches-<product>-vX.Y.Z.tar.gz` per pair, from
 `git archive`, so a tarball holds what the commit holds and nothing a build left behind. The
 working tree has to be clean: a tarball that matches no commit cannot be produced again. It reads
-its pairs from `benches.json` and clears the tarballs rather than the directory, because `build`
+its pairs from `bundlers.json` and clears the tarballs rather than the directory, because `build`
 writes the published halves into that same `dist/`.

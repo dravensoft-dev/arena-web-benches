@@ -1,12 +1,12 @@
 /* Two halves of a pair open at once, which is the whole reason there are two: both answer the same
  * markup from the same design/ directory, so anything that differs between them is Arena's and not
- * the app's. It serves the built tree and frames the pairs from benches.json, so a ninth pair is
+ * the app's. It serves the built tree and frames the pairs from bundlers.json, so a ninth pair is
  * written once. This is where the comparison lives; the published site lists the addresses and
  * embeds none of them, because a comparison view there is a second product. */
 
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { LAYERS, OUT, manifest } from './build.ts';
+import { ADOPTER, LAYERS, OUT, products } from './build.ts';
 
 export const PORT = Number(process.env.PORT ?? 5100);
 
@@ -47,11 +47,11 @@ ${rows}
 }
 
 function main() {
-  if (!existsSync(join(OUT, 'benches.json'))) {
+  if (!existsSync(join(OUT, ADOPTER))) {
     console.error(`compare: ${OUT}/ holds no built halves; run bun run build, which is what this serves`);
     process.exit(1);
   }
-  const pairs = manifest(OUT).pairs.map(({ product, label }) => ({ product, label }));
+  const pairs = products().map(({ product, label }) => ({ product, label }));
   const page = comparePage(pairs);
 
   const server = Bun.serve({

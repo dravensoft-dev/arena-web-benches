@@ -56,10 +56,12 @@ Three things, and none of them is a fix.
   DRAWS is not plumbing, whatever it is filed as; how a bench ASKS for something it already draws
   is, which is why every raster is named relative to the half rather than to a domain root.
 
-  **`benches.json` is where a pair is declared**, and `bun run build` reads it and writes the one
-  directory Arena consumes. A pair the manifest does not name is a pair the published site does
-  not carry, and Arena's own gate refuses an output that declares a half it does not hold or holds
-  one it does not declare. Nothing else crosses between the two repositories.
+  **The pair is declared in `bundlers.json`, and the published site is declared in
+  `arena-adopter.json`**, the manifest in the shape Arena reads. `bun run build` reads the first and
+  writes the one directory Arena consumes, with the second beside the halves. A pair the manifests do
+  not name is a pair the published site does not carry, and Arena's own gate refuses an output that
+  declares a half it does not hold or holds one it does not declare. Nothing else crosses between the
+  two repositories.
 
 Anything else that makes a bench build or look better is a fix, and a fix belongs in Arena.
 

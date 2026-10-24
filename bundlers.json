@@ -1,0 +1,12 @@
+{
+  "products": [
+    {"product": "calendly", "label": "Calendly", "skin": "calendly", "react": "react-calendly", "angular": "angular-calendly"},
+    {"product": "clickup", "label": "ClickUp", "skin": "clickup", "react": "react-clickup", "angular": "angular-clickup"},
+    {"product": "duolingo", "label": "Duolingo", "skin": "duolingo", "react": "react-duolingo", "angular": "angular-duolingo"},
+    {"product": "etsy", "label": "Etsy", "skin": "etsy", "react": "react-etsy", "angular": "angular-etsy"},
+    {"product": "grafana", "label": "Grafana", "skin": "grafana", "react": "react-grafana", "angular": "angular-grafana"},
+    {"product": "instagram", "label": "Instagram", "skin": "instagram", "react": "react-instagram", "angular": "angular-instagram"},
+    {"product": "notion", "label": "Notion", "skin": "notion", "react": "react-notion", "angular": "angular-notion"},
+    {"product": "superhuman", "label": "Superhuman", "skin": "superhuman", "react": "react-superhuman", "angular": "angular-superhuman"}
+  ]
+}

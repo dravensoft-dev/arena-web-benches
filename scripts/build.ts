@@ -1,6 +1,6 @@
-/* The sixteen halves built into one shape, or none of them. benches.json names the path each half
- * writes into, because a React half writes dist and an Angular one dist/browser and no convention
- * holds both, and the exit code is the whole of the claim: the first half that fails stops the run
+/* The sixteen halves built into one shape, or none of them. bundlers.json names the pairs, and the path each
+ * half writes into is the layer's, because a React half writes dist and an Angular one dist/browser
+ * and no convention holds both, and the exit code is the whole of the claim: the first half that fails stops the run
  * and leaves nothing behind. Three things are asserted rather than trusted. The `./` base, since
  * the flag that sets it is in each half's own script and a half published against the domain root
  * answers 200 at every href under a subdirectory and loads none of its own code. That every raster
@@ -11,12 +11,23 @@
 
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import type { Layer } from './bundlers/types.ts';
 
-export const MANIFEST = 'benches.json';
+export const ADOPTER = 'arena-adopter.json';
+
+export const TABLE = 'bundlers.json';
+
+export const REPOSITORY = 'https://github.com/dravensoft-dev/arena-web-benches';
+
+export const ARENA = '12.1.1';
 
 export const OUT = 'dist';
 
-export const LAYERS = ['react', 'angular'] as const;
+export const LAYERS = ['react', 'angular'] as const satisfies readonly Layer[];
+
+export const OUTS: Record<Layer, string> = { react: 'dist', angular: 'dist/browser' };
+
+export const LABELS: Record<Layer, string> = { react: 'React', angular: 'Angular' };
 
 export const BASE = '<base href="./"';
 
@@ -30,20 +41,41 @@ export const ROOTED = /['"]\/img\//g;
 
 export const ASKED = /['"]img\/([^'"]+)['"]/g;
 
-export type Half = { dir: string; out: string };
+export type Product = { product: string; label: string; skin: string; react: string; angular: string };
 
-export type Pair = { product: string; label: string; skin: string; react: Half; angular: Half };
+export type AdopterManifest = {
+  arena: string;
+  name: string;
+  title: string;
+  description: string;
+  repository: string;
+  sections: { heading: string; links: { label: string; href: string }[] }[];
+};
 
-export type Manifest = { arena: string; pairs: Pair[] };
-
-export function manifest(root = '.'): Manifest {
-  return JSON.parse(readFileSync(join(root, MANIFEST), 'utf8')) as Manifest;
+export function products(root = '.'): Product[] {
+  return (JSON.parse(readFileSync(join(root, TABLE), 'utf8')) as { products: Product[] }).products;
 }
 
-export function halves(pairs: Pair[]) {
-  return pairs.flatMap((pair) => LAYERS.map((layer) => ({
-    product: pair.product, layer, ...pair[layer],
+export function halves(all: Product[]) {
+  return all.flatMap((one) => LAYERS.map((layer) => ({
+    product: one.product, layer, dir: one[layer],
   })));
+}
+
+export function adopterManifest(all: Product[], arena: string): AdopterManifest {
+  return {
+    arena,
+    name: 'web-benches',
+    title: 'Web benches',
+    description: 'Eight products, each mocked twice, once in React and once in Angular, from the '
+      + 'same arena.config.json and the same design directory, so a difference between a pair is '
+      + 'Arena answering the two layers differently.',
+    repository: REPOSITORY,
+    sections: all.map(({ product, label }) => ({
+      heading: label,
+      links: LAYERS.map((layer) => ({ label: LABELS[layer], href: `${product}/${layer}/` })),
+    })),
+  };
 }
 
 export function baseProblems(rel: string, html: string) {
@@ -79,14 +111,15 @@ function run(command: string[]) {
 }
 
 function main() {
-  const { pairs } = manifest();
+  const pairs = products();
   const all = halves(pairs);
 
-  rmSync(join(OUT, MANIFEST), { force: true });
+  rmSync(join(OUT, ADOPTER), { force: true });
   for (const { product } of pairs) rmSync(join(OUT, product), { recursive: true, force: true });
   mkdirSync(OUT, { recursive: true });
 
-  for (const { product, layer, dir, out } of all) {
+  for (const { product, layer, dir } of all) {
+    const out = OUTS[layer];
     console.log(`\nbuild: ${dir}`);
     rmSync(join(dir, out.split('/')[0] ?? out), { recursive: true, force: true });
     if (!run(['bun', 'run', '--cwd', dir, 'build'])) {
@@ -97,8 +130,8 @@ function main() {
     }
     const from = join(dir, out);
     if (!existsSync(from)) {
-      console.error(`\nbuild: ${dir} built and wrote no ${out}, which is the path ${MANIFEST} says `
-        + 'it writes into');
+      console.error(`\nbuild: ${dir} built and wrote no ${out}, which is the path the ${layer} `
+        + 'layer writes into');
       process.exit(1);
     }
     const into = join(OUT, product, layer);
@@ -135,9 +168,9 @@ function main() {
     process.exit(1);
   }
 
-  writeFileSync(join(OUT, MANIFEST), readFileSync(MANIFEST, 'utf8'));
+  writeFileSync(join(OUT, ADOPTER), readFileSync(ADOPTER, 'utf8'));
   console.log(`\nbuild: ${pairs.length} pair(s) and ${all.length} half(s) under ${OUT}/, with `
-    + `${MANIFEST} beside them`);
+    + `${ADOPTER} beside them`);
 }
 
 if (import.meta.main) main();
