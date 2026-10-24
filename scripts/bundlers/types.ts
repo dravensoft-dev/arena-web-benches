@@ -25,3 +25,21 @@ export type Table = {
 };
 
 export type Mutation = 'none' | 'app-text' | 'app-sheet' | 'arena-patch';
+
+export type Probe =
+  | 'css-import'
+  | 'js-only-test'
+  | 'untyped-group'
+  | 'no-css-auto'
+  | 'no-package-exports'
+  | 'twice'
+  | 'no-define';
+
+export type Driver = {
+  id: BundlerId;
+  layers: Layer[];
+  /** The output directory relative to the half, e.g. `dist`. */
+  out: string;
+  probes: Probe[];
+  bundle(dir: string, layer: Layer, variant: 'plain' | 'recipe' | Probe): { ok: boolean; out: string; log: string };
+};
