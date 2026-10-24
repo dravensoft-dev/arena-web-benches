@@ -152,6 +152,24 @@ function fails(key: RunKey, text?: string): (ctx: Context) => Verdict {
   };
 }
 
+/** The run `key` builds. */
+function builds(key: RunKey): (ctx: Context) => Verdict {
+  return (ctx) => {
+    const one = run(ctx, key);
+    return pass(one.ok, one.ok ? `'${key}' built` : `'${key}' failed: ${one.log.trim().split('\n').slice(-3).join(' | ')}`);
+  };
+}
+
+/** Record whether a `.css` of the run `key` holds the package sheet's rules without the app's; a probe that fails to build is recorded as that. */
+function recordSheetAlone(key: RunKey): (ctx: Context) => Verdict {
+  return (ctx) => {
+    const one = run(ctx, key);
+    if (!one.ok) return pass(false, `'${key}' did not build: ${one.log.trim().split('\n').slice(-3).join(' | ')}`);
+    const found = sheetAlone(one.out, ctx);
+    return pass(found.length > 0, found.length > 0 ? `the package sheet is alone in ${list(found.map((f) => f.rel))}` : `no .css holds the package sheet without the app's rules: ${list(files(one.out, '.css').map((f) => f.rel))}`);
+  };
+}
+
 function noSprite(ctx: Context): Verdict {
   const sprites = everyFile(built(ctx, 'recipe').out).filter((f) => /(^|\/)icons-[^/]*\.svg$/.test(f));
   return pass(sprites.length === 0, `icons-*.svg in 'recipe': ${list(sprites)}`);
@@ -268,7 +286,7 @@ type Row = Omit<Observation, 'expect' | 'layers'> & { layers?: Layer[]; expect?:
 const row = (r: Row): Observation => ({ layers: RA, expect: 'holds', ...r });
 
 const JS_CLAIM = (option: string) => `Arena's JS sits in a chunk of its own with ${option}`;
-const SHEET_APART = 'as `vite7.sheet-apart`';
+const SHEET_APART = 'the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes';
 
 /** The runs a `*.js-apart` row reads: Vite 7, Vite 8, webpack and rspack give a JS-only config (R7-1). */
 const jsRuns = (b: BundlerId): { from: RunKey; after: RunKey } =>
@@ -291,7 +309,7 @@ export const OBSERVATIONS: Observation[] = [
   noSprite_('rollup', 'rollup moves no file it does not import'),
 
   jsRow('vite7', JS_CLAIM('`manualChunks`')),
-  sheetRow('vite7', 'the package sheet sits in a CSS file of its own, which keeps its bytes and name when the app changes'),
+  sheetRow('vite7', SHEET_APART),
   row({ id: 'vite7.sheet-by-name', bundler: 'vite7', claim: 'a test matching only `node_modules` leaves the sheet with the app\'s CSS', needs: ['js-only-test'], check: noSheetAlone('js-only-test') }),
 
   jsRow('vite8', JS_CLAIM('`codeSplitting.groups`')),
@@ -299,16 +317,16 @@ export const OBSERVATIONS: Observation[] = [
   row({ id: 'vite8.sheet-by-name', bundler: 'vite8', claim: 'as `vite7.sheet-by-name`', needs: ['js-only-test'], check: noSheetAlone('js-only-test') }),
 
   jsRow('rolldown', JS_CLAIM('`codeSplitting.groups`')),
-  row({ id: 'rolldown.css-refused', bundler: 'rolldown', claim: 'the build stops on a CSS import with "bundling CSS is not supported"', needs: ['css-import'], check: fails('css-import', 'bundling CSS is not supported') }),
+  row({ id: 'rolldown.css-refused', bundler: 'rolldown', claim: 'the build stops on a CSS import with "Bundling CSS is no longer supported (experimental support has been removed)"', needs: ['css-import'], check: fails('css-import', 'Bundling CSS is no longer supported (experimental support has been removed)') }),
   noSprite_('rolldown', 'rolldown moves no file it does not import'),
 
   jsRow('webpack', JS_CLAIM('`splitChunks.cacheGroups`')),
-  sheetRow('webpack', 'with `experiments: { css: true }` and the typed `arena` group, the package sheet sits in a file of its own that keeps its bytes and name'),
+  sheetRow('webpack', SHEET_APART),
   row({ id: 'webpack.one-css-without', bundler: 'webpack', claim: 'without the sheet config, one CSS file for the entry', needs: ['plain'], check: oneCss('plain') }),
-  row({ id: 'webpack.group-needs-type', bundler: 'webpack', claim: 'without `type`, the sheet stays with the app\'s CSS', needs: ['untyped-group'], check: noSheetAlone('untyped-group') }),
+  row({ id: 'webpack.group-needs-type', bundler: 'webpack', claim: 'without `type`, where the sheet goes', expect: 'record', needs: ['untyped-group'], check: recordSheetAlone('untyped-group') }),
 
   jsRow('rspack', 'the webpack recipe keeps Arena\'s JS apart, unchanged'),
-  sheetRow('rspack', 'with the webpack config and a `css/auto` rule, the package sheet sits in a file of its own'),
+  sheetRow('rspack', `${SHEET_APART}, with the \`css/auto\` rule and, on Angular, the sheet as its own \`styles\` entry`),
   row({
     id: 'rspack.needs-css-auto', bundler: 'rspack', claim: 'without the `css/auto` rule the sheet is not in a file of its own', needs: ['no-css-auto'],
     check: (ctx) => {
@@ -317,7 +335,8 @@ export const OBSERVATIONS: Observation[] = [
     },
   }),
 
-  row({ id: 'parcel.needs-package-exports', bundler: 'parcel', claim: 'the first Arena import fails without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports') }),
+  row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'an import of an Arena subpath, or Angular\'s `@angular/common/http`, fails without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports') }),
+  row({ id: 'parcel.first-import-resolves', bundler: 'parcel', layers: ['react'], claim: 'the first Arena import resolves through the package\'s `module` field without `packageExports`', needs: ['no-package-exports'], check: builds('no-package-exports') }),
   jsRow('parcel', '`manualSharedBundles` keeps Arena\'s JS apart once `packageExports` is on', false),
   row({ id: 'parcel.sheet-stops', bundler: 'parcel', claim: 'the build stops on the package sheet\'s first `@import`', needs: ['css-import'], check: fails('css-import') }),
   row({ id: 'parcel.react-with-app', bundler: 'parcel', layers: ['react'], claim: 'React stays with the app', needs: ['recipe'], check: reactWithApp }),

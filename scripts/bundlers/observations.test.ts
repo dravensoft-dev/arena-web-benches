@@ -14,7 +14,7 @@ const F6 = [
   'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied',
   'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type',
   'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto',
-  'parcel.needs-package-exports', 'parcel.js-apart', 'parcel.sheet-stops', 'parcel.react-with-app', 'parcel.shared-stem',
+  'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-stops', 'parcel.react-with-app', 'parcel.shared-stem',
   'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
   'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
@@ -46,7 +46,7 @@ test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot
   expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual([...F6, ...F6B].sort());
   for (const o of OBSERVATIONS) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
   expect(OBSERVATIONS.filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
-    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', ...F6B].sort(),
+    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', ...F6B].sort(),
   );
 });
 
@@ -93,7 +93,7 @@ test('webpack.one-css-without counts the css of plain', () => {
 
 test('rolldown.css-refused holds on a failed probe whose output carries the message', () => {
   const o = one('rolldown.css-refused');
-  expect(judge(o, ctx({ 'css-import': output({}, false, 'Error: bundling CSS is not supported') })).holds).toBe(true);
+  expect(judge(o, ctx({ 'css-import': output({}, false, '[UNSUPPORTED_FEATURE] Bundling CSS is no longer supported (experimental support has been removed). See x') })).holds).toBe(true);
   expect(judge(o, ctx({ 'css-import': output({}, false, 'Error: other') })).holds).toBe(false);
   expect(judge(o, ctx({ 'css-import': output({}, true, '') })).holds).toBe(false);
 });
@@ -174,4 +174,35 @@ test('parcel.react-with-app finds React DOM by the marker of React 18.3.1 and of
   expect(judge(o, ctx({ recipe: with18 })).holds).toBe(true);
   expect(judge(o, ctx({ recipe: apart19 })).holds).toBe(false);
   expect(judge(o, ctx({ recipe: none })).detail).toContain('no .js holds React DOM');
+});
+
+test('webpack.group-needs-type records where the sheet goes and never contradicts', () => {
+  const o = one('webpack.group-needs-type');
+  expect(o.expect).toBe('record');
+  expect(o.claim).toBe('without `type`, where the sheet goes');
+  const alone = judge(o, ctx({ 'untyped-group': output({ 'a.css': PKG, 'b.css': APPCSS }) }));
+  const merged = judge(o, ctx({ 'untyped-group': output({ 'a.css': PKG + APPCSS }) }));
+  const failed = judge(o, ctx({ 'untyped-group': output({}, false, 'Error: x') }));
+  expect([alone.outcome, merged.outcome, failed.outcome]).toEqual([true, false, false]);
+  expect([alone.holds, merged.holds, failed.holds]).toEqual([true, true, true]);
+  expect(alone.detail).toContain('a.css');
+  expect(failed.detail).toContain('did not build');
+});
+
+test('the parcel probe reads Angular as a failure to build and React as a build (D10)', () => {
+  const needs = one('parcel.needs-package-exports');
+  const first = one('parcel.first-import-resolves');
+  expect(needs.layers).toEqual(['angular']);
+  expect(first.layers).toEqual(['react']);
+  expect(judge(needs, ctx({ 'no-package-exports': output({}, false, 'Failed to resolve') })).holds).toBe(true);
+  expect(judge(needs, ctx({ 'no-package-exports': output({}) })).holds).toBe(false);
+  expect(judge(first, ctx({ 'no-package-exports': output({}) })).holds).toBe(true);
+  expect(judge(first, ctx({ 'no-package-exports': output({}, false, 'Failed to resolve') })).holds).toBe(false);
+});
+
+test('the four sheet-apart rows say the sheet is apart on both layers', () => {
+  for (const id of ['vite7', 'vite8', 'webpack', 'rspack']) {
+    expect(one(`${id}.sheet-apart`).claim).toContain('the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes');
+  }
+  expect(one('rspack.sheet-apart').claim).toContain('with the `css/auto` rule and, on Angular, the sheet as its own `styles` entry');
 });
