@@ -208,6 +208,7 @@ export function webpackDriver(flavour: WebpackFlavour): Driver {
     layers: ['react', 'angular'],
     out: 'dist',
     probes: ['js-recipe', flavour.probe],
+    linksSheets: false,
     bundle(dir: string, layer: Layer, variant) {
       const out = join(dir, 'dist');
       rmSync(out, { recursive: true, force: true });
@@ -215,6 +216,8 @@ export function webpackDriver(flavour: WebpackFlavour): Driver {
       writeFileSync(join(dir, pageName(flavour.id)), page(dir, layer));
       if (layer === 'angular') writeFileSync(join(dir, linkerName(flavour.id)), LINKER);
       const run = node(resolve(dir), [configName(flavour.id)], { NODE_ENV: 'production' });
+      // The Angular plugin of rspack writes the builder's bookkeeping beside the page; none of it is browser output.
+      for (const name of ['prerendered-routes.json', '3rdpartylicenses.txt']) rmSync(join(out, name), { force: true });
       return { ok: run.ok, out, log: run.log };
     },
   };

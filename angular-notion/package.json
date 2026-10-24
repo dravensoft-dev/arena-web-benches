@@ -6,7 +6,7 @@
     "prestart": "arena build --src src --src design && arena audit --src src --src design",
     "start": "ng serve --port 5201",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "build": "ng build --base-href ./",
+    "build": "bun ../scripts/bundlers/half.ts",
     "measure": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {

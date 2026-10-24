@@ -13,6 +13,7 @@ const driver: Driver = {
   layers: ['angular'],
   out: 'dist/browser',
   probes: [],
+  linksSheets: false,
   bundle(dir, layer) {
     const out = join(dir, 'dist', 'browser');
     rmSync(join(dir, 'dist'), { recursive: true, force: true });

@@ -3,26 +3,11 @@ import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { scratch } from '../scratch.ts';
 import { assignment, table } from '../rotation.ts';
-import { finish, linkSheets, sheetOrder } from '../static.ts';
+import { finish, firstSelectors, linkSheets, sheetOrder } from '../static.ts';
 import type { Driver, Layer } from '../types.ts';
 
 const made: string[] = [];
 afterAll(() => made.forEach((path) => rmSync(path, { recursive: true, force: true })));
-
-/** The first selector of `css` a minifier leaves as written: a class, an id, `html`, `body` or `:root`. */
-export function firstSelector(css: string): string {
-  let text = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@[a-z-]+[^;{}]*;/g, '');
-  for (;;) {
-    const open = text.indexOf('{');
-    if (open < 0) throw new Error('no rule in the sheet');
-    const header = text.slice(0, open).split(/[;}]/).pop()!.trim();
-    text = text.slice(open + 1);
-    if (header.startsWith('@')) continue;
-    const named = header.split(',').map((part) => part.replace(/\s+/g, ''));
-    const pick = named.find((part) => /^(\.[\w-]+|#[\w-]+|html|body|:root)$/.test(part));
-    if (pick) return pick;
-  }
-}
 
 /** `selector` as the start of a rule (or of a selector list) in whitespace-stripped CSS, not a word inside a value. */
 const startsRule = (selector: string): RegExp => new RegExp(`(^|[{},;/])${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[{,]`);
@@ -63,10 +48,8 @@ export function driverContract(driver: Driver, links: boolean, extra?: (layer: L
       // An Angular bundle holds no partial declaration: the linker ran over every package that carried one.
       if (layer === 'angular') for (const js of filesText(built.out, '.js')) expect(js).not.toContain('ɵɵngDeclare');
 
-      const packageSelector = firstSelector(readFileSync(join(path, 'node_modules/@dravensoft', `arena-${layer}`, 'css/reset.css'), 'utf8'));
       // `app.css` is the app sheet (Review Focus 4); an Angular half without one carries its rules in `styles.css`.
-      const appSource = existsSync(join(path, 'src', 'app.css')) ? 'app.css' : 'styles.css';
-      const appSelector = firstSelector(readFileSync(join(path, 'src', appSource), 'utf8'));
+      const { packageSelector, appSelector } = firstSelectors(path, layer);
 
       finish(path, layer, built.out);
       if (links) linkSheets(path, layer, built.out);

@@ -64,6 +64,7 @@ const driver: Driver = {
   layers: ['react', 'angular'],
   out: 'dist',
   probes: ['no-define'],
+  linksSheets: false,
   bundle(dir: string, layer: Layer, variant) {
     const out = join(dir, 'dist');
     rmSync(out, { recursive: true, force: true });

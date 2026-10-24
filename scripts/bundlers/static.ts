@@ -70,3 +70,27 @@ export function linkSheets(dir: string, layer: Layer, out: string): void {
   const links = names.map((name) => `<link rel="stylesheet" href="./${name}">`).join('\n');
   writeFileSync(page, html.replace('</head>', () => `${links}\n</head>`));
 }
+
+/** The first selector of `css` a minifier leaves as written: a class, an id, `html`, `body` or `:root`. */
+export function firstSelector(css: string): string {
+  let text = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@[a-z-]+[^;{}]*;/g, '');
+  for (;;) {
+    const open = text.indexOf('{');
+    if (open < 0) throw new Error('no rule in the sheet');
+    const header = text.slice(0, open).split(/[;}]/).pop()!.trim();
+    text = text.slice(open + 1);
+    if (header.startsWith('@')) continue;
+    const named = header.split(',').map((part) => part.replace(/\s+/g, ''));
+    const pick = named.find((part) => /^(\.[\w-]+|#[\w-]+|html|body|:root)$/.test(part));
+    if (pick) return pick;
+  }
+}
+
+/** The first selector of the package sheet (`reset.css`) and of the app sheet (`app.css`, or `styles.css` where an Angular half has no `app.css`). */
+export function firstSelectors(dir: string, layer: Layer): { packageSelector: string; appSelector: string } {
+  const appSource = existsSync(join(dir, 'src', 'app.css')) ? 'app.css' : 'styles.css';
+  return {
+    packageSelector: firstSelector(readFileSync(join(dir, 'node_modules/@dravensoft', `arena-${layer}`, 'css/reset.css'), 'utf8')),
+    appSelector: firstSelector(readFileSync(join(dir, 'src', appSource), 'utf8')),
+  };
+}

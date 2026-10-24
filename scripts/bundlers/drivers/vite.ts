@@ -86,6 +86,7 @@ export function viteDriver(flavour: ViteFlavour): Driver {
     layers: ['react', 'angular'],
     out: 'dist',
     probes: ['js-only-test', 'js-recipe'],
+    linksSheets: false,
     bundle(dir: string, layer: Layer, variant) {
       const out = join(dir, 'dist');
       rmSync(out, { recursive: true, force: true });

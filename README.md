@@ -41,18 +41,45 @@ was drawn after; the marks and the artwork are its own.
 ```bash
 bun install
 bun run build      # dist/<product>/<layer>/, and arena-adopter.json beside them
+bun run bundlers   # every bundler page's claim, checked; writes bundlers-results.json
 bun run compare    # the eight pairs, each as two frames, on http://localhost:5100
 ```
 
-`build` runs each half's own build and stops on the first that fails, so its exit code is the
+`build` runs each half's build, which is the driver of the bundler its product is assigned (see
+[Measuring the bundlers](#measuring-the-bundlers)), and stops on the first that fails, so its exit code is the
 whole of the claim that a published gallery holds sixteen halves or none. It normalises the two
 output paths into one shape, asserts the `./` base every half needs to be served from a
 subdirectory, and asserts that every raster a half asks for is a raster it carries. That directory
 is the only thing [Arena](https://github.com/dravensoft-dev/arena) reads, and it publishes it at
-the addresses in the table above.
+the addresses in the table above. When `bundlers-results.json` exists it is copied into `dist/`
+beside `arena-adopter.json`, and when it does not `build` says so and copies nothing.
 
 `compare` is the two halves of a pair open at once, which is the whole reason there are two. The
 published site lists the addresses and embeds none of them.
+
+## Measuring the bundlers
+
+Every bench is built by one of eleven bundlers: Vite 7, Vite 8, Rollup, Rolldown, webpack, Rspack,
+Parcel, Bun, esbuild, Next.js and Angular's `application` builder. [`bundlers.json`](./bundlers.json)
+holds the order of the nine that both layers share (`vite7, vite8, rollup, rolldown, webpack,
+rspack, parcel, bun, esbuild`), the rotation number `r`, and the pins.
+
+Next.js (React) and the `application` builder (Angular) build one product, the mixed one, which is
+the product at position `r mod 8` in alphabetical order. Each of the other seven products, in
+alphabetical order as `j = 0` to `6`, builds both its halves with the bundler at position
+`(7r + j) mod 9` of the shared order. Rotation 0 is the table in `bundlers.json`. The rotation grows
+by one each time the benches move to an Arena release, and a re-run for a newer bundler keeps it, so
+two consecutive rotations build all eleven.
+
+```bash
+bun run bundlers
+```
+
+builds, for each half, the runs its bundler's claims need (the page's recipe, the app's text
+changed, the app's sheet changed, one Arena module patched, and each probe), checks every claim
+against what the bundler wrote, weighs the outputs, and writes `bundlers-results.json`. It exits 1
+after printing each claim a build contradicts. `bun scripts/bundlers.ts --only react-etsy` runs one
+half and prints its result without writing the file.
 
 ## Measuring one
 

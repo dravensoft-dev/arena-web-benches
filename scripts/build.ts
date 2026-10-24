@@ -1,6 +1,6 @@
 /* The sixteen halves built into one shape, or none of them. bundlers.json names the pairs, and the path each
- * half writes into is the layer's, because a React half writes dist and an Angular one dist/browser
- * and no convention holds both, and the exit code is the whole of the claim: the first half that fails stops the run
+ * half writes into is its assigned driver's, because Next writes out, Angular dist/browser and the rest dist
+ * and no convention holds them, and the exit code is the whole of the claim: the first half that fails stops the run
  * and leaves nothing behind. Three things are asserted rather than trusted. The `./` base, since
  * the flag that sets it is in each half's own script and a half published against the domain root
  * answers 200 at every href under a subdirectory and loads none of its own code. That every raster
@@ -11,11 +11,14 @@
 
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Layer, Product } from './bundlers/types.ts';
+import { assigned, table } from './bundlers/rotation.ts';
+import type { Driver, Layer, Product } from './bundlers/types.ts';
 
 export const ADOPTER = 'arena-adopter.json';
 
 export const TABLE = 'bundlers.json';
+
+export const RESULTS = 'bundlers-results.json';
 
 export const REPOSITORY = 'https://github.com/dravensoft-dev/arena-web-benches';
 
@@ -24,8 +27,6 @@ export const ARENA = '12.1.1';
 export const OUT = 'dist';
 
 export const LAYERS = ['react', 'angular'] as const satisfies readonly Layer[];
-
-export const OUTS: Record<Layer, string> = { react: 'dist', angular: 'dist/browser' };
 
 export const LABELS: Record<Layer, string> = { react: 'React', angular: 'Angular' };
 
@@ -105,21 +106,36 @@ export function strayProblems(rel: string, names: string[]) {
       + 'rather than inside it, so the wrong directory was copied');
 }
 
+/** Copies `bundlers-results.json` of `root` into `<root>/<out>` beside the adopter manifest; false when there is none. */
+export function copyResults(root: string, out: string): boolean {
+  const from = join(root, RESULTS);
+  if (!existsSync(from)) return false;
+  writeFileSync(join(root, out, RESULTS), readFileSync(from, 'utf8'));
+  return true;
+}
+
+/** The driver the half `dir` is assigned in the rotation: it names the path the half writes into. */
+async function driverOf(dir: string): Promise<Driver> {
+  const { bundler } = assigned(table(), dir);
+  return (await import(`./bundlers/drivers/${bundler}.ts`)).default as Driver;
+}
+
 function run(command: string[]) {
   const done = Bun.spawnSync(command, { stdout: 'inherit', stderr: 'inherit' });
   return done.exitCode === 0;
 }
 
-function main() {
+async function main() {
   const pairs = products();
   const all = halves(pairs);
 
   rmSync(join(OUT, ADOPTER), { force: true });
+  rmSync(join(OUT, RESULTS), { force: true });
   for (const { product } of pairs) rmSync(join(OUT, product), { recursive: true, force: true });
   mkdirSync(OUT, { recursive: true });
 
   for (const { product, layer, dir } of all) {
-    const out = OUTS[layer];
+    const out = (await driverOf(dir)).out;
     console.log(`\nbuild: ${dir}`);
     rmSync(join(dir, out.split('/')[0] ?? out), { recursive: true, force: true });
     if (!run(['bun', 'run', '--cwd', dir, 'build'])) {
@@ -169,8 +185,10 @@ function main() {
   }
 
   writeFileSync(join(OUT, ADOPTER), readFileSync(ADOPTER, 'utf8'));
+  const results = copyResults('.', OUT);
   console.log(`\nbuild: ${pairs.length} pair(s) and ${all.length} half(s) under ${OUT}/, with `
     + `${ADOPTER} beside them`);
+  console.log(results ? `build: ${RESULTS} copied into ${OUT}/` : `build: no ${RESULTS} to copy, so ${OUT}/ carries none`);
 }
 
-if (import.meta.main) main();
+if (import.meta.main) await main();

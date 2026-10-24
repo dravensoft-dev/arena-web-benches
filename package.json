@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "bun scripts/build.ts",
+    "bundlers": "bun scripts/bundlers.ts",
     "compare": "bun scripts/compare.ts",
     "pack": "bun scripts/pack.ts"
   },

@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'bun:test';
-import { readFileSync } from 'node:fs';
-import { ADOPTER, TABLE, adopterManifest, halves, products } from './build.ts';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { ADOPTER, RESULTS, TABLE, adopterManifest, copyResults, halves, products } from './build.ts';
 
 const HREF = /^(?:[A-Za-z0-9._-]+\/)+$/;
 
@@ -55,5 +57,30 @@ describe('products and halves', () => {
       { product: 'calendly', layer: 'react', dir: 'react-calendly' },
       { product: 'calendly', layer: 'angular', dir: 'angular-calendly' },
     ]);
+  });
+});
+
+describe('copyResults', () => {
+  test('copies bundlers-results.json into the output when the root holds it, and says so', () => {
+    const root = mkdtempSync(join(tmpdir(), 'build-results-'));
+    try {
+      mkdirSync(join(root, 'dist'));
+      writeFileSync(join(root, RESULTS), '{"a":1}\n');
+      expect(copyResults(root, 'dist')).toBe(true);
+      expect(readFileSync(join(root, 'dist', RESULTS), 'utf8')).toBe('{"a":1}\n');
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test('copies nothing when there is none', () => {
+    const root = mkdtempSync(join(tmpdir(), 'build-results-'));
+    try {
+      mkdirSync(join(root, 'dist'));
+      expect(copyResults(root, 'dist')).toBe(false);
+      expect(existsSync(join(root, 'dist', RESULTS))).toBe(false);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });
