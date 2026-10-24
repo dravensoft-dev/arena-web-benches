@@ -23,3 +23,5 @@ export type Table = {
   products: Product[];
   pins: Record<string, string>;
 };
+
+export type Mutation = 'none' | 'app-text' | 'app-sheet' | 'arena-patch';
