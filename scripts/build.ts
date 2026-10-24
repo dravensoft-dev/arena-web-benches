@@ -11,7 +11,7 @@
 
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Layer } from './bundlers/types.ts';
+import type { Layer, Product } from './bundlers/types.ts';
 
 export const ADOPTER = 'arena-adopter.json';
 
@@ -41,7 +41,7 @@ export const ROOTED = /['"]\/img\//g;
 
 export const ASKED = /['"]img\/([^'"]+)['"]/g;
 
-export type Product = { product: string; label: string; skin: string; react: string; angular: string };
+export type { Product };
 
 export type AdopterManifest = {
   arena: string;

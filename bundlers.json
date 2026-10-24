@@ -1,4 +1,21 @@
 {
+  "rotation": 0,
+  "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 08d6ea51b",
+  "order": [
+    "vite7",
+    "vite8",
+    "rollup",
+    "rolldown",
+    "webpack",
+    "rspack",
+    "parcel",
+    "bun",
+    "esbuild"
+  ],
+  "mixed": {
+    "react": "next",
+    "angular": "angular"
+  },
   "products": [
     {"product": "calendly", "label": "Calendly", "skin": "calendly", "react": "react-calendly", "angular": "angular-calendly"},
     {"product": "clickup", "label": "ClickUp", "skin": "clickup", "react": "react-clickup", "angular": "angular-clickup"},
@@ -8,5 +25,6 @@
     {"product": "instagram", "label": "Instagram", "skin": "instagram", "react": "react-instagram", "angular": "angular-instagram"},
     {"product": "notion", "label": "Notion", "skin": "notion", "react": "react-notion", "angular": "angular-notion"},
     {"product": "superhuman", "label": "Superhuman", "skin": "superhuman", "react": "react-superhuman", "angular": "angular-superhuman"}
-  ]
+  ],
+  "pins": {}
 }
