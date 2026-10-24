@@ -22,16 +22,16 @@ answer the same markup from the same `design/` directory, so anything that diffe
 is Arena's and not the app's. Every half holds a port of its own, listed below, so the sixteen
 run side by side without colliding. A React half reads `PORT` if you want it somewhere else.
 
-| Product | React | Angular |
-|---|---|---|
-| Calendly | `react-calendly` on 5108, [published](https://arena.dravensoft.org/web-benches/calendly/react/) | `angular-calendly` on 5208, [published](https://arena.dravensoft.org/web-benches/calendly/angular/) |
-| ClickUp | `react-clickup` on 5102, [published](https://arena.dravensoft.org/web-benches/clickup/react/) | `angular-clickup` on 5202, [published](https://arena.dravensoft.org/web-benches/clickup/angular/) |
-| Duolingo | `react-duolingo` on 5104, [published](https://arena.dravensoft.org/web-benches/duolingo/react/) | `angular-duolingo` on 5204, [published](https://arena.dravensoft.org/web-benches/duolingo/angular/) |
-| Etsy | `react-etsy` on 5105, [published](https://arena.dravensoft.org/web-benches/etsy/react/) | `angular-etsy` on 5205, [published](https://arena.dravensoft.org/web-benches/etsy/angular/) |
-| Grafana | `react-grafana` on 5107, [published](https://arena.dravensoft.org/web-benches/grafana/react/) | `angular-grafana` on 5207, [published](https://arena.dravensoft.org/web-benches/grafana/angular/) |
-| Instagram | `react-instagram` on 5103, [published](https://arena.dravensoft.org/web-benches/instagram/react/) | `angular-instagram` on 5203, [published](https://arena.dravensoft.org/web-benches/instagram/angular/) |
-| Notion | `react-notion` on 5101, [published](https://arena.dravensoft.org/web-benches/notion/react/) | `angular-notion` on 5201, [published](https://arena.dravensoft.org/web-benches/notion/angular/) |
-| Superhuman | `react-superhuman` on 5106, [published](https://arena.dravensoft.org/web-benches/superhuman/react/) | `angular-superhuman` on 5206, [published](https://arena.dravensoft.org/web-benches/superhuman/angular/) |
+| Product | React | Bundler | Angular | Bundler |
+|---|---|---|---|---|
+| Calendly | `react-calendly` on 5108, [published](https://arena.dravensoft.org/web-benches/calendly/react/) | Next.js | `angular-calendly` on 5208, [published](https://arena.dravensoft.org/web-benches/calendly/angular/) | Angular CLI |
+| ClickUp | `react-clickup` on 5102, [published](https://arena.dravensoft.org/web-benches/clickup/react/) | Vite 7 | `angular-clickup` on 5202, [published](https://arena.dravensoft.org/web-benches/clickup/angular/) | Vite 7 |
+| Duolingo | `react-duolingo` on 5104, [published](https://arena.dravensoft.org/web-benches/duolingo/react/) | Vite 8 | `angular-duolingo` on 5204, [published](https://arena.dravensoft.org/web-benches/duolingo/angular/) | Vite 8 |
+| Etsy | `react-etsy` on 5105, [published](https://arena.dravensoft.org/web-benches/etsy/react/) | Rollup | `angular-etsy` on 5205, [published](https://arena.dravensoft.org/web-benches/etsy/angular/) | Rollup |
+| Grafana | `react-grafana` on 5107, [published](https://arena.dravensoft.org/web-benches/grafana/react/) | Rolldown | `angular-grafana` on 5207, [published](https://arena.dravensoft.org/web-benches/grafana/angular/) | Rolldown |
+| Instagram | `react-instagram` on 5103, [published](https://arena.dravensoft.org/web-benches/instagram/react/) | webpack | `angular-instagram` on 5203, [published](https://arena.dravensoft.org/web-benches/instagram/angular/) | webpack |
+| Notion | `react-notion` on 5101, [published](https://arena.dravensoft.org/web-benches/notion/react/) | Rspack | `angular-notion` on 5201, [published](https://arena.dravensoft.org/web-benches/notion/angular/) | Rspack |
+| Superhuman | `react-superhuman` on 5106, [published](https://arena.dravensoft.org/web-benches/superhuman/react/) | Parcel | `angular-superhuman` on 5206, [published](https://arena.dravensoft.org/web-benches/superhuman/angular/) | Parcel |
 
 Each bench is a mock written to exercise Arena. The product names say which interface a bench
 was drawn after; the marks and the artwork are its own.
