@@ -165,3 +165,13 @@ test('js-apart fails when the file holding Arena also holds the app, even unchan
   const parcel = () => output({ 'bundler.parcel-AAAA1111.js': ARENA + APP });
   expect(judge(one('parcel.js-apart'), ctx({ recipe: parcel(), 'app-text': parcel() })).holds).toBe(false);
 });
+
+test('parcel.react-with-app finds React DOM by the marker of React 18.3.1 and of React 19', () => {
+  const o = one('parcel.react-with-app');
+  const with18 = output({ 'a.js': `x.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;${APP}` });
+  const apart19 = output({ 'a.js': 'x.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;', 'b.js': APP });
+  const none = output({ 'a.js': APP });
+  expect(judge(o, ctx({ recipe: with18 })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: apart19 })).holds).toBe(false);
+  expect(judge(o, ctx({ recipe: none })).detail).toContain('no .js holds React DOM');
+});

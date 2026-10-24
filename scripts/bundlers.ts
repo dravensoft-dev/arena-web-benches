@@ -10,7 +10,7 @@ import { judge, OBSERVATIONS } from './bundlers/observations.ts';
 import type { Built, RunKey } from './bundlers/observations.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
 import { assigned, table } from './bundlers/rotation.ts';
-import { entryOf, scratch } from './bundlers/scratch.ts';
+import { entryOf, hold, rebase, scratch, scratchPath } from './bundlers/scratch.ts';
 import { finish, firstSelectors, linkSheets } from './bundlers/static.ts';
 import type { BundlerId, Driver, Layer, Mutation, Probe, Table } from './bundlers/types.ts';
 import { brotliKB, changedKB, loaded } from './bundlers/weigh.ts';
@@ -119,20 +119,27 @@ async function runHalf(t: Table, root: string, half: { product: string; layer: L
   try {
     const runs: Partial<Record<Key, Built>> = {};
     const roots: Partial<Record<Key, string>> = {};
+    // Every run is built at one path, `.run-<dir>-m`, then moved to a path of its own: the directory name enters
+    // webpack's module ids, so runs compared by name and bytes must share it (D11).
+    const building = scratchPath(dir, 'm', root);
+    made.push(building);
     for (const key of keys) {
       const { mutation, variant } = spec(key);
-      const path = scratch(dir, key.replace(/:/g, '-'), mutation, root);
-      made.push(path);
-      roots[key] = path;
+      scratch(dir, 'm', mutation, root);
+      let built: Built;
       if (key === 'twice') {
         // One outdir, built twice: `recipe`, then the app's text changed in place, as `app-text` does, then `twice`.
-        const first = attempt(driver, path, layer, 'recipe');
-        const entry = join(path, entryOf(layer));
+        const first = attempt(driver, building, layer, 'recipe');
+        const entry = join(building, entryOf(layer));
         writeFileSync(entry, readFileSync(entry, 'utf8').replace(`__appMarker = '${dir}'`, `__appMarker = '${dir} ·'`));
-        runs[key] = first.ok ? attempt(driver, path, layer, 'twice') : first;
+        built = first.ok ? attempt(driver, building, layer, 'twice') : first;
       } else {
-        runs[key] = attempt(driver, path, layer, variant);
+        built = attempt(driver, building, layer, variant);
       }
+      const kept = hold(building, scratchPath(dir, key.replace(/:/g, '-'), root));
+      made.push(kept);
+      roots[key] = kept;
+      runs[key] = built.out ? { ...built, out: rebase(built.out, building, kept) } : built;
     }
 
     const ctx = { dir: join(root, dir), layer, ...firstSelectors(join(root, dir), layer), runs: runs as Partial<Record<RunKey, Built>> };

@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { finish, linkSheets, sheetOrder } from './static.ts';
-import { scratch } from './scratch.ts';
+import { hold, rebase, scratch, scratchPath } from './scratch.ts';
 import type { Mutation } from './types.ts';
 
 const made: string[] = [];
@@ -85,6 +85,29 @@ describe('scratch', () => {
       expect(hashAfter).toBe(hashBefore);
     });
   }
+});
+
+describe('hold', () => {
+  test('a scratch moves to a path of its own and the next one is built at the first path again (D11)', () => {
+    const building = scratchPath('react-etsy', 'm');
+    made.push(building, scratchPath('react-etsy', 't-hold-a'), scratchPath('react-etsy', 't-hold-b'));
+    expect(building).toBe('.run-react-etsy-m');
+    scratch('react-etsy', 'm', 'none');
+    writeFileSync(join(building, 'dist-marker.txt'), 'first');
+    const a = hold(building, scratchPath('react-etsy', 't-hold-a'));
+    expect(existsSync(building)).toBe(false);
+    expect(rebase(join(building, 'dist-marker.txt'), building, a)).toBe(join(a, 'dist-marker.txt'));
+    expect(readFileSync(join(a, 'dist-marker.txt'), 'utf8')).toBe('first');
+    // the second scratch is made at the same path, with other content, and its holder is another path
+    scratch('react-etsy', 'm', 'app-text');
+    expect(existsSync(join(building, 'dist-marker.txt'))).toBe(false);
+    const b = hold(building, scratchPath('react-etsy', 't-hold-b'));
+    expect(b).not.toBe(a);
+    expect(readFileSync(join(a, 'src/Main.tsx'), 'utf8')).not.toBe(readFileSync(join(b, 'src/Main.tsx'), 'utf8'));
+    // the links are relative to the parent, which does not change
+    expect(lstatSync(join(b, 'node_modules/@dravensoft/arena-react')).isSymbolicLink()).toBe(true);
+    expect(existsSync(join(b, 'node_modules/@dravensoft/arena-react/package.json'))).toBe(true);
+  });
 });
 
 describe('static steps', () => {

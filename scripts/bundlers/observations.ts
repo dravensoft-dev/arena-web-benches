@@ -51,8 +51,9 @@ export const holdsPackageSheet = (text: string, ctx: Context): boolean => starts
 
 export const holdsAppSheet = (text: string, ctx: Context): boolean => startsRule(ctx.appSelector).test(strip(text));
 
-/** A code of React DOM that survives minification. */
-const holdsReactDom = (text: string): boolean => text.includes('__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE');
+/** A code of React DOM that survives minification: React 18.3.1 carries the first string, React 19 the second. */
+const holdsReactDom = (text: string): boolean =>
+  text.includes('__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED') || text.includes('__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE');
 
 // ------------------------------------------------------------------------------------------------- reading runs
 

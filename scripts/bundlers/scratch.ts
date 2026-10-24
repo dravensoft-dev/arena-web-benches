@@ -1,4 +1,4 @@
-import { appendFileSync, cpSync, existsSync, readdirSync, realpathSync, rmSync } from 'node:fs';
+import { appendFileSync, cpSync, existsSync, readdirSync, realpathSync, renameSync, rmSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 import type { Layer, Mutation } from './types.ts';
 
@@ -66,3 +66,20 @@ export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'
   }
   return to;
 }
+
+/** The scratch path `scratch(dir, tag, …)` makes, under `root`. */
+export const scratchPath = (dir: string, tag: string, root = '.'): string => join(root, `.run-${dir}-${tag}`);
+
+/**
+ * Moves the scratch `from` to `to` (replacing what is there), so the next scratch can be built at `from` again: a
+ * directory name enters webpack's deterministic module ids, so builds compared with each other share one. The
+ * scratch's links are relative to its parent, which does not change.
+ */
+export function hold(from: string, to: string): string {
+  rmSync(to, { recursive: true, force: true });
+  renameSync(from, to);
+  return to;
+}
+
+/** `file`, a path under the scratch `from`, as the same file under `to`. */
+export const rebase = (file: string, from: string, to: string): string => join(to, relative(from, file));
