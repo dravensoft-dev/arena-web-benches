@@ -97,8 +97,8 @@ export function ListingScreen({
             Only 3 left, and it is in 12 other baskets.
           </ArenaAlert>
 
-          <ArenaSelect label="Width" options={SIZES} value={size} onChange={setSize} />
-          <ArenaSelect label="Quantity" options={QUANTITIES} value={quantity} onChange={setQuantity} />
+          <ArenaSelect label="Width" options={SIZES} value={size} onValueChange={setSize} />
+          <ArenaSelect label="Quantity" options={QUANTITIES} value={quantity} onValueChange={setQuantity} />
           <ArenaCombobox
             label="Deliver to"
             placeholder="Search countries"
@@ -106,16 +106,16 @@ export function ListingScreen({
             required
             options={COUNTRIES}
             value={country}
-            onChange={setCountry}
+            onValueChange={setCountry}
           />
 
-          <ArenaButton className="arena-fill" icon="ph-bold ph-basket" onClick={() => onBasket(one.id)}>
+          <ArenaButton className="arena-fill" icon="ph-bold ph-basket" onActivate={() => onBasket(one.id)}>
             Add to basket
           </ArenaButton>
           <ArenaButton
             className="arena-emphasis-secondary arena-fill"
             icon={saved.includes(one.id) ? 'ph-fill ph-heart' : 'ph-bold ph-heart'}
-            onClick={() => onSave(one.id)}
+            onActivate={() => onSave(one.id)}
           >
             {saved.includes(one.id) ? 'Saved' : 'Save for later'}
           </ArenaButton>

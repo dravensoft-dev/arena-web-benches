@@ -61,7 +61,7 @@ const CRUMBS: ArenaCrumb[] = [
       <header class="bar">
         <arena-breadcrumbs ariaLabel="Location" [items]="crumbs" />
         <div class="bar__gap"></div>
-        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" (click)="palette.set(true)">
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" (activate)="palette.set(true)">
           Search
         </arena-button>
         <arena-icon-button icon="ph-bold ph-bell" label="Notifications" class="arena-size-sm" />
@@ -69,7 +69,7 @@ const CRUMBS: ArenaCrumb[] = [
           [icon]="themeIcon()"
           label="Switch appearance"
           class="arena-size-sm"
-          (click)="toggleTheme()"
+          (activate)="toggleTheme()"
         />
         <arena-avatar [name]="ada.name" [src]="ada.image" class="arena-size-sm" />
       </header>

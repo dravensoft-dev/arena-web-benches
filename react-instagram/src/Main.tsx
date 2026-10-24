@@ -134,7 +134,7 @@ function CreateDialog({ onClose }: { onClose: () => void }) {
       title="Create new post"
       fillBelow="sm"
       onClose={onClose}
-      footer={<ArenaButton disabled={held === 0 || tooMany} onClick={share}>Share</ArenaButton>}
+      footer={<ArenaButton disabled={held === 0 || tooMany} onActivate={share}>Share</ArenaButton>}
     >
       <ArenaFileInput
         ref={picker}
@@ -145,7 +145,7 @@ function CreateDialog({ onClose }: { onClose: () => void }) {
         droppable
         hint={`Drag photos and videos here. Up to ${UPLOAD.maxFiles}, 30 MB each.`}
         error={tooMany ? `A post holds up to ${UPLOAD.maxFiles}. Remove ${held - UPLOAD.maxFiles} to share it.` : undefined}
-        onChange={(selection) => setHeld(selection.names.length)}
+        onValueChange={(selection) => setHeld(selection.names.length)}
       />
     </ArenaDialog>
   );
@@ -189,7 +189,7 @@ function App() {
           <ArenaIconButton
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label="Appearance"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           />
           <ArenaIconButton icon="ph-bold ph-heart" label="Notifications" />
         </header>

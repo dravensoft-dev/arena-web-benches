@@ -87,8 +87,8 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
             Only 3 left, and it is in 12 other baskets.
           </arena-alert>
 
-          <arena-select label="Width" [options]="sizes" [value]="size()" (change)="size.set($event)" />
-          <arena-select label="Quantity" [options]="quantities" [value]="quantity()" (change)="quantity.set($event)" />
+          <arena-select label="Width" [options]="sizes" [value]="size()" (valueChange)="size.set($event)" />
+          <arena-select label="Quantity" [options]="quantities" [value]="quantity()" (valueChange)="quantity.set($event)" />
           <arena-combobox
             label="Deliver to"
             placeholder="Search countries"
@@ -96,16 +96,16 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
             required
             [options]="countries"
             [value]="country()"
-            (change)="country.set($event)"
+            (valueChange)="country.set($event)"
           />
 
-          <arena-button class="arena-fill" icon="ph-bold ph-basket" (click)="basket.emit(one().id)">
+          <arena-button class="arena-fill" icon="ph-bold ph-basket" (activate)="basket.emit(one().id)">
             Add to basket
           </arena-button>
           <arena-button
             class="arena-emphasis-secondary arena-fill"
             [icon]="saved().includes(one().id) ? 'ph-fill ph-heart' : 'ph-bold ph-heart'"
-            (click)="save.emit(one().id)"
+            (activate)="save.emit(one().id)"
           >
             {{ saved().includes(one().id) ? 'Saved' : 'Save for later' }}
           </arena-button>

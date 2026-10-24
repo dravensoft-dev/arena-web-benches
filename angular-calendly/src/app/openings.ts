@@ -36,13 +36,13 @@ const ASKED = new URLSearchParams(window.location.search);
         <arena-button
           [icon]="view() === 'host' ? 'ph-bold ph-arrow-left' : 'ph-bold ph-calendar-blank'"
           class="arena-emphasis-ghost arena-size-sm"
-          (click)="view.set(view() === 'host' ? 'booking' : 'host')"
+          (activate)="view.set(view() === 'host' ? 'booking' : 'host')"
         >{{ view() === 'host' ? 'Back to the booking page' : 'Your schedule' }}</arena-button>
         <arena-icon-button
           [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
           [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
           class="arena-size-sm"
-          (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
+          (activate)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
         />
       </div>
 
@@ -66,7 +66,7 @@ const ASKED = new URLSearchParams(window.location.search);
                   [steps]="steps"
                   [index]="at()"
                   interactive
-                  (change)="back($event)"
+                  (valueChange)="back($event)"
                 />
               </div>
 
@@ -107,7 +107,7 @@ const ASKED = new URLSearchParams(window.location.search);
                       <p class="slots__day">Thursday 17 September</p>
                       <div class="slots__grid">
                         @for (one of slots; track one) {
-                          <arena-button class="arena-emphasis-secondary arena-fill" (click)="slot.set(one)">{{ one }}</arena-button>
+                          <arena-button class="arena-emphasis-secondary arena-fill" (activate)="slot.set(one)">{{ one }}</arena-button>
                         }
                       </div>
                     </div>
@@ -118,7 +118,7 @@ const ASKED = new URLSearchParams(window.location.search);
                       icon="ph-bold ph-globe"
                       [options]="zones"
                       [value]="zone()"
-                      (change)="zone.set($event)"
+                      (valueChange)="zone.set($event)"
                     />
                   </div>
                 </section>
@@ -135,7 +135,7 @@ const ASKED = new URLSearchParams(window.location.search);
                     required
                     [value]="name()"
                     autoComplete="name"
-                    (change)="name.set($event)"
+                    (valueChange)="name.set($event)"
                   />
                   <arena-input
                     label="Email"
@@ -144,9 +144,9 @@ const ASKED = new URLSearchParams(window.location.search);
                     hint="The invitation and the link go here."
                     [value]="email()"
                     autoComplete="email"
-                    (change)="email.set($event)"
+                    (valueChange)="email.set($event)"
                   />
-                  <arena-radio-group ariaLabel="Who is coming" [value]="guests()" (change)="guests.set($event)">
+                  <arena-radio-group ariaLabel="Who is coming" [value]="guests()" (valueChange)="guests.set($event)">
                     @for (one of guestOptions; track one.value) {
                       <arena-radio [value]="one.value" [label]="one.label" [hint]="one.hint" />
                     }
@@ -157,16 +157,16 @@ const ASKED = new URLSearchParams(window.location.search);
                     [maxLength]="400"
                     [rows]="4"
                     [value]="note()"
-                    (change)="note.set($event)"
+                    (valueChange)="note.set($event)"
                   />
                   <arena-checkbox
                     label="Send me a reminder the day before"
                     [checked]="remind()"
-                    (change)="remind.set($event)"
+                    (valueChange)="remind.set($event)"
                   />
 
                   <div class="form__foot">
-                    <arena-button class="arena-size-lg" (click)="booked.set(true)">Schedule the call</arena-button>
+                    <arena-button class="arena-size-lg" (activate)="booked.set(true)">Schedule the call</arena-button>
                     <p class="form__note">
                       By scheduling you agree to the terms. Nothing is charged.
                     </p>
@@ -181,7 +181,7 @@ const ASKED = new URLSearchParams(window.location.search);
                   <arena-button
                     icon="ph-bold ph-arrow-counter-clockwise"
                     class="arena-emphasis-secondary"
-                    (click)="slot.set(null); booked.set(false)"
+                    (activate)="slot.set(null); booked.set(false)"
                   >Book another time</arena-button>
                 </section>
               }

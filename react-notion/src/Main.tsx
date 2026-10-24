@@ -81,7 +81,7 @@ function App() {
         <ArenaIconButton
           icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
           label="Switch appearance"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         />
       </div>
 

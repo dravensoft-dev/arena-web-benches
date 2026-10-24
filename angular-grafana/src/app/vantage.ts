@@ -87,7 +87,7 @@ const BOARDS = new Set(DASHBOARDS.map((one) => one.id));
               [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
               [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
               class="arena-size-sm"
-              (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
+              (activate)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
             />
           </arena-page-head>
 
@@ -126,13 +126,13 @@ const BOARDS = new Set(DASHBOARDS.map((one) => one.id));
               <h1 class="board__title">API gateway</h1>
               <arena-badge tone="danger" dot>2 firing</arena-badge>
               <span class="board__gap"></span>
-              <arena-select label="Range" [options]="ranges" [value]="range()" (change)="range.set($event)" />
+              <arena-select label="Range" [options]="ranges" [value]="range()" (valueChange)="range.set($event)" />
               <arena-icon-button icon="ph-bold ph-arrows-clockwise" label="Refresh now" class="arena-size-sm" />
               <arena-icon-button
                 [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
                 [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
                 class="arena-size-sm"
-                (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
+                (activate)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
               />
             </div>
             <p class="board__sub">

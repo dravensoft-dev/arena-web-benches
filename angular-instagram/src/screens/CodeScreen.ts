@@ -23,10 +23,10 @@ import { TWO_FACTOR } from '../data/Feed';
           name="otp"
           [value]="code()"
           [error]="error()"
-          (change)="code.set($event); error.set(undefined)"
+          (valueChange)="code.set($event); error.set(undefined)"
           (complete)="verify($event)"
         />
-        <arena-button class="arena-fill" [disabled]="code().length < 6" (click)="verify(code())">Confirm</arena-button>
+        <arena-button class="arena-fill" [disabled]="code().length < 6" (activate)="verify(code())">Confirm</arena-button>
         <arena-button class="arena-emphasis-ghost arena-fill">Resend code</arena-button>
       </div>
 

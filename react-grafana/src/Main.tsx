@@ -78,7 +78,7 @@ function Vantage() {
       icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
       label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
       className="arena-size-sm"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     />
   );
 
@@ -144,7 +144,7 @@ function Vantage() {
               <h1 className="board__title">API gateway</h1>
               <ArenaBadge tone="danger" dot>2 firing</ArenaBadge>
               <span className="board__gap" />
-              <ArenaSelect label="Range" options={RANGES} value={range} onChange={setRange} />
+              <ArenaSelect label="Range" options={RANGES} value={range} onValueChange={setRange} />
               <ArenaIconButton icon="ph-bold ph-arrows-clockwise" label="Refresh now" className="arena-size-sm" />
               {themeToggle}
             </div>

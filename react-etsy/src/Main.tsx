@@ -98,7 +98,7 @@ function Shop() {
               label="Search for anything"
               icon="ph-bold ph-magnifying-glass"
               value={query}
-              onChange={search}
+              onValueChange={search}
             />
           </div>
         }
@@ -107,13 +107,13 @@ function Shop() {
             <ArenaIconButton
               icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
               label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             />
             <ArenaIconButton icon="ph-bold ph-heart" label="Favourites" />
             <ArenaIconButton
               icon="ph-bold ph-basket"
               label={`Basket, ${basket.length} items`}
-              onClick={() => setCartOpen(true)}
+              onActivate={() => setCartOpen(true)}
             />
           </div>
         }

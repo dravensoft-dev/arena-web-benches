@@ -13,9 +13,9 @@ import { Wordmark } from '../Pieces';
       <app-wordmark brand />
 
       <div class="auth__fields">
-        <arena-input label="Phone number, username or email" autoComplete="username" [value]="who()" (change)="who.set($event)" />
+        <arena-input label="Phone number, username or email" autoComplete="username" [value]="who()" (valueChange)="who.set($event)" />
         <arena-input label="Password" type="password" autoComplete="current-password" />
-        <arena-button class="arena-fill" [disabled]="who().trim() === ''" (click)="logIn.emit()">Log in</arena-button>
+        <arena-button class="arena-fill" [disabled]="who().trim() === ''" (activate)="logIn.emit()">Log in</arena-button>
       </div>
 
       <a footer class="auth__link" href="#/reset">Forgot password?</a>

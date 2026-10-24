@@ -78,8 +78,8 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
         </ul>
 
         <div class="nav__foot">
-          <arena-icon-button icon="ph-bold ph-question" label="Take the tour" (click)="startTour()" />
-          <arena-icon-button [icon]="themeIcon()" label="Switch appearance" (click)="toggleTheme()" />
+          <arena-icon-button icon="ph-bold ph-question" label="Take the tour" (activate)="startTour()" />
+          <arena-icon-button [icon]="themeIcon()" label="Switch appearance" (activate)="toggleTheme()" />
         </div>
       </nav>
 

@@ -45,20 +45,20 @@ import { CATEGORIES, listing, money } from '../data/Shop';
             label="Search for anything"
             icon="ph-bold ph-magnifying-glass"
             [value]="query()"
-            (change)="search($event)"
+            (valueChange)="search($event)"
           />
         </div>
         <div actions class="bar-actions">
           <arena-icon-button
             [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
             [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
-            (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
+            (activate)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
           />
           <arena-icon-button icon="ph-bold ph-heart" label="Favourites" />
           <arena-icon-button
             icon="ph-bold ph-basket"
             [label]="'Basket, ' + basket().length + ' items'"
-            (click)="cartOpen.set(true)"
+            (activate)="cartOpen.set(true)"
           />
         </div>
       </arena-app-bar>

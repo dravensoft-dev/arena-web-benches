@@ -37,7 +37,7 @@ const COMMANDS: ArenaCommand[] = [
     </main>
 
     <div class="theme-toggle">
-      <arena-icon-button [icon]="themeIcon()" label="Switch appearance" (click)="toggleTheme()" />
+      <arena-icon-button [icon]="themeIcon()" label="Switch appearance" (activate)="toggleTheme()" />
     </div>
 
     <arena-command-palette

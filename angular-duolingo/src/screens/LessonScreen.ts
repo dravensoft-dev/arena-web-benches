@@ -12,7 +12,7 @@ type Phase = 'asking' | 'right' | 'wrong';
   host: { class: 'lesson', '[attr.data-phase]': 'phase()' },
   template: `
     <header class="lesson__top">
-      <arena-icon-button icon="ph-bold ph-x" label="Quit the lesson" (click)="quit.emit()" />
+      <arena-icon-button icon="ph-bold ph-x" label="Quit the lesson" (activate)="quit.emit()" />
       <div class="bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" aria-label="Lesson progress">
         <span class="bar__fill" style="inline-size: 45%"></span>
       </div>
@@ -51,9 +51,9 @@ type Phase = 'asking' | 'right' | 'wrong';
     <footer class="lesson__foot">
       @if (phase() === 'asking') {
         <div class="foot__row">
-          <arena-button class="arena-emphasis-ghost arena-size-lg" (click)="next()">Skip</arena-button>
+          <arena-button class="arena-emphasis-ghost arena-size-lg" (activate)="next()">Skip</arena-button>
           <span class="foot__gap"></span>
-          <arena-button class="arena-size-lg" [disabled]="!picked()" (click)="check()">Check</arena-button>
+          <arena-button class="arena-size-lg" [disabled]="!picked()" (activate)="check()">Check</arena-button>
         </div>
       }
 
@@ -67,7 +67,7 @@ type Phase = 'asking' | 'right' | 'wrong';
             </span>
           </span>
           <span class="foot__gap"></span>
-          <arena-button class="arena-size-lg" (click)="next()">Continue</arena-button>
+          <arena-button class="arena-size-lg" (activate)="next()">Continue</arena-button>
         </div>
       }
 
@@ -81,7 +81,7 @@ type Phase = 'asking' | 'right' | 'wrong';
             </span>
           </span>
           <span class="foot__gap"></span>
-          <arena-button class="arena-size-lg" destructive (click)="next()">Got it</arena-button>
+          <arena-button class="arena-size-lg" destructive (activate)="next()">Got it</arena-button>
         </div>
       }
     </footer>

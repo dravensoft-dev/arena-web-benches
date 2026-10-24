@@ -78,7 +78,7 @@ export class Tags {
         placeholder="Search tasks"
         icon="ph-bold ph-magnifying-glass"
         [value]="query()"
-        (change)="queryChange.emit($event)"
+        (valueChange)="queryChange.emit($event)"
       />
     </div>
     <arena-menu align="end" [items]="filter">

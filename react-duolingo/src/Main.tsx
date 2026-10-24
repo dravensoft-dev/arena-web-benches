@@ -129,11 +129,11 @@ function App() {
         </ul>
 
         <div className="nav__foot">
-          <ArenaIconButton icon="ph-bold ph-question" label="Take the tour" onClick={startTour} />
+          <ArenaIconButton icon="ph-bold ph-question" label="Take the tour" onActivate={startTour} />
           <ArenaIconButton
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label="Switch appearance"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           />
         </div>
       </nav>

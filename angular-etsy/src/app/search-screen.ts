@@ -54,13 +54,13 @@ const GHOSTS = [0, 1, 2, 3, 4, 5, 6, 7];
             ariaLabel="What kind of item"
             [options]="kinds"
             [value]="kind()"
-            (change)="kind.set($event)"
+            (valueChange)="kind.set($event)"
           />
           <arena-select
             label="Sort by"
             [options]="sorts"
             [value]="sort()"
-            (change)="sort.set($event)"
+            (valueChange)="sort.set($event)"
           />
         </div>
       </div>
@@ -86,8 +86,8 @@ const GHOSTS = [0, 1, 2, 3, 4, 5, 6, 7];
             [valuePrefix]="currency"
             [value]="low()"
             [valueEnd]="high()"
-            (change)="low.set($event)"
-            (changeEnd)="high.set($event)"
+            (valueChange)="low.set($event)"
+            (valueEndChange)="high.set($event)"
           />
         </div>
       </div>
@@ -125,7 +125,7 @@ const GHOSTS = [0, 1, 2, 3, 4, 5, 6, 7];
           ariaLabel="Search results"
           [page]="page()"
           [pageCount]="12"
-          (change)="page.set($event)"
+          (valueChange)="page.set($event)"
         />
       </div>
     </div>

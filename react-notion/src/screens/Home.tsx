@@ -9,7 +9,7 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
       <header className="topbar">
         <span className="topbar__title">Home</span>
         <div className="topbar__actions">
-          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" onClick={onSearch}>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" onActivate={onSearch}>
             Search
           </ArenaButton>
           <ArenaIconButton icon="ph-bold ph-gear" label="Settings" className="arena-size-sm" />
@@ -56,7 +56,7 @@ export function Home({ onScreen, onSearch }: { onScreen: (next: Screen) => void;
             </h2>
             <ArenaGrid>
               {TEMPLATES.map((template) => (
-                <ArenaCard key={template.id} title={template.title} interactive onClick={() => onScreen('doc')}>
+                <ArenaCard key={template.id} title={template.title} interactive onActivate={() => onScreen('doc')}>
                   <p className="template__blurb">
                     <span className="template__icon" aria-hidden="true"><ArenaIcon icon={template.icon} /></span>
                     {template.blurb}

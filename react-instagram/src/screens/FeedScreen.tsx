@@ -132,7 +132,7 @@ export function FeedScreen({ onOpen, onSwitchAccount }: { onOpen: (post: Post) =
             <Handle handle={ME.handle} bold />
             <span className="aside__me-name">{ME.name}</span>
           </span>
-          <ArenaButton className="arena-emphasis-ghost arena-size-sm" onClick={onSwitchAccount}>Switch</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" onActivate={onSwitchAccount}>Switch</ArenaButton>
         </div>
 
         <div className="aside__head">

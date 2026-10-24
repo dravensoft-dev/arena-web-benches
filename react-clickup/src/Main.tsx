@@ -97,7 +97,7 @@ function App() {
             ]}
           />
           <div className="bar__gap" />
-          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" onClick={() => setPalette(true)}>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" onActivate={() => setPalette(true)}>
             Search
           </ArenaButton>
           <ArenaIconButton icon="ph-bold ph-bell" label="Notifications" className="arena-size-sm" />
@@ -105,7 +105,7 @@ function App() {
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label="Switch appearance"
             className="arena-size-sm"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           />
           <ArenaAvatar name={PEOPLE.ada.name} src={PEOPLE.ada.image} className="arena-size-sm" />
         </header>

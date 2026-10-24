@@ -13,7 +13,7 @@ import type { Screen } from '../Sidebar';
     <header class="topbar">
       <span class="topbar__title">Home</span>
       <div class="topbar__actions">
-        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" (click)="search.emit()">
+        <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-magnifying-glass" (activate)="search.emit()">
           Search
         </arena-button>
         <arena-icon-button icon="ph-bold ph-gear" label="Settings" class="arena-size-sm" />
@@ -55,7 +55,7 @@ import type { Screen } from '../Sidebar';
           </h2>
           <arena-grid>
             @for (template of templates; track template.id) {
-              <arena-card [title]="template.title" interactive (click)="screenChange.emit('doc')">
+              <arena-card [title]="template.title" interactive (activate)="screenChange.emit('doc')">
                 <p class="template__blurb">
                   <span class="template__icon" aria-hidden="true"><arena-icon [icon]="template.icon" /></span>
                   {{ template.blurb }}

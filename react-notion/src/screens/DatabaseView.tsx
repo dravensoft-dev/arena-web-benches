@@ -60,7 +60,7 @@ function Toolbar({ query, onQuery }: { query: string; onQuery: (next: string) =>
           placeholder="Search tasks"
           icon="ph-bold ph-magnifying-glass"
           value={query}
-          onChange={onQuery}
+          onValueChange={onQuery}
         />
       </div>
       <ArenaMenu

@@ -68,13 +68,13 @@ export function SearchScreen({
             ariaLabel="What kind of item"
             options={KINDS}
             value={kind}
-            onChange={setKind}
+            onValueChange={setKind}
           />
           <ArenaSelect
             label="Sort by"
             options={SORTS}
             value={sort}
-            onChange={setSort}
+            onValueChange={setSort}
           />
         </div>
       </div>
@@ -103,8 +103,8 @@ export function SearchScreen({
             valuePrefix={CURRENCY}
             value={low}
             valueEnd={high}
-            onChange={setLow}
-            onChangeEnd={setHigh}
+            onValueChange={setLow}
+            onValueEndChange={setHigh}
           />
         </div>
       </div>
@@ -145,7 +145,7 @@ export function SearchScreen({
           ariaLabel="Search results"
           page={page}
           pageCount={12}
-          onChange={setPage}
+          onValueChange={setPage}
         />
       </div>
     </div>

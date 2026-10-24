@@ -137,9 +137,9 @@ export class PostDialog {
         droppable
         [hint]="'Drag photos and videos here. Up to ' + upload.maxFiles + ', 30 MB each.'"
         [error]="tooMany() ? 'A post holds up to ' + upload.maxFiles + '. Remove ' + (held() - upload.maxFiles) + ' to share it.' : undefined"
-        (change)="held.set($event.names.length)"
+        (valueChange)="held.set($event.names.length)"
       />
-      <arena-button footer [disabled]="held() === 0 || tooMany()" (click)="share()">Share</arena-button>
+      <arena-button footer [disabled]="held() === 0 || tooMany()" (activate)="share()">Share</arena-button>
     </arena-dialog>
   `,
 })
@@ -189,7 +189,7 @@ export class CreateDialog {
               <span class="nav__word">Instagram</span>
             </a>
             <span class="post__gap"></span>
-            <arena-icon-button [icon]="themeIcon()" label="Appearance" (click)="toggleTheme()" />
+            <arena-icon-button [icon]="themeIcon()" label="Appearance" (activate)="toggleTheme()" />
             <arena-icon-button icon="ph-bold ph-heart" label="Notifications" />
           </header>
         } @else {

@@ -54,7 +54,7 @@ const SPLITS: ArenaSegmentOption[] = [
             [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
             [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
             class="arena-size-sm"
-            (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
+            (activate)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
           />
         </div>
 
@@ -89,14 +89,14 @@ const SPLITS: ArenaSegmentOption[] = [
             label="Search mail"
             icon="ph-bold ph-magnifying-glass"
             [value]="query()"
-            (change)="query.set($event)"
+            (valueChange)="query.set($event)"
           />
           <arena-segmented-control
             ariaLabel="Which half of the inbox"
             [options]="splits"
             [value]="split()"
             class="arena-size-sm"
-            (change)="split.set($event)"
+            (valueChange)="split.set($event)"
           />
         </div>
         <ul class="list__rows">
@@ -113,7 +113,7 @@ const SPLITS: ArenaSegmentOption[] = [
               <div class="read__title-row">
                 <h1 class="read__subject">{{ open().subject }}</h1>
                 <span class="read__actions">
-                  <arena-icon-button icon="ph-bold ph-archive" label="Archive" class="arena-size-sm" (click)="settle(open().id)" />
+                  <arena-icon-button icon="ph-bold ph-archive" label="Archive" class="arena-size-sm" (activate)="settle(open().id)" />
                   <arena-popover
                     label="Remind me"
                     [open]="snoozing()"
@@ -122,7 +122,7 @@ const SPLITS: ArenaSegmentOption[] = [
                   >
                     <arena-icon-button trigger icon="ph-bold ph-clock-countdown" label="Snooze" class="arena-size-sm" />
                     <div class="snooze">
-                      <arena-radio-group ariaLabel="When it comes back" [value]="until()" (change)="until.set($event)">
+                      <arena-radio-group ariaLabel="When it comes back" [value]="until()" (valueChange)="until.set($event)">
                         @for (one of snoozes; track one.value) {
                           <arena-radio [value]="one.value" [label]="one.label" [hint]="one.hint" />
                         }
@@ -135,7 +135,7 @@ const SPLITS: ArenaSegmentOption[] = [
                         <arena-button
                           icon="ph-bold ph-clock-countdown"
                           class="arena-emphasis-secondary arena-size-sm"
-                          (click)="settle(open().id); snoozing.set(false)"
+                          (activate)="settle(open().id); snoozing.set(false)"
                         >
                           Snooze
                         </arena-button>
@@ -186,7 +186,7 @@ const SPLITS: ArenaSegmentOption[] = [
 
             @if (replying()) {
               <section class="compose" aria-label="Reply">
-                <arena-textarea [label]="'Reply to ' + open().from" [value]="draft()" [rows]="4" (change)="draft.set($event)" />
+                <arena-textarea [label]="'Reply to ' + open().from" [value]="draft()" [rows]="4" (valueChange)="draft.set($event)" />
                 <div class="compose__foot">
                   <arena-split-button
                     label="Send"
@@ -194,12 +194,12 @@ const SPLITS: ArenaSegmentOption[] = [
                     icon="ph-bold ph-paper-plane-tilt"
                     [items]="sends"
                     class="arena-emphasis-secondary arena-size-sm"
-                    (click)="discard()"
+                    (activate)="discard()"
                     (select)="sendWith($event)"
                   >
                     Send
                   </arena-split-button>
-                  <arena-button class="arena-emphasis-ghost arena-size-sm" (click)="discard()">
+                  <arena-button class="arena-emphasis-ghost arena-size-sm" (activate)="discard()">
                     Discard
                   </arena-button>
                   <span class="read__reply-hint">
@@ -210,7 +210,7 @@ const SPLITS: ArenaSegmentOption[] = [
               </section>
             } @else {
               <footer class="read__reply">
-                <arena-button icon="ph-bold ph-arrow-bend-up-left" class="arena-size-sm arena-emphasis-secondary" (click)="replying.set(true)">Reply</arena-button>
+                <arena-button icon="ph-bold ph-arrow-bend-up-left" class="arena-size-sm arena-emphasis-secondary" (activate)="replying.set(true)">Reply</arena-button>
                 <arena-button icon="ph-bold ph-arrow-bend-double-up-right" class="arena-emphasis-secondary arena-size-sm">Forward</arena-button>
                 <span class="read__reply-hint">
                   <arena-kbd [keys]="['R']" />
@@ -227,7 +227,7 @@ const SPLITS: ArenaSegmentOption[] = [
               headingLevel="h1"
               [message]="zero()"
             >
-              <arena-button action icon="ph-bold ph-arrow-counter-clockwise" class="arena-emphasis-secondary arena-size-sm" (click)="done.set([])">
+              <arena-button action icon="ph-bold ph-arrow-counter-clockwise" class="arena-emphasis-secondary arena-size-sm" (activate)="done.set([])">
                 Bring them back
               </arena-button>
             </arena-empty-state>

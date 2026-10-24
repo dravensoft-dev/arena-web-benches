@@ -26,7 +26,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
   return (
     <div className="lesson" data-phase={phase}>
       <header className="lesson__top">
-        <ArenaIconButton icon="ph-bold ph-x" label="Quit the lesson" onClick={onQuit} />
+        <ArenaIconButton icon="ph-bold ph-x" label="Quit the lesson" onActivate={onQuit} />
         <div className="bar" role="progressbar" aria-valuenow={45} aria-valuemin={0} aria-valuemax={100} aria-label="Lesson progress">
           <span className="bar__fill" style={{ inlineSize: '45%' }} />
         </div>
@@ -68,9 +68,9 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
       <footer className="lesson__foot">
         {phase === 'asking' && (
           <div className="foot__row">
-            <ArenaButton className="arena-emphasis-ghost arena-size-lg" onClick={next}>Skip</ArenaButton>
+            <ArenaButton className="arena-emphasis-ghost arena-size-lg" onActivate={next}>Skip</ArenaButton>
             <span className="foot__gap" />
-            <ArenaButton className="arena-size-lg" disabled={!picked} onClick={check}>Check</ArenaButton>
+            <ArenaButton className="arena-size-lg" disabled={!picked} onActivate={check}>Check</ArenaButton>
           </div>
         )}
 
@@ -84,7 +84,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
               </span>
             </span>
             <span className="foot__gap" />
-            <ArenaButton className="arena-size-lg" onClick={next}>Continue</ArenaButton>
+            <ArenaButton className="arena-size-lg" onActivate={next}>Continue</ArenaButton>
           </div>
         )}
 
@@ -98,7 +98,7 @@ export function LessonScreen({ onQuit }: { onQuit: () => void }) {
               </span>
             </span>
             <span className="foot__gap" />
-            <ArenaButton className="arena-size-lg" destructive onClick={next}>Got it</ArenaButton>
+            <ArenaButton className="arena-size-lg" destructive onActivate={next}>Got it</ArenaButton>
           </div>
         )}
       </footer>

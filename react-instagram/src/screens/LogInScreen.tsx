@@ -14,9 +14,9 @@ export function LogInScreen({ onLogIn }: { onLogIn: () => void }) {
         footer={<a className="auth__link" href="#/reset">Forgot password?</a>}
       >
         <div className="auth__fields">
-          <ArenaInput label="Phone number, username or email" autoComplete="username" value={who} onChange={setWho} />
+          <ArenaInput label="Phone number, username or email" autoComplete="username" value={who} onValueChange={setWho} />
           <ArenaInput label="Password" type="password" autoComplete="current-password" />
-          <ArenaButton className="arena-fill" disabled={who.trim() === ''} onClick={onLogIn}>Log in</ArenaButton>
+          <ArenaButton className="arena-fill" disabled={who.trim() === ''} onActivate={onLogIn}>Log in</ArenaButton>
         </div>
       </ArenaUnauthCard>
 

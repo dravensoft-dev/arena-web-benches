@@ -97,7 +97,7 @@ function Relay() {
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
             className="arena-size-sm"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           />
         </div>
 
@@ -132,14 +132,14 @@ function Relay() {
             label="Search mail"
             icon="ph-bold ph-magnifying-glass"
             value={query}
-            onChange={setQuery}
+            onValueChange={setQuery}
           />
           <ArenaSegmentedControl
             ariaLabel="Which half of the inbox"
             options={SPLITS}
             value={split}
             className="arena-size-sm"
-            onChange={setSplit}
+            onValueChange={setSplit}
           />
         </div>
         <ul className="list__rows">
@@ -156,7 +156,7 @@ function Relay() {
               <div className="read__title-row">
                 <h1 className="read__subject">{open.subject}</h1>
                 <span className="read__actions">
-                  <ArenaIconButton icon="ph-bold ph-archive" label="Archive" className="arena-size-sm" onClick={() => settle(open.id)} />
+                  <ArenaIconButton icon="ph-bold ph-archive" label="Archive" className="arena-size-sm" onActivate={() => settle(open.id)} />
                   <ArenaPopover
                     label="Remind me"
                     open={snoozing}
@@ -165,7 +165,7 @@ function Relay() {
                     trigger={<ArenaIconButton icon="ph-bold ph-clock-countdown" label="Snooze" className="arena-size-sm" />}
                   >
                     <div className="snooze">
-                      <ArenaRadioGroup ariaLabel="When it comes back" value={until} onChange={setUntil}>
+                      <ArenaRadioGroup ariaLabel="When it comes back" value={until} onValueChange={setUntil}>
                         {SNOOZES.map((one) => (
                           <ArenaRadio key={one.value} value={one.value} label={one.label} hint={one.hint} />
                         ))}
@@ -178,7 +178,7 @@ function Relay() {
                         <ArenaButton
                           icon="ph-bold ph-clock-countdown"
                           className="arena-emphasis-secondary arena-size-sm"
-                          onClick={() => { settle(open.id); setSnoozing(false); }}
+                          onActivate={() => { settle(open.id); setSnoozing(false); }}
                         >
                           Snooze
                         </ArenaButton>
@@ -227,7 +227,7 @@ function Relay() {
 
             {replying ? (
               <section className="compose" aria-label="Reply">
-                <ArenaTextarea label={`Reply to ${open.from}`} value={draft} rows={4} onChange={setDraft} />
+                <ArenaTextarea label={`Reply to ${open.from}`} value={draft} rows={4} onValueChange={setDraft} />
                 <div className="compose__foot">
                   <ArenaSplitButton
                     label="Send"
@@ -235,12 +235,12 @@ function Relay() {
                     icon="ph-bold ph-paper-plane-tilt"
                     items={SENDS}
                     className="arena-emphasis-secondary arena-size-sm"
-                    onClick={discard}
+                    onActivate={discard}
                     onSelect={sendWith}
                   >
                     Send
                   </ArenaSplitButton>
-                  <ArenaButton className="arena-emphasis-ghost arena-size-sm" onClick={discard}>
+                  <ArenaButton className="arena-emphasis-ghost arena-size-sm" onActivate={discard}>
                     Discard
                   </ArenaButton>
                   <span className="read__reply-hint">
@@ -251,7 +251,7 @@ function Relay() {
               </section>
             ) : (
               <footer className="read__reply">
-                <ArenaButton icon="ph-bold ph-arrow-bend-up-left" className="arena-size-sm arena-emphasis-secondary" onClick={() => setReplying(true)}>Reply</ArenaButton>
+                <ArenaButton icon="ph-bold ph-arrow-bend-up-left" className="arena-size-sm arena-emphasis-secondary" onActivate={() => setReplying(true)}>Reply</ArenaButton>
                 <ArenaButton icon="ph-bold ph-arrow-bend-double-up-right" className="arena-emphasis-secondary arena-size-sm">Forward</ArenaButton>
                 <span className="read__reply-hint">
                   <ArenaKbd keys={['R']} />
@@ -268,7 +268,7 @@ function Relay() {
               headingLevel="h1"
               message={zero}
               action={(
-                <ArenaButton icon="ph-bold ph-arrow-counter-clockwise" className="arena-emphasis-secondary arena-size-sm" onClick={() => setDone([])}>
+                <ArenaButton icon="ph-bold ph-arrow-counter-clockwise" className="arena-emphasis-secondary arena-size-sm" onActivate={() => setDone([])}>
                   Bring them back
                 </ArenaButton>
               )}

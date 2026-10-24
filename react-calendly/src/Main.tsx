@@ -62,7 +62,7 @@ function Openings() {
         <ArenaButton
           icon={view === 'host' ? 'ph-bold ph-arrow-left' : 'ph-bold ph-calendar-blank'}
           className="arena-emphasis-ghost arena-size-sm"
-          onClick={() => setView(view === 'host' ? 'booking' : 'host')}
+          onActivate={() => setView(view === 'host' ? 'booking' : 'host')}
         >
           {view === 'host' ? 'Back to the booking page' : 'Your schedule'}
         </ArenaButton>
@@ -70,7 +70,7 @@ function Openings() {
           icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
           label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
           className="arena-size-sm"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          onActivate={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         />
       </div>
 
@@ -100,7 +100,7 @@ function Openings() {
                   steps={BOOKING_STEPS}
                   index={at}
                   interactive
-                  onChange={(index) => {
+                  onValueChange={(index) => {
                     if (index === 0) setSlot(null);
                     setBooked(false);
                   }}
@@ -145,7 +145,7 @@ function Openings() {
                       <p className="slots__day">Thursday 17 September</p>
                       <div className="slots__grid">
                         {SLOTS.map((one) => (
-                          <ArenaButton key={one} className="arena-emphasis-secondary arena-fill" onClick={() => setSlot(one)}>
+                          <ArenaButton key={one} className="arena-emphasis-secondary arena-fill" onActivate={() => setSlot(one)}>
                             {one}
                           </ArenaButton>
                         ))}
@@ -158,7 +158,7 @@ function Openings() {
                       icon="ph-bold ph-globe"
                       options={ZONES}
                       value={zone}
-                      onChange={setZone}
+                      onValueChange={setZone}
                     />
                   </div>
                 </section>
@@ -175,7 +175,7 @@ function Openings() {
                     required
                     value={name}
                     autoComplete="name"
-                    onChange={setName}
+                    onValueChange={setName}
                   />
                   <ArenaInput
                     label="Email"
@@ -184,9 +184,9 @@ function Openings() {
                     hint="The invitation and the link go here."
                     value={email}
                     autoComplete="email"
-                    onChange={setEmail}
+                    onValueChange={setEmail}
                   />
-                  <ArenaRadioGroup ariaLabel="Who is coming" value={guests} onChange={setGuests}>
+                  <ArenaRadioGroup ariaLabel="Who is coming" value={guests} onValueChange={setGuests}>
                     {GUESTS.map((one) => (
                       <ArenaRadio key={one.value} value={one.value} label={one.label} hint={one.hint} />
                     ))}
@@ -197,16 +197,16 @@ function Openings() {
                     maxLength={400}
                     rows={4}
                     value={note}
-                    onChange={setNote}
+                    onValueChange={setNote}
                   />
                   <ArenaCheckbox
                     label="Send me a reminder the day before"
                     checked={remind}
-                    onChange={setRemind}
+                    onValueChange={setRemind}
                   />
 
                   <div className="form__foot">
-                    <ArenaButton className="arena-size-lg" onClick={() => setBooked(true)}>Schedule the call</ArenaButton>
+                    <ArenaButton className="arena-size-lg" onActivate={() => setBooked(true)}>Schedule the call</ArenaButton>
                     <p className="form__note">
                       By scheduling you agree to the terms. Nothing is charged.
                     </p>
@@ -221,7 +221,7 @@ function Openings() {
                   <ArenaButton
                     icon="ph-bold ph-arrow-counter-clockwise"
                     className="arena-emphasis-secondary"
-                    onClick={() => {
+                    onActivate={() => {
                       setSlot(null);
                       setBooked(false);
                     }}

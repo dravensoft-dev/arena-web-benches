@@ -29,7 +29,7 @@ const FRESH = LISTINGS.slice(0, 4);
         title="Made slowly, by the person who sells it"
         lede="Wool, oak, linen and clay from small workshops, each listing written by the hands that made the thing in it."
       >
-        <arena-button actions icon="ph-bold ph-storefront" class="arena-size-lg" (click)="shop.emit()">
+        <arena-button actions icon="ph-bold ph-storefront" class="arena-size-lg" (activate)="shop.emit()">
           Shop the autumn edit
         </arena-button>
         <arena-button actions iconRight="ph-bold ph-arrow-right" class="arena-emphasis-ghost arena-size-lg">

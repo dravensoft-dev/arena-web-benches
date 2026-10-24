@@ -60,12 +60,12 @@ export class Handle {
       <img [src]="media()[index()]" [alt]="alt()" class="carousel__img" />
       @if (many() && index() > 0) {
         <span class="carousel__nav carousel__nav--prev">
-          <arena-icon-button icon="ph-bold ph-caret-left" label="Previous photo" class="arena-size-sm" (click)="index.set(index() - 1)" />
+          <arena-icon-button icon="ph-bold ph-caret-left" label="Previous photo" class="arena-size-sm" (activate)="index.set(index() - 1)" />
         </span>
       }
       @if (many() && index() < media().length - 1) {
         <span class="carousel__nav carousel__nav--next">
-          <arena-icon-button icon="ph-bold ph-caret-right" label="Next photo" class="arena-size-sm" (click)="index.set(index() + 1)" />
+          <arena-icon-button icon="ph-bold ph-caret-right" label="Next photo" class="arena-size-sm" (activate)="index.set(index() + 1)" />
         </span>
       }
       @if (many()) { <span class="carousel__count arena-num">{{ index() + 1 }}/{{ media().length }}</span> }

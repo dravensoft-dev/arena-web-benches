@@ -38,10 +38,10 @@ export function CodeScreen({ onVerified, onBack }: { onVerified: () => void; onB
             name="otp"
             value={code}
             error={error}
-            onChange={(next) => { setCode(next); setError(undefined); }}
+            onValueChange={(next) => { setCode(next); setError(undefined); }}
             onComplete={verify}
           />
-          <ArenaButton className="arena-fill" disabled={code.length < 6} onClick={() => verify(code)}>Confirm</ArenaButton>
+          <ArenaButton className="arena-fill" disabled={code.length < 6} onActivate={() => verify(code)}>Confirm</ArenaButton>
           <ArenaButton className="arena-emphasis-ghost arena-fill">Resend code</ArenaButton>
         </div>
       </ArenaUnauthCard>

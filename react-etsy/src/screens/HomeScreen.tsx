@@ -27,7 +27,7 @@ export function HomeScreen({
         lede="Wool, oak, linen and clay from small workshops, each listing written by the hands that made the thing in it."
         actions={(
           <>
-            <ArenaButton icon="ph-bold ph-storefront" className="arena-size-lg" onClick={onShop}>
+            <ArenaButton icon="ph-bold ph-storefront" className="arena-size-lg" onActivate={onShop}>
               Shop the autumn edit
             </ArenaButton>
             <ArenaButton iconRight="ph-bold ph-arrow-right" className="arena-emphasis-ghost arena-size-lg">

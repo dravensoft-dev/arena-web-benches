@@ -176,7 +176,7 @@ export class PostCard {
           <app-handle [handle]="me.handle" bold />
           <span class="aside__me-name">{{ me.name }}</span>
         </span>
-        <arena-button class="arena-emphasis-ghost arena-size-sm" (click)="switchAccount.emit()">Switch</arena-button>
+        <arena-button class="arena-emphasis-ghost arena-size-sm" (activate)="switchAccount.emit()">Switch</arena-button>
       </div>
 
       <div class="aside__head">

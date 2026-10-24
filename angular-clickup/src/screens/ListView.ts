@@ -59,7 +59,7 @@ const ROW_MENU: ArenaMenuItem[] = [
   ],
   host: { class: 'row', '[attr.data-checked]': "checked() ? 'yes' : 'no'" },
   template: `
-    <span class="row__check"><arena-checkbox [label]="'Select ' + task().name" [showLabel]="false" [checked]="checked()" (change)="check.emit($event)" /></span>
+    <span class="row__check"><arena-checkbox [label]="'Select ' + task().name" [showLabel]="false" [checked]="checked()" (valueChange)="check.emit($event)" /></span>
     <span class="row__grip"><arena-icon icon="ph-bold ph-dots-six-vertical" /></span>
     <span class="row__name">
       <span class="row__title">{{ task().name }}</span>
@@ -111,12 +111,12 @@ export class Row {
         ariaLabel="Group tasks by"
         [options]="groupings"
         [value]="grouping()"
-        (change)="grouping.set($event)"
+        (valueChange)="grouping.set($event)"
         class="arena-size-sm"
       />
       <div class="toolbar__gap"></div>
       <div class="toolbar__search">
-        <arena-input type="search" placeholder="Search tasks" icon="ph-bold ph-magnifying-glass" [value]="query()" (change)="query.set($event)" />
+        <arena-input type="search" placeholder="Search tasks" icon="ph-bold ph-magnifying-glass" [value]="query()" (valueChange)="query.set($event)" />
       </div>
       <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</arena-button>
       <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-eye">Show</arena-button>
@@ -132,9 +132,9 @@ export class Row {
             [options]="assigneeOptions"
             [value]="assignees()"
             [maxVisible]="2"
-            (change)="assignees.set($event.values)"
+            (valueChange)="assignees.set($event.values)"
           />
-          <arena-select label="Priority" [options]="priorities" [value]="priority()" (change)="priority.set($event)" />
+          <arena-select label="Priority" [options]="priorities" [value]="priority()" (valueChange)="priority.set($event)" />
         </arena-filter-bar>
       </div>
 

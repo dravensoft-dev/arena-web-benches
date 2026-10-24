@@ -47,7 +47,7 @@ import type { Meeting } from '../data/Schedule';
                     icon="ph-bold ph-x"
                     destructive
                     class="arena-emphasis-ghost arena-size-sm"
-                    (click)="subject.set(one); asking.set(true)"
+                    (activate)="subject.set(one); asking.set(true)"
                   >Cancel</arena-button>
                 </arena-calendar-event>
               }
@@ -77,7 +77,7 @@ import type { Meeting } from '../data/Schedule';
             [error]="days().length === 0 ? 'Choose at least one day.' : undefined"
             [disabled]="!live()"
           >
-            <arena-checkbox-group ariaLabel="Available days" name="days" [value]="days()" (change)="days.set($event.values)">
+            <arena-checkbox-group ariaLabel="Available days" name="days" [value]="days()" (valueChange)="days.set($event.values)">
               @for (one of weekdays; track one.value) {
                 <arena-checkbox [value]="one.value" [label]="one.label" />
               }
@@ -90,9 +90,9 @@ import type { Meeting } from '../data/Schedule';
             [disabled]="!live()"
           >
             <div class="host__numbers">
-              <arena-number-field label="Duration" suffix="min" [min]="15" [max]="240" [step]="15" [value]="duration()" (change)="duration.set($event)" />
-              <arena-number-field label="Buffer before" suffix="min" [min]="0" [max]="60" [step]="5" [value]="before()" (change)="before.set($event)" />
-              <arena-number-field label="Buffer after" suffix="min" [min]="0" [max]="60" [step]="5" [value]="after()" (change)="after.set($event)" />
+              <arena-number-field label="Duration" suffix="min" [min]="15" [max]="240" [step]="15" [value]="duration()" (valueChange)="duration.set($event)" />
+              <arena-number-field label="Buffer before" suffix="min" [min]="0" [max]="60" [step]="5" [value]="before()" (valueChange)="before.set($event)" />
+              <arena-number-field label="Buffer after" suffix="min" [min]="0" [max]="60" [step]="5" [value]="after()" (valueChange)="after.set($event)" />
             </div>
           </arena-fieldset>
 

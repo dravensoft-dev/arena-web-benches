@@ -50,7 +50,7 @@ export function Schedule() {
                       icon="ph-bold ph-x"
                       destructive
                       className="arena-emphasis-ghost arena-size-sm"
-                      onClick={() => {
+                      onActivate={() => {
                         setSubject(one);
                         setAsking(true);
                       }}
@@ -86,7 +86,7 @@ export function Schedule() {
             error={days.length === 0 ? 'Choose at least one day.' : undefined}
             disabled={!live}
           >
-            <ArenaCheckboxGroup ariaLabel="Available days" name="days" value={days} onChange={(set) => setDays(set.values)}>
+            <ArenaCheckboxGroup ariaLabel="Available days" name="days" value={days} onValueChange={(set) => setDays(set.values)}>
               {WEEKDAY_OPTIONS.map((one) => (
                 <ArenaCheckbox key={one.value} value={one.value} label={one.label} />
               ))}
@@ -99,9 +99,9 @@ export function Schedule() {
             disabled={!live}
           >
             <div className="host__numbers">
-              <ArenaNumberField label="Duration" suffix="min" min={15} max={240} step={15} value={duration} onChange={setDuration} />
-              <ArenaNumberField label="Buffer before" suffix="min" min={0} max={60} step={5} value={before} onChange={setBefore} />
-              <ArenaNumberField label="Buffer after" suffix="min" min={0} max={60} step={5} value={after} onChange={setAfter} />
+              <ArenaNumberField label="Duration" suffix="min" min={15} max={240} step={15} value={duration} onValueChange={setDuration} />
+              <ArenaNumberField label="Buffer before" suffix="min" min={0} max={60} step={5} value={before} onValueChange={setBefore} />
+              <ArenaNumberField label="Buffer after" suffix="min" min={0} max={60} step={5} value={after} onValueChange={setAfter} />
             </div>
           </ArenaFieldset>
 

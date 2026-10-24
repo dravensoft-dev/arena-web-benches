@@ -53,12 +53,12 @@ export function Carousel({ media, alt }: { media: readonly string[]; alt: string
         <img src={media[index]} alt={alt} className="carousel__img" />
         {many && index > 0 && (
           <span className="carousel__nav carousel__nav--prev">
-            <ArenaIconButton icon="ph-bold ph-caret-left" label="Previous photo" className="arena-size-sm" onClick={() => setIndex(index - 1)} />
+            <ArenaIconButton icon="ph-bold ph-caret-left" label="Previous photo" className="arena-size-sm" onActivate={() => setIndex(index - 1)} />
           </span>
         )}
         {many && index < media.length - 1 && (
           <span className="carousel__nav carousel__nav--next">
-            <ArenaIconButton icon="ph-bold ph-caret-right" label="Next photo" className="arena-size-sm" onClick={() => setIndex(index + 1)} />
+            <ArenaIconButton icon="ph-bold ph-caret-right" label="Next photo" className="arena-size-sm" onActivate={() => setIndex(index + 1)} />
           </span>
         )}
         {many && <span className="carousel__count arena-num">{index + 1}/{media.length}</span>}

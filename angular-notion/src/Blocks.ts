@@ -14,7 +14,7 @@ import type { Screen } from './Sidebar';
   host: { style: 'display: contents' },
   template: `
     <div class="block block--todo" [attr.data-done]="checked() ? 'yes' : 'no'">
-      <arena-checkbox [checked]="checked()" [label]="text()" (change)="checked.set($event)" />
+      <arena-checkbox [checked]="checked()" [label]="text()" (valueChange)="checked.set($event)" />
     </div>
   `,
 })

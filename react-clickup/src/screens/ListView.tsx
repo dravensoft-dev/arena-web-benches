@@ -50,7 +50,7 @@ function Row({
 }) {
   return (
     <div className="row" data-checked={checked ? 'yes' : 'no'}>
-      <span className="row__check"><ArenaCheckbox label={`Select ${task.name}`} showLabel={false} checked={checked} onChange={(next) => onCheck(task.id, next)} /></span>
+      <span className="row__check"><ArenaCheckbox label={`Select ${task.name}`} showLabel={false} checked={checked} onValueChange={(next) => onCheck(task.id, next)} /></span>
       <span className="row__grip"><ArenaIcon icon="ph-bold ph-dots-six-vertical" /></span>
       <span className="row__name">
         <span className="row__title">{task.name}</span>
@@ -127,12 +127,12 @@ export function ListView() {
           ariaLabel="Group tasks by"
           options={GROUPINGS}
           value={grouping}
-          onChange={setGrouping}
+          onValueChange={setGrouping}
           className="arena-size-sm"
         />
         <div className="toolbar__gap" />
         <div className="toolbar__search">
-          <ArenaInput type="search" placeholder="Search tasks" icon="ph-bold ph-magnifying-glass" value={query} onChange={setQuery} />
+          <ArenaInput type="search" placeholder="Search tasks" icon="ph-bold ph-magnifying-glass" value={query} onValueChange={setQuery} />
         </div>
         <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-funnel">Filter</ArenaButton>
         <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-eye">Show</ArenaButton>
@@ -148,9 +148,9 @@ export function ListView() {
               options={ASSIGNEES}
               value={assignees}
               maxVisible={2}
-              onChange={(set) => setAssignees(set.values)}
+              onValueChange={(set) => setAssignees(set.values)}
             />
-            <ArenaSelect label="Priority" options={PRIORITIES} value={priority} onChange={setPriority} />
+            <ArenaSelect label="Priority" options={PRIORITIES} value={priority} onValueChange={setPriority} />
           </ArenaFilterBar>
         </div>
 

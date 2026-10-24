@@ -15,7 +15,7 @@ function Todo({ text, done }: { text: string; done: boolean }) {
   const [checked, setChecked] = useState(done);
   return (
     <div className="block block--todo" data-done={checked ? 'yes' : 'no'}>
-      <ArenaCheckbox checked={checked} label={text} onChange={setChecked} />
+      <ArenaCheckbox checked={checked} label={text} onValueChange={setChecked} />
     </div>
   );
 }
