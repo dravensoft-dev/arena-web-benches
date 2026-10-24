@@ -26,6 +26,12 @@ describe('stem', () => {
     expect(stem('index.3fa9c1.js')).toBe('index');
     expect(stem('app.js')).toBe('app');
   });
+  test('reads base64url hashes holding - and _', () => {
+    expect(stem('index-Ab-cD_12.js')).toBe('index');
+    expect(stem('index-CxXz9_-B.js')).toBe('index');
+    expect(stem('index-C-Xz9_aB.js')).toBe('index');
+    expect(stem('my-component.js')).toBe('my-component');
+  });
 });
 
 describe('brotliKB', () => {
@@ -56,6 +62,17 @@ describe('changedKB', () => {
     const r = changedKB(a, b);
     expect(r.plain).toBeGreaterThan(0.5);
     expect(r.dictionary).toBeLessThan(0.1);
+  });
+  test('a renamed file with a base64url hash pairs with its predecessor', () => {
+    const a = dir({ 'assets/index-CxXz9_-B.js': body });
+    const b = dir({ 'assets/index-C-Xz9_aB.js': body });
+    expect(changedKB(a, b).dictionary).toBeLessThan(0.1);
+  });
+  test('two predecessors tied on the name pair with nothing', () => {
+    const a = dir({ 'index-Ab12cd34.js': body, 'index-Ab12cd35.js': body });
+    const b = dir({ 'index-Zz99yy88.js': body });
+    const r = changedKB(a, b);
+    expect(r.dictionary).toBe(r.plain);
   });
   test('an unpaired file counts whole', () => {
     const a = dir({ 'main-3fa9c1.js': body });

@@ -22,10 +22,11 @@ export function brotliKB(bytes: Uint8Array, dictionary?: Uint8Array): number {
 }
 
 /** The name before its content hash: `-<hash>` or `.<hash>` before the extension. A hash has six or more
- * word characters and a digit or capital in it, so `my-component.js` keeps its name. */
+ * characters of the base64url alphabet (so it may hold `-` and `_`) with a digit or capital in it; the shortest
+ * name that leaves such a hash is the stem, so `my-component.js` keeps its name. */
 export function stem(name: string): string {
   const base = name.slice(0, name.length - extname(name).length);
-  const m = /^(.+?)[-.]((?=[A-Za-z0-9_]*[0-9A-Z])[A-Za-z0-9_]{6,})$/.exec(base);
+  const m = /^(.+?)[-.]((?=[A-Za-z0-9_-]*[0-9A-Z])[A-Za-z0-9_-]{6,})$/.exec(base);
   return m?.[1] ?? base;
 }
 
@@ -44,10 +45,31 @@ export function loaded(out: string, ext: '.js' | '.css'): string[] {
   return files(out).filter((f) => extname(f) === ext);
 }
 
-const key = (rel: string) => `${dirname(rel)}/${stem(basename(rel))}${extname(rel)}`;
+const common = (a: string, b: string) => {
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  return i;
+};
+
+/** The predecessor of `rel`: same directory and extension, and the longest common name prefix that covers the stem and
+ * its separator. Two predecessors tied on that prefix are ambiguous and pair with nothing. A file named by its hash
+ * alone (Next's `chunks/<hash>.js`) shares no stem, so it stays unpaired and counts whole. */
+function predecessor<T extends { f: string }>(old: T[], rel: string): T | undefined {
+  const name = basename(rel);
+  const need = stem(name).length + 1;
+  let best: T[] = [];
+  let top = 0;
+  for (const o of old) {
+    if (dirname(o.f) !== dirname(rel) || extname(o.f) !== extname(rel)) continue;
+    const n = common(basename(o.f), name);
+    if (n < need) continue;
+    if (n > top) { top = n; best = [o]; } else if (n === top) best.push(o);
+  }
+  return best.length === 1 ? best[0] : undefined;
+}
 
 /** The `.js` files of `after` that differ from `before` by name or bytes, in plain brotli and each with its
- * predecessor of the same stem as the dictionary. An unpaired file counts whole. */
+ * predecessor as the dictionary. An unpaired file counts whole. */
 export function changedKB(before: string, after: string): { plain: number; dictionary: number } {
   const old = files(before).filter((f) => extname(f) === '.js').map((f) => ({ f, bytes: readFileSync(join(before, f)) }));
   let plain = 0;
@@ -55,7 +77,7 @@ export function changedKB(before: string, after: string): { plain: number; dicti
   for (const f of loaded(after, '.js')) {
     const bytes = readFileSync(join(after, f));
     if (old.some((o) => o.f === f && o.bytes.equals(bytes))) continue;
-    const prev = old.find((o) => key(o.f) === key(f));
+    const prev = predecessor(old, f);
     const whole = brotliKB(bytes);
     plain += whole;
     dictionary += prev ? brotliKB(bytes, prev.bytes) : whole;
