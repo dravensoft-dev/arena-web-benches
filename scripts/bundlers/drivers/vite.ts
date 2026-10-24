@@ -22,11 +22,17 @@ const configName = (id: string): string => `.bundler.${id}.config.mjs`;
  */
 const PRELOAD = `import { registerHooks } from 'node:module';
 const { dir, vite } = JSON.parse(process.env.BENCH_HOOKS);
+const said = new Set();
 registerHooks({
   resolve(specifier, context, next) {
     if ((context.parentURL ?? '').includes('/@analogjs')) {
       if (specifier === 'vite' || specifier === 'typescript' || specifier.startsWith('@angular/')) {
-        return next(specifier === 'vite' ? vite : specifier, { ...context, parentURL: dir + '/.bundler.mjs' });
+        const found = next(specifier === 'vite' ? vite : specifier, { ...context, parentURL: dir + '/.bundler.mjs' });
+        if (specifier === 'vite' && !said.has(found.url)) {
+          said.add(found.url);
+          console.log('bench: the Angular plugin imports vite from ' + found.url);
+        }
+        return found;
       }
     }
     return next(specifier, context);

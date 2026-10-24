@@ -24,6 +24,9 @@ export function firstSelector(css: string): string {
   }
 }
 
+/** `selector` as the start of a rule (or of a selector list) in whitespace-stripped CSS, not a word inside a value. */
+const startsRule = (selector: string): RegExp => new RegExp(`(^|[{},;/])${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[{,]`);
+
 /** Every file under `root` with `suffix`, as text. */
 function filesText(root: string, suffix: string): string[] {
   return readdirSync(root, { recursive: true, withFileTypes: true })
@@ -57,7 +60,8 @@ export function driverContract(driver: Driver, links: boolean, extra?: (layer: L
       extra?.(layer, built);
 
       const packageSelector = firstSelector(readFileSync(join(path, 'node_modules/@dravensoft', `arena-${layer}`, 'css/reset.css'), 'utf8'));
-      const appSource = layer === 'react' ? 'app.css' : 'styles.css';
+      // `app.css` is the app sheet (Review Focus 4); an Angular half without one carries its rules in `styles.css`.
+      const appSource = existsSync(join(path, 'src', 'app.css')) ? 'app.css' : 'styles.css';
       const appSelector = firstSelector(readFileSync(join(path, 'src', appSource), 'utf8'));
 
       finish(path, layer, built.out);
@@ -69,8 +73,8 @@ export function driverContract(driver: Driver, links: boolean, extra?: (layer: L
       expect(sprite).toHaveLength(1);
 
       const css = filesText(built.out, '.css').join('\n').replace(/\s+/g, '');
-      expect(css).toContain(packageSelector);
-      expect(css).toContain(appSelector);
+      expect(css).toMatch(startsRule(packageSelector));
+      expect(css).toMatch(startsRule(appSelector));
 
       if (links) {
         const linked = [...page.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)].map((match) => match[1]);
