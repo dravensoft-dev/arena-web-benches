@@ -41,7 +41,7 @@
 /* A status is an identity, so the pill fills with the ramp slot the tag carries rather than
    outlining it, and reads as a label. A tag with no slot falls back to Arena's own outline. */
 [data-arena-part="tag"] {
-  background: var(--arena-tag-cat, transparent);
+  background: var(--arena-hue-fill-strong, transparent);
   border-color: transparent;
   color: var(--color-primary-content);
   text-transform: var(--tt-label);
@@ -52,10 +52,10 @@
 [data-arena-part="tag.dot"] { display: none; }
 
 /* A board column is named by a filled bar in its own identity colour, which is the one thing
-   this product's board is read by. The column carries the ramp slot as a custom property, so
+   this product's board is read by. The column hands its ramp slot over in the hue channels, so
    the head fills with it and the title sits on top rather than beside a dot. */
 [data-arena-part="board.head"] {
-  background: var(--arena-board-column-cat, transparent);
+  background: var(--arena-hue-fill-strong, transparent);
   border-radius: var(--r-marker);
   padding: var(--sp-1) var(--sp-3);
 }

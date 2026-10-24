@@ -55,16 +55,14 @@ halves, so no component reaches a release without a bench having asked for it in
 
 Thirty-nine distinct parts are painted by hand across the six plugins that paint any. No bench
 reports a raw colour, a bare length, a gradient outside a declared mark, a rule reaching into an
-`arena-` class, or a declaration restating what the slot it selects already paints. Four plugin
-rules reach nothing the half draws: Duolingo's `input.field`, `input.label` and `menu.item`, which
-`arena usage` names, and Instagram's `menu.item-destructive`, a part no component declares, which
-`arena audit` reports as `unknown-part`.
+`arena-` class, or a declaration restating what the slot it selects already paints. Three plugin
+rules reach nothing the half draws, Duolingo's `input.field`, `input.label` and `menu.item`, and
+`arena usage` names them. ClickUp fills its status tags and board column heads from the hue
+channels a `colorId` hands over, and Instagram sets a destructive menu row apart through
+`data-arena-destructive` on `menu.item`.
 
-**Twelve of the sixteen build.** `build` runs `arena audit --strict=audit` first. Both ClickUp
-halves stop on two `unknown-property` findings, the `--arena-tag-cat` and `--arena-board-column-cat`
-their plugin reads and nothing defines. Both Instagram halves stop on `menu.item-destructive`. Each
-of those is a rule of the bench's own design, and both halves of each pair stop alike. Every other
-half reports nothing.
+**All sixteen build.** `build` runs `arena audit --strict=audit` first, and no half reports a
+finding.
 
 **Every half answers every role the kernel declares.** `arena build` names no role left to Arena's
 default in any half. Grafana sets its links in its secondary, which holds 4.5:1 at the body level.
