@@ -429,6 +429,57 @@
 .thread__body { flex: 1; min-inline-size: 0; }
 .thread__meta { display: flex; gap: var(--sp-3); font-size: var(--dz-text-2xs); color: var(--mute); padding-block-start: var(--sp-1); }
 
+/* ---- phone width ---- */
+
+/* Below md the sidebar is not drawn and the bottom bar is. The page reserves the bar's height
+   and the device inset at its foot, so the last post does not sit under the bar. */
+.app[data-narrow='yes'] {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  padding-block-end: calc(var(--layout-bar) + var(--pad-safe-bottom));
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--gutter);
+  border-block-end: var(--bw-separator) solid var(--edge-separator);
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-nav);
+  background: var(--fill-page);
+}
+
+.app[data-narrow='yes'] .feed { grid-template-columns: minmax(0, 1fr); padding-block-start: 0; }
+.app[data-narrow='yes'] .aside { display: none; }
+.app[data-narrow='yes'] .profile__head { gap: var(--sp-6); }
+.app[data-narrow='yes'] .profile__avatar { padding-inline: 0; }
+.app[data-narrow='yes'] .ptabs { gap: var(--sp-8); }
+
+/* ---- signed out ---- */
+
+/* The panel does not centre itself, so the page around it does. */
+.auth {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-4);
+  min-block-size: 100dvh;
+  padding: var(--sp-6) var(--gutter);
+  background: var(--fill-page);
+  color: var(--ink-body);
+}
+
+.auth__fields { display: grid; gap: var(--sp-4); }
+.auth__lede { font-size: var(--dz-text); line-height: var(--lh-prose); color: var(--mute); }
+.auth__alt { font-size: var(--dz-text); color: var(--ink-body); }
+.auth__link { color: var(--color-info); font-weight: var(--fw-bold); text-decoration: none; }
+
+.wordmark { display: flex; align-items: center; justify-content: center; gap: var(--sp-2); }
+.wordmark__glyph { inline-size: var(--icon-xl); block-size: var(--icon-xl); }
+.wordmark__word { font-family: 'Grand Hotel', cursive; font-size: var(--fs-h2); color: var(--ink-heading); line-height: var(--lh-heading); }
+
 /* Arena's avatar offers four fixed steps, the largest of which is 96px, and a profile
    header wants roughly 150px. The avatar family is a scale rather than a role, so a style
    plugin may not re-answer it and the component takes no size beyond lg: re-valuing the

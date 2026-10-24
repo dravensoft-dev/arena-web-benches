@@ -81,3 +81,14 @@ export function Carousel({ media, alt }: { media: readonly string[]; alt: string
     </div>
   );
 }
+
+/* The lock-up a signed-out screen carries: the glyph and the wordmark, the same two the
+   primary nav opens with. */
+export function Wordmark() {
+  return (
+    <span className="wordmark">
+      <img src="img/brand-glyph.svg" alt="" className="wordmark__glyph" />
+      <span className="wordmark__word">Instagram</span>
+    </span>
+  );
+}

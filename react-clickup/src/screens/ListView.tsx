@@ -3,22 +3,33 @@ import {
   ArenaBulkActionBar,
   ArenaButton,
   ArenaCheckbox,
+  ArenaFilterBar,
   ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaMenu,
+  ArenaMultiSelect,
   ArenaProgressBar,
   ArenaSegmentedControl,
+  ArenaSelect,
   arenaCatColor,
 } from '@dravensoft/arena-react';
+import type { ArenaAppliedFilter } from '@dravensoft/arena-react';
 import { Assignees, PriorityFlag, StatusDot, StatusPill, Tags } from '../Chrome';
-import { STATUS_ORDER, STATUS_SLOT, TASKS } from '../data/Space';
+import { PEOPLE, PRIORITY_ORDER, STATUS_ORDER, STATUS_SLOT, TASKS } from '../data/Space';
 import type { Status, Task } from '../data/Space';
 
 const GROUPINGS = [
   { value: 'status', label: 'Status' },
   { value: 'assignee', label: 'Assignee' },
   { value: 'priority', label: 'Priority' },
+];
+
+const ASSIGNEES = Object.keys(PEOPLE).map((id) => ({ value: id, label: PEOPLE[id].name }));
+
+const PRIORITIES = [
+  { value: '', label: 'Any priority' },
+  ...PRIORITY_ORDER.map((priority) => ({ value: priority, label: priority })),
 ];
 
 const BULK = [
@@ -39,7 +50,7 @@ function Row({
 }) {
   return (
     <div className="row" data-checked={checked ? 'yes' : 'no'}>
-      <span className="row__check"><ArenaCheckbox checked={checked} onChange={(next) => onCheck(task.id, next)} /></span>
+      <span className="row__check"><ArenaCheckbox label={`Select ${task.name}`} showLabel={false} checked={checked} onChange={(next) => onCheck(task.id, next)} /></span>
       <span className="row__grip"><ArenaIcon icon="ph-bold ph-dots-six-vertical" /></span>
       <span className="row__name">
         <span className="row__title">{task.name}</span>
@@ -83,11 +94,31 @@ export function ListView() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [query, setQuery] = useState('');
   const [grouping, setGrouping] = useState('status');
+  const [assignees, setAssignees] = useState<readonly string[]>([]);
+  const [priority, setPriority] = useState('');
 
-  const rows = TASKS.filter((task) => task.name.toLowerCase().includes(query.toLowerCase()));
+  const rows = TASKS.filter((task) =>
+    task.name.toLowerCase().includes(query.toLowerCase())
+    && (assignees.length === 0 || task.assignees.some((id) => assignees.includes(id)))
+    && (priority === '' || task.priority === priority));
+
+  const applied: ArenaAppliedFilter[] = [
+    ...assignees.map((id) => ({ id: `assignee:${id}`, label: `Assignee: ${PEOPLE[id].name}` })),
+    ...(priority === '' ? [] : [{ id: 'priority', label: `Priority: ${priority}` }]),
+  ];
   const selected = Object.keys(checked).filter((id) => checked[id]);
 
   const onCheck = (id: string, next: boolean) => setChecked((prev) => ({ ...prev, [id]: next }));
+
+  const onRemove = (filter: ArenaAppliedFilter) => {
+    if (filter.id === 'priority') setPriority('');
+    else setAssignees((prev) => prev.filter((id) => `assignee:${id}` !== filter.id));
+  };
+
+  const onClear = () => {
+    setAssignees([]);
+    setPriority('');
+  };
 
   return (
     <div className="screen">
@@ -109,6 +140,20 @@ export function ListView() {
       </div>
 
       <div className="list">
+        <div className="filters">
+          <ArenaFilterBar label="Task filters" applied={applied} onRemove={onRemove} onClear={onClear}>
+            <ArenaMultiSelect
+              label="Assignees"
+              placeholder="Anyone"
+              options={ASSIGNEES}
+              value={assignees}
+              maxVisible={2}
+              onChange={(set) => setAssignees(set.values)}
+            />
+            <ArenaSelect label="Priority" options={PRIORITIES} value={priority} onChange={setPriority} />
+          </ArenaFilterBar>
+        </div>
+
         {STATUS_ORDER.map((status: Status) => {
           const group = rows.filter((task) => task.status === status);
           if (group.length === 0) return null;

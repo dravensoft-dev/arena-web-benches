@@ -4,14 +4,6 @@ import type { ArenaCatSlot } from '@dravensoft/arena-angular';
 import type { Thread } from '../data/Mail';
 
 @Component({
-  selector: 'app-cap',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { style: 'display: contents' },
-  template: `<kbd class="cap"><ng-content /></kbd>`,
-})
-export class Cap {}
-
-@Component({
   selector: 'app-thread-row',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },

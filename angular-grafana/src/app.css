@@ -79,12 +79,37 @@
 
 .alerts { display: grid; gap: var(--sp-2); }
 
-.alerts__title {
+.alerts__title,
+.browse__title {
   margin: 0;
   font-family: var(--ff-heading);
   font-size: var(--step-title-section);
   font-weight: var(--fw-heading);
   color: var(--ink-heading);
+}
+
+/* A panel whose query has not answered yet holds the height its chart will take, so the board does
+   not jump when the chart arrives. */
+.panel-wait {
+  display: grid;
+  place-items: center;
+  min-block-size: var(--chart-gauge-height);
+}
+
+/* The folder browser: the tree takes what the room gives, and usage sits beside it at the width
+   of the rail. */
+.browse {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--layout-sidebar);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.browse__folders,
+.browse__usage { display: grid; gap: var(--sp-3); min-inline-size: 0; }
+
+@media (width < 60rem) {
+  .browse { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (width < 90rem) {

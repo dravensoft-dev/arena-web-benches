@@ -3,12 +3,14 @@ import {
   ArenaAvatar,
   ArenaBreadcrumbs,
   ArenaButton,
+  ArenaDivider,
   ArenaIcon,
   ArenaIconButton,
   ArenaMenu,
 } from '@dravensoft/arena-react';
 import { Blocks } from '../Blocks';
 import { DOC_BLOCKS, PAGE_COVER, PAGE_ICON, PAGE_TITLE } from '../data/Workspace';
+import type { Screen } from '../Sidebar';
 
 const CRUMBS = [
   { label: 'Acme Platform', href: '#/' },
@@ -28,7 +30,7 @@ const PAGE_MENU = [
   { label: 'Move to trash', icon: 'ph-bold ph-trash', destructive: true },
 ];
 
-export function DocPage() {
+export function DocPage({ onScreen }: { onScreen: (next: Screen) => void }) {
   return (
     <div className="doc">
       <header className="topbar">
@@ -36,6 +38,7 @@ export function DocPage() {
         <div className="topbar__actions">
           <span className="topbar__edited">Edited 12 minutes ago</span>
           <ArenaButton className="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</ArenaButton>
+          <ArenaDivider className="arena-orientation-vertical" />
           <ArenaIconButton icon="ph-bold ph-chat-circle" label="Comments" className="arena-size-sm" />
           <ArenaIconButton icon="ph-bold ph-clock-counter-clockwise" label="Page history" className="arena-size-sm" />
           <ArenaIconButton icon="ph-bold ph-star" label="Add to favourites" className="arena-size-sm" />
@@ -77,7 +80,7 @@ export function DocPage() {
             </div>
           </div>
 
-          <Blocks blocks={DOC_BLOCKS} />
+          <Blocks blocks={DOC_BLOCKS} onScreen={onScreen} />
 
           <div className="doc__add">
             <ArenaIcon icon="ph-bold ph-plus" />

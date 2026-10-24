@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import {
-  ArenaButton, ArenaCard, ArenaIcon, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar, arenaCatColor,
+  ArenaButton, ArenaCard, ArenaIcon, ArenaPaletteScope, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar,
+  ArenaThemeService, arenaCatColor,
 } from '@dravensoft/arena-angular';
 import {
   GEMS,
@@ -44,6 +45,7 @@ import type { PathNode, Unit } from '../data/Course';
         type="button"
         class="node__btn"
         [attr.data-state]="node().state"
+        [attr.data-tour]="node().state === 'active' ? 'lesson' : null"
         [style.background]="colour()"
         [attr.aria-label]="node().label + ', ' + node().state"
         (click)="start.emit()"
@@ -100,7 +102,7 @@ export class UnitBlock {
   selector: 'app-path-screen',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaButton, ArenaCard, ArenaIcon, ArenaPeopleList, ArenaPersonRow, UnitBlock],
+  imports: [ArenaButton, ArenaCard, ArenaIcon, ArenaPaletteScope, ArenaPeopleList, ArenaPersonRow, UnitBlock],
   host: { class: 'path-screen' },
   template: `
     <div class="path-screen__main">
@@ -111,7 +113,7 @@ export class UnitBlock {
 
     <aside class="rail">
       <div class="rail__row">
-        <span class="chip chip--streak"><arena-icon icon="ph-fill ph-fire" />{{ streak }}</span>
+        <span class="chip chip--streak" data-tour="streak"><arena-icon icon="ph-fill ph-fire" />{{ streak }}</span>
         <span class="chip chip--gems"><arena-icon icon="ph-fill ph-diamond" />{{ gems }}</span>
         <span class="chip chip--hearts"><arena-icon icon="ph-fill ph-heart" />{{ hearts }}<span class="chip__of">/{{ heartMax }}</span></span>
       </div>
@@ -140,15 +142,21 @@ export class UnitBlock {
         </arena-people-list>
       </arena-card>
 
-      <arena-card title="Unlock Super">
-        <p class="rail__blurb">No ads, unlimited hearts, and a personalised practice hub.</p>
-        <arena-button class="arena-fill" icon="ph-bold ph-crown-simple">Try 2 weeks free</arena-button>
-      </arena-card>
+      <div [arenaPalette]="promo()">
+        <arena-card title="Unlock Super">
+          <p class="rail__blurb">No ads, unlimited hearts, and a personalised practice hub.</p>
+          <arena-button class="arena-fill" icon="ph-bold ph-crown-simple">Try 2 weeks free</arena-button>
+        </arena-card>
+      </div>
     </aside>
   `,
 })
 export class PathScreen {
   readonly start = output<void>();
+
+  private readonly themes = inject(ArenaThemeService);
+  // The Super offer is drawn in the palette the page is not wearing, so it stands apart either way.
+  protected readonly promo = computed(() => (this.themes.theme() === 'dark' ? 'light' : 'dark'));
 
   protected readonly units = UNITS;
   protected readonly top = LEAGUE.slice(0, 5);

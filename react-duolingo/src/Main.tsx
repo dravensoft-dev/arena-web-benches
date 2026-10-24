@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArenaIcon, ArenaIconButton, ArenaIconsProvider, initArenaTheme, useArenaTheme } from '@dravensoft/arena-react';
+import {
+  ArenaIcon, ArenaIconButton, ArenaIconsProvider, ArenaOnboarding, initArenaTheme, useArenaTheme,
+} from '@dravensoft/arena-react';
 
 import { ARENA_SPRITE } from './arena.icons.generated.js';
 import './arena.package.generated.css';
@@ -11,6 +13,7 @@ import './app.css';
 import { PathScreen } from './screens/PathScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
+import { TOUR, TOUR_SEEN } from './data/Course';
 
 initArenaTheme({
   palettes: [
@@ -21,6 +24,28 @@ initArenaTheme({
 });
 
 type Screen = 'path' | 'lesson' | 'profile';
+
+type Anchor = { left: number; bottom: number };
+
+/* Storage can be absent or refuse, in a private window or a sandboxed frame; the tour then
+   opens on every visit, which is the first run repeated rather than an error. */
+function tourSeen(): boolean {
+  try { return window.localStorage.getItem(TOUR_SEEN) === '1'; } catch { return false; }
+}
+
+function markTourSeen(): void {
+  try { window.localStorage.setItem(TOUR_SEEN, '1'); } catch { /* the tour reopens next visit */ }
+}
+
+/* The coachmark positions from viewport coordinates, so the anchor is read from the target
+   after it has been scrolled into view, and read again whenever the page scrolls or resizes. */
+function anchorFor(target: string, reveal: boolean): Anchor | undefined {
+  const element = document.querySelector(`[data-tour="${target}"]`);
+  if (!element) return undefined;
+  if (reveal) element.scrollIntoView({ block: 'center' });
+  const { left, bottom } = element.getBoundingClientRect();
+  return { left, bottom };
+}
 
 const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] = [
   { id: 'path', label: 'Learn', icon: 'ph-fill ph-house', slot: 1 },
@@ -37,6 +62,41 @@ function App() {
     asked === 'lesson' || asked === 'profile' ? (asked as Screen) : 'path',
   );
   const [theme, setTheme] = useArenaTheme();
+  const [touring, setTouring] = useState(() => screen === 'path' && !tourSeen());
+  const [step, setStep] = useState(0);
+  const [anchor, setAnchor] = useState<Anchor | undefined>();
+
+  const showing = touring && screen === 'path';
+  const target = TOUR[step]?.target;
+
+  useLayoutEffect(() => {
+    if (showing && target) setAnchor(anchorFor(target, true));
+  }, [showing, target]);
+
+  const measure = useCallback(() => {
+    if (target) setAnchor(anchorFor(target, false));
+  }, [target]);
+
+  useEffect(() => {
+    if (!showing) return undefined;
+    window.addEventListener('scroll', measure);
+    window.addEventListener('resize', measure);
+    return () => {
+      window.removeEventListener('scroll', measure);
+      window.removeEventListener('resize', measure);
+    };
+  }, [showing, measure]);
+
+  const startTour = () => {
+    setStep(0);
+    setScreen('path');
+    setTouring(true);
+  };
+
+  const endTour = () => {
+    setTouring(false);
+    markTourSeen();
+  };
 
   if (screen === 'lesson') {
     return <LessonScreen onQuit={() => setScreen('path')} />;
@@ -55,6 +115,7 @@ function App() {
               <button
                 type="button"
                 className="nav__item"
+                data-tour={item.id === 'profile' ? 'profile' : undefined}
                 aria-current={screen === item.id ? 'page' : undefined}
                 onClick={() => {
                   if (item.id === 'path' || item.id === 'profile') setScreen(item.id as Screen);
@@ -68,6 +129,7 @@ function App() {
         </ul>
 
         <div className="nav__foot">
+          <ArenaIconButton icon="ph-bold ph-question" label="Take the tour" onClick={startTour} />
           <ArenaIconButton
             icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
             label="Switch appearance"
@@ -80,6 +142,17 @@ function App() {
         {screen === 'path' && <PathScreen onStart={() => setScreen('lesson')} />}
         {screen === 'profile' && <ProfileScreen />}
       </main>
+
+      <ArenaOnboarding
+        open={showing}
+        steps={TOUR}
+        index={step}
+        anchor={anchor}
+        onNext={() => setStep((s) => s + 1)}
+        onBack={() => setStep((s) => s - 1)}
+        onSkip={endTour}
+        onDone={endTour}
+      />
     </div>
   );
 }

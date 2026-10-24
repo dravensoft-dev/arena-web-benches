@@ -32,7 +32,7 @@ const COMMANDS: ArenaCommand[] = [
 
     <main class="main">
       @if (screen() === 'home') { <app-home (screenChange)="screen.set($event)" (search)="palette.set(true)" /> }
-      @if (screen() === 'doc') { <app-doc-page /> }
+      @if (screen() === 'doc') { <app-doc-page (screenChange)="screen.set($event)" /> }
       @if (screen() === 'database') { <app-database-view /> }
     </main>
 

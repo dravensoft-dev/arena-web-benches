@@ -4,27 +4,37 @@ import {
   ArenaAlert,
   ArenaBadge,
   ArenaBarChart,
+  ArenaButton,
   ArenaChartCard,
   ArenaDoughnutChart,
+  ArenaErrorState,
+  ArenaGaugeChart,
+  ArenaHeatmapChart,
   ArenaHorizontalBarChart,
   ArenaIcon,
   ArenaIconButton,
   ArenaIconsProvider,
   ArenaLineChart,
   ArenaMain,
+  ArenaMeter,
+  ArenaPageHead,
   ArenaRadarChart,
   ArenaScatterChart,
   ArenaSelect,
   ArenaSideNav,
   ArenaSideNavItem,
+  ArenaSparkline,
+  ArenaSpinner,
   ArenaStatCard,
   ArenaTable,
   ArenaTableCell,
   ArenaTableRow,
   ArenaTag,
+  ArenaTreeView,
   initArenaTheme,
   useArenaTheme,
 } from '@dravensoft/arena-react';
+import type { ArenaTreeExpansion } from '@dravensoft/arena-react';
 
 import { ARENA_SPRITE } from './arena.icons.generated.js';
 import './arena.package.generated.css';
@@ -33,8 +43,8 @@ import './plugin.generated.css';
 import './app.css';
 
 import {
-  ALERTS, BUDGET, BUDGET_LABELS, DASHBOARDS, ENDPOINTS, HEALTH, HEALTH_AXES, HOURS, LATENCY,
-  RANGES, REGIONS, REQUESTS, SLOWEST, THROUGHPUT,
+  ALERTS, BUDGET, BUDGET_LABELS, CPU_BANDS, DASHBOARDS, ENDPOINTS, FOLDERS, HEALTH, HEALTH_AXES,
+  HOURS, LATENCY, LATENCY_BUCKETS, QUOTAS, RANGES, REGIONS, REQUESTS, SLOWEST, THROUGHPUT,
 } from './data/Metrics';
 
 initArenaTheme({
@@ -50,12 +60,27 @@ const COLUMNS = [
   { header: 'Rule' },
   { header: 'Service', numeric: true },
   { header: 'For', key: 'for', numeric: true },
+  { header: 'Last 24 hours', key: 'trend' },
 ];
+
+/* A leaf of the folder tree is a dashboard, and its id is the board the rail opens; a folder
+   opens and closes and goes nowhere. */
+const BOARDS = new Set(DASHBOARDS.map((one) => one.id));
 
 function Vantage() {
   const [theme, setTheme] = useArenaTheme();
   const [board, setBoard] = useState('api');
   const [range, setRange] = useState('24h');
+  const [expanded, setExpanded] = useState<ArenaTreeExpansion>({ ids: ['platform', 'data'] });
+
+  const themeToggle = (
+    <ArenaIconButton
+      icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
+      label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
+      className="arena-size-sm"
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+    />
+  );
 
   return (
     <div className="console">
@@ -72,6 +97,47 @@ function Vantage() {
       </aside>
 
       <ArenaMain>
+        {board === 'browse' ? (
+        <div className="board">
+          <ArenaPageHead
+            title="Dashboards"
+            subtitle="Six dashboards in four folders"
+            actions={<>
+              <ArenaButton icon="ph-bold ph-plus" className="arena-size-sm">New dashboard</ArenaButton>
+              {themeToggle}
+            </>}
+          />
+
+          <div className="browse">
+            <section className="browse__folders" aria-label="Folders">
+              <h2 className="browse__title">Folders</h2>
+              <ArenaTreeView
+                label="Dashboards by folder"
+                nodes={FOLDERS}
+                expanded={expanded}
+                onExpandedChange={setExpanded}
+                onActivate={(id) => { if (BOARDS.has(id)) setBoard(id); }}
+              />
+            </section>
+
+            <section className="browse__usage" aria-label="Usage">
+              <h2 className="browse__title">Usage this month</h2>
+              {QUOTAS.map((one) => (
+                <ArenaMeter
+                  key={one.id}
+                  label={one.label}
+                  value={one.value}
+                  max={one.max}
+                  low={one.low}
+                  high={one.high}
+                  optimum={one.optimum}
+                  valueText={one.valueText}
+                />
+              ))}
+            </section>
+          </div>
+        </div>
+        ) : (
         <div className="board">
           <header className="board__head">
             <div className="board__title-row">
@@ -80,12 +146,7 @@ function Vantage() {
               <span className="board__gap" />
               <ArenaSelect label="Range" options={RANGES} value={range} onChange={setRange} />
               <ArenaIconButton icon="ph-bold ph-arrows-clockwise" label="Refresh now" className="arena-size-sm" />
-              <ArenaIconButton
-                icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}
-                label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
-                className="arena-size-sm"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              />
+              {themeToggle}
             </div>
             <p className="board__sub">
               {'Six regions, one gateway. Refreshed '}
@@ -172,6 +233,38 @@ function Vantage() {
                 height={220}
               />
             </ArenaChartCard>
+
+            <ArenaChartCard title="Gateway CPU">
+              <ArenaGaugeChart label="Gateway CPU across all regions" value={72} valueSuffix="%" bands={CPU_BANDS} />
+            </ArenaChartCard>
+
+            <div className="panels__wide">
+              <ArenaChartCard title="Latency distribution">
+                <ArenaHeatmapChart
+                  label="Requests per latency bucket over the last day"
+                  labels={HOURS}
+                  series={LATENCY_BUCKETS}
+                  valueFormat={{ grouping: true }}
+                />
+              </ArenaChartCard>
+            </div>
+
+            <ArenaChartCard title="Queue consumers">
+              <ArenaErrorState
+                icon="ph-bold ph-plugs"
+                title="Query failed"
+                headingLevel="none"
+                message="The metrics service did not answer within 30 seconds."
+                code="ERR_UPSTREAM_504"
+                retryLabel="Retry query"
+              />
+            </ArenaChartCard>
+
+            <ArenaChartCard title="Cache hit ratio">
+              <div className="panel-wait">
+                <ArenaSpinner label="Loading the cache hit ratio" />
+              </div>
+            </ArenaChartCard>
           </div>
 
           <section className="alerts" aria-label="Active alerts" style={{ "--arena-column-for-align": "right" } as React.CSSProperties}>
@@ -183,11 +276,15 @@ function Vantage() {
                   <ArenaTableCell>{one.rule}</ArenaTableCell>
                   <ArenaTableCell>{one.service}</ArenaTableCell>
                   <ArenaTableCell>{one.since}</ArenaTableCell>
+                  <ArenaTableCell>
+                    <ArenaSparkline label={`${one.rule}, last 24 hours`} labels={HOURS} series={one.trend} valueSuffix={one.unit} />
+                  </ArenaTableCell>
                 </ArenaTableRow>
               ))}
             </ArenaTable>
           </section>
         </div>
+        )}
       </ArenaMain>
     </div>
   );

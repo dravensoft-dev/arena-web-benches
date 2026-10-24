@@ -120,3 +120,8 @@ export function writeCount(n: number) {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
   return String(n);
 }
+
+/* What the create flow takes, and the code the two-factor step expects. */
+export const UPLOAD = { accept: 'image/*,video/*', maxSize: 30000000, maxFiles: 10 };
+
+export const TWO_FACTOR = { ending: '47', code: '482913' };

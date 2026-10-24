@@ -108,7 +108,7 @@ function PostCard({ post, onOpen }: { post: Post; onOpen: (post: Post) => void }
   );
 }
 
-export function FeedScreen({ onOpen }: { onOpen: (post: Post) => void }) {
+export function FeedScreen({ onOpen, onSwitchAccount }: { onOpen: (post: Post) => void; onSwitchAccount: () => void }) {
   return (
     <div className="feed">
       <div className="feed__col">
@@ -132,7 +132,7 @@ export function FeedScreen({ onOpen }: { onOpen: (post: Post) => void }) {
             <Handle handle={ME.handle} bold />
             <span className="aside__me-name">{ME.name}</span>
           </span>
-          <ArenaButton className="arena-emphasis-ghost arena-size-sm">Switch</ArenaButton>
+          <ArenaButton className="arena-emphasis-ghost arena-size-sm" onClick={onSwitchAccount}>Switch</ArenaButton>
         </div>
 
         <div className="aside__head">

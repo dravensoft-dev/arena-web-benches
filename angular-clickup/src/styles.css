@@ -214,6 +214,13 @@
 
 .list { padding: var(--sp-4); display: grid; gap: var(--sp-4); align-content: start; }
 
+.filters {
+  padding: var(--sp-3);
+  background: var(--fill-page);
+  border: var(--bw-surface) solid var(--edge-surface);
+  border-radius: var(--r-surface);
+}
+
 .group {
   background: var(--fill-page);
   border: var(--bw-surface) solid var(--edge-surface);

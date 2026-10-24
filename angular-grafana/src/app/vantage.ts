@@ -1,31 +1,43 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
+  ArenaActions,
   ArenaAlert,
   ArenaBadge,
   ArenaBarChart,
+  ArenaButton,
   ArenaChartCard,
   ArenaDoughnutChart,
+  ArenaErrorState,
+  ArenaGaugeChart,
+  ArenaHeatmapChart,
   ArenaHorizontalBarChart,
   ArenaIcon,
   ArenaIconButton,
   ArenaLineChart,
   ArenaMain,
+  ArenaMeter,
+  ArenaPageHead,
   ArenaRadarChart,
   ArenaScatterChart,
   ArenaSelect,
   ArenaSideNav,
   ArenaSideNavItem,
+  ArenaSparkline,
+  ArenaSpinner,
   ArenaStatCard,
   ArenaTable,
   ArenaTableCell,
   ArenaTableRow,
   ArenaTag,
   ArenaThemeService,
+  ArenaTreeView,
 } from '@dravensoft/arena-angular';
-import type { ArenaStatDelta, ArenaTableColumn } from '@dravensoft/arena-angular';
+import type {
+  ArenaStatDelta, ArenaTableColumn, ArenaTreeExpansion,
+} from '@dravensoft/arena-angular';
 import {
-  ALERTS, BUDGET, BUDGET_LABELS, DASHBOARDS, ENDPOINTS, HEALTH, HEALTH_AXES, HOURS, LATENCY,
-  RANGES, REGIONS, REQUESTS, SLOWEST, THROUGHPUT,
+  ALERTS, BUDGET, BUDGET_LABELS, CPU_BANDS, DASHBOARDS, ENDPOINTS, FOLDERS, HEALTH, HEALTH_AXES,
+  HOURS, LATENCY, LATENCY_BUCKETS, QUOTAS, RANGES, REGIONS, REQUESTS, SLOWEST, THROUGHPUT,
 } from '../data/Metrics';
 
 const COLUMNS: ArenaTableColumn[] = [
@@ -33,17 +45,23 @@ const COLUMNS: ArenaTableColumn[] = [
   { header: 'Rule' },
   { header: 'Service', numeric: true },
   { header: 'For', key: 'for', numeric: true },
+  { header: 'Last 24 hours', key: 'trend' },
 ];
+
+/* A leaf of the folder tree is a dashboard, and its id is the board the rail opens; a folder
+   opens and closes and goes nowhere. */
+const BOARDS = new Set(DASHBOARDS.map((one) => one.id));
 
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   imports: [
-    ArenaAlert, ArenaBadge, ArenaBarChart, ArenaChartCard, ArenaDoughnutChart,
-    ArenaHorizontalBarChart, ArenaIcon, ArenaIconButton, ArenaLineChart, ArenaMain, ArenaRadarChart,
-    ArenaScatterChart, ArenaSelect, ArenaSideNav, ArenaSideNavItem, ArenaStatCard,
-    ArenaTable, ArenaTableCell, ArenaTableRow, ArenaTag,
+    ArenaActions, ArenaAlert, ArenaBadge, ArenaBarChart, ArenaButton, ArenaChartCard, ArenaDoughnutChart,
+    ArenaErrorState, ArenaGaugeChart, ArenaHeatmapChart, ArenaHorizontalBarChart, ArenaIcon,
+    ArenaIconButton, ArenaLineChart, ArenaMain, ArenaMeter, ArenaPageHead, ArenaRadarChart,
+    ArenaScatterChart, ArenaSelect, ArenaSideNav, ArenaSideNavItem, ArenaSparkline, ArenaSpinner,
+    ArenaStatCard, ArenaTable, ArenaTableCell, ArenaTableRow, ArenaTag, ArenaTreeView,
   ],
   template: `
     <div class="console">
@@ -60,6 +78,48 @@ const COLUMNS: ArenaTableColumn[] = [
       </aside>
 
       <arena-main>
+        @if (board() === 'browse') {
+        <div class="board">
+          <arena-page-head title="Dashboards" subtitle="Six dashboards in four folders">
+            <arena-button actions icon="ph-bold ph-plus" class="arena-size-sm">New dashboard</arena-button>
+            <arena-icon-button
+              actions
+              [icon]="theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'"
+              [label]="theme() === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'"
+              class="arena-size-sm"
+              (click)="themes.set(theme() === 'dark' ? 'light' : 'dark')"
+            />
+          </arena-page-head>
+
+          <div class="browse">
+            <section class="browse__folders" aria-label="Folders">
+              <h2 class="browse__title">Folders</h2>
+              <arena-tree-view
+                label="Dashboards by folder"
+                [nodes]="folders"
+                [expanded]="expanded()"
+                (expandedChange)="expanded.set($event)"
+                (activate)="open($event)"
+              />
+            </section>
+
+            <section class="browse__usage" aria-label="Usage">
+              <h2 class="browse__title">Usage this month</h2>
+              @for (one of quotas; track one.id) {
+                <arena-meter
+                  [label]="one.label"
+                  [value]="one.value"
+                  [max]="one.max"
+                  [low]="one.low"
+                  [high]="one.high"
+                  [optimum]="one.optimum"
+                  [valueText]="one.valueText"
+                />
+              }
+            </section>
+          </div>
+        </div>
+        } @else {
         <div class="board">
           <header class="board__head">
             <div class="board__title-row">
@@ -160,6 +220,38 @@ const COLUMNS: ArenaTableColumn[] = [
                 [height]="220"
               />
             </arena-chart-card>
+
+            <arena-chart-card title="Gateway CPU">
+              <arena-gauge-chart label="Gateway CPU across all regions" [value]="72" valueSuffix="%" [bands]="cpuBands" />
+            </arena-chart-card>
+
+            <div class="panels__wide">
+              <arena-chart-card title="Latency distribution">
+                <arena-heatmap-chart
+                  label="Requests per latency bucket over the last day"
+                  [labels]="hours"
+                  [series]="latencyBuckets"
+                  [valueFormat]="{ grouping: true }"
+                />
+              </arena-chart-card>
+            </div>
+
+            <arena-chart-card title="Queue consumers">
+              <arena-error-state
+                icon="ph-bold ph-plugs"
+                title="Query failed"
+                headingLevel="none"
+                message="The metrics service did not answer within 30 seconds."
+                code="ERR_UPSTREAM_504"
+                retryLabel="Retry query"
+              />
+            </arena-chart-card>
+
+            <arena-chart-card title="Cache hit ratio">
+              <div class="panel-wait">
+                <arena-spinner label="Loading the cache hit ratio" />
+              </div>
+            </arena-chart-card>
           </div>
 
           <section class="alerts" aria-label="Active alerts" style="--arena-column-for-align: right">
@@ -171,11 +263,15 @@ const COLUMNS: ArenaTableColumn[] = [
                   <td arena-table-cell>{{ one.rule }}</td>
                   <td arena-table-cell>{{ one.service }}</td>
                   <td arena-table-cell>{{ one.since }}</td>
+                  <td arena-table-cell>
+                    <arena-sparkline [label]="one.rule + ', last 24 hours'" [labels]="hours" [series]="one.trend" [valueSuffix]="one.unit" />
+                  </td>
                 </tr>
               }
             </arena-table>
           </section>
         </div>
+        }
       </arena-main>
     </div>
   `,
@@ -199,6 +295,10 @@ export class Vantage {
   protected readonly throughput = THROUGHPUT;
   protected readonly healthAxes = HEALTH_AXES;
   protected readonly health = HEALTH;
+  protected readonly cpuBands = CPU_BANDS;
+  protected readonly latencyBuckets = LATENCY_BUCKETS;
+  protected readonly folders = FOLDERS;
+  protected readonly quotas = QUOTAS;
 
   protected readonly requestsDelta: ArenaStatDelta = { value: '6.2%', direction: 'up', tone: 'positive' };
   protected readonly errorDelta: ArenaStatDelta = { value: '0.41pp', direction: 'up', tone: 'negative' };
@@ -207,6 +307,11 @@ export class Vantage {
 
   protected readonly board = signal('api');
   protected readonly range = signal('24h');
+  protected readonly expanded = signal<ArenaTreeExpansion>({ ids: ['platform', 'data'] });
+
+  protected open(id: string): void {
+    if (BOARDS.has(id)) this.board.set(id);
+  }
 
   protected badge(value: string | undefined): number | undefined {
     return value === undefined ? undefined : Number(value);

@@ -6,16 +6,25 @@ import {
   ArenaCard,
   ArenaChartCard,
   ArenaDoughnutChart,
+  ArenaFunnelChart,
   ArenaHorizontalBarChart,
   ArenaIconButton,
   ArenaLineChart,
   ArenaMenu,
+  ArenaPyramidChart,
   ArenaStatCard,
+  ArenaTimeline,
 } from '@dravensoft/arena-react';
 import {
   ACTIVITY,
   BURNDOWN,
   BURNDOWN_LABELS,
+  FUNNEL,
+  FUNNEL_LABELS,
+  MILESTONES,
+  MILESTONE_NOW,
+  OPEN_CLOSE,
+  OPEN_CLOSE_LABELS,
   STATUS_SPLIT,
   STATUS_SPLIT_LABELS,
   THROUGHPUT,
@@ -97,6 +106,27 @@ export function Dashboard() {
               valueSuffix=" pts"
             />
           </ArenaChartCard>
+
+          <ArenaChartCard title="Status funnel" actions={<CardActions name="Status funnel" />}>
+            <ArenaFunnelChart
+              label="Tasks this sprint reaching each status"
+              labels={FUNNEL_LABELS}
+              series={FUNNEL}
+              valueSuffix=" tasks"
+            />
+          </ArenaChartCard>
+
+          <ArenaChartCard title="Opened and closed" actions={<CardActions name="Opened and closed" />}>
+            <ArenaPyramidChart
+              label="Tasks opened and closed this sprint by priority"
+              labels={OPEN_CLOSE_LABELS}
+              series={OPEN_CLOSE}
+            />
+          </ArenaChartCard>
+
+          <ArenaCard title="Sprint 32 milestones" eyebrow="Schedule">
+            <ArenaTimeline label="Sprint 32" items={MILESTONES} index={MILESTONE_NOW} />
+          </ArenaCard>
 
           <ArenaCard title="Recent activity" eyebrow="Live">
             <ArenaActivityFeed items={ACTIVITY} label="Recent activity in this space" />

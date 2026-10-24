@@ -17,6 +17,7 @@ import {
   ArenaThemeService,
 } from '@dravensoft/arena-angular';
 import type { ArenaKeyValueRow } from '@dravensoft/arena-angular';
+import { HomeScreen } from './home-screen';
 import { SearchScreen } from './search-screen';
 import { ListingScreen } from './listing-screen';
 import { CATEGORIES, listing, money } from '../data/Shop';
@@ -28,7 +29,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
   imports: [
     ArenaActions, ArenaAppBar, ArenaBrand, ArenaButton, ArenaFooter, ArenaIcon, ArenaIconButton,
     ArenaInput, ArenaKeyValue, ArenaMain, ArenaNav, ArenaSheet, ArenaSiteFooter,
-    ArenaSkipLink, SearchScreen, ListingScreen,
+    ArenaSkipLink, HomeScreen, SearchScreen, ListingScreen,
   ],
   template: `
     <div class="arena-shell">
@@ -44,7 +45,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
             label="Search for anything"
             icon="ph-bold ph-magnifying-glass"
             [value]="query()"
-            (change)="query.set($event)"
+            (change)="search($event)"
           />
         </div>
         <div actions class="bar-actions">
@@ -65,7 +66,7 @@ import { CATEGORIES, listing, money } from '../data/Shop';
       <nav class="cats" aria-label="Departments">
         <ul class="cats__list">
           @for (one of categories; track one) {
-            <li><a class="cats__link" [href]="'/c/' + one" (click)="$event.preventDefault()">{{ one }}</a></li>
+            <li><a class="cats__link" [href]="'/c/' + one" (click)="$event.preventDefault(); goSearch()">{{ one }}</a></li>
           }
         </ul>
       </nav>
@@ -80,8 +81,16 @@ import { CATEGORIES, listing, money } from '../data/Shop';
               (save)="toggleSaved($event)"
               (basket)="addToBasket($event)"
             />
+          } @else if (view() === 'home') {
+            <app-home-screen
+              [saved]="saved()"
+              (openListing)="open.set($event)"
+              (save)="toggleSaved($event)"
+              (shop)="goSearch()"
+            />
           } @else {
             <app-search-screen
+              [loading]="loading()"
               [saved]="saved()"
               (openListing)="open.set($event)"
               (save)="toggleSaved($event)"
@@ -132,7 +141,12 @@ export class Shop {
   protected readonly saved = signal<readonly string[]>(['stoneware-mug']);
   protected readonly basket = signal<readonly string[]>([]);
   protected readonly cartOpen = signal(false);
+  protected readonly view = signal<'home' | 'search'>(
+    /\/search$/.test(window.location.pathname) ? 'search' : 'home',
+  );
   protected readonly query = signal('floating shelf');
+  protected readonly loading = signal(false);
+  private pending: ReturnType<typeof setTimeout> | undefined;
 
   protected readonly rows = computed<ArenaKeyValueRow[]>(() =>
     this.basket().map((id) => ({ term: listing(id).title, value: money(listing(id).price), numeric: true })),
@@ -147,6 +161,21 @@ export class Shop {
   protected home(event: MouseEvent): void {
     event.preventDefault();
     this.open.set(null);
+    this.view.set('home');
+  }
+
+  protected goSearch(): void {
+    this.open.set(null);
+    this.view.set('search');
+  }
+
+  // A new query is a round trip in the real shop, so the results stand in placeholders for a beat.
+  protected search(text: string): void {
+    this.query.set(text);
+    this.goSearch();
+    this.loading.set(true);
+    clearTimeout(this.pending);
+    this.pending = setTimeout(() => this.loading.set(false), 700);
   }
 
   protected toggleSaved(id: string): void {

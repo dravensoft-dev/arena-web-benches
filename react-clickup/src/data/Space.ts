@@ -1,4 +1,4 @@
-import type { ArenaCatSlot } from '@dravensoft/arena-react';
+import type { ArenaCatSlot, ArenaTimelineItem } from '@dravensoft/arena-react';
 
 export type Status = 'To do' | 'In progress' | 'Blocked' | 'In review' | 'Complete';
 export type Priority = 'Urgent' | 'High' | 'Normal' | 'Low';
@@ -86,6 +86,26 @@ export const STATUS_SPLIT = [
     colorIds: STATUS_ORDER.map((status) => STATUS_SLOT[status]),
   },
 ];
+
+export const FUNNEL_LABELS = ['Created', 'Started', 'In review', 'Done'];
+export const FUNNEL = [{ label: 'Tasks', values: [48, 36, 27, 19] }];
+
+export const PRIORITY_ORDER: Priority[] = ['Urgent', 'High', 'Normal', 'Low'];
+export const OPEN_CLOSE_LABELS = PRIORITY_ORDER as readonly string[];
+export const OPEN_CLOSE = [
+  { label: 'Opened', values: [7, 12, 18, 9], colorId: 4 },
+  { label: 'Closed', values: [5, 10, 14, 4], colorId: 5 },
+];
+
+/* The sprint is one thing moving through stages, so its stages are a timeline and not a feed. */
+export const MILESTONES: ArenaTimelineItem[] = [
+  { id: 'm1', title: 'Sprint planned', description: '12 tasks and 96 points committed.', time: 'Aug 12', dateTime: '2026-08-12' },
+  { id: 'm2', title: 'Scope added', description: '13 points joined after the start.', time: 'Aug 15', dateTime: '2026-08-15', tone: 'warning' },
+  { id: 'm3', title: 'Mid-sprint review', description: 'Burndown checked against the ideal line.', time: 'Aug 19', dateTime: '2026-08-19' },
+  { id: 'm4', title: 'Code freeze', time: 'Aug 23', dateTime: '2026-08-23' },
+  { id: 'm5', title: 'Demo and retro', time: 'Aug 26', dateTime: '2026-08-26' },
+];
+export const MILESTONE_NOW = 2;
 
 export type Activity = { id: string; actor: string; action: string; target: string; time: string; tone?: 'success' | 'warning' | 'danger' | 'neutral' };
 

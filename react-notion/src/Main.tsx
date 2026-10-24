@@ -73,7 +73,7 @@ function App() {
 
       <main className="main">
         {screen === 'home' && <Home onScreen={setScreen} onSearch={() => setPalette(true)} />}
-        {screen === 'doc' && <DocPage />}
+        {screen === 'doc' && <DocPage onScreen={setScreen} />}
         {screen === 'database' && <DatabaseView />}
       </main>
 

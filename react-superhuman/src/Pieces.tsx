@@ -2,10 +2,6 @@ import React from 'react';
 import { ArenaAvatar, ArenaIcon, ArenaTag } from '@dravensoft/arena-react';
 import type { Thread } from './data/Mail';
 
-export function Cap({ children }: { children: React.ReactNode }) {
-  return <kbd className="cap">{children}</kbd>;
-}
-
 export function ThreadRow({
   item, current, onOpen,
 }: {

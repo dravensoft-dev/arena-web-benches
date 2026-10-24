@@ -5,6 +5,7 @@ import {
   ArenaBadge,
   ArenaBreadcrumbs,
   ArenaButton,
+  ArenaCombobox,
   ArenaFigure,
   ArenaKeyValue,
   ArenaScroller,
@@ -14,6 +15,7 @@ import {
 } from '@dravensoft/arena-react';
 import { ListingCard, Mark, Price, Stars } from '../Pieces';
 import { LISTINGS, listing as findListing, money } from '../data/Shop';
+import { COUNTRIES, HOME_COUNTRY } from '../data/Countries';
 
 const SIZES = [
   { value: '60', label: '60 cm' },
@@ -36,6 +38,10 @@ export function ListingScreen({
   const [shot, setShot] = useState(0);
   const [size, setSize] = useState('80');
   const [quantity, setQuantity] = useState('1');
+  const [country, setCountry] = useState(HOME_COUNTRY);
+
+  const home = country === HOME_COUNTRY;
+  const free = one.freeDelivery && home;
 
   const more = LISTINGS.filter((other) => other.id !== one.id).slice(0, 8);
 
@@ -93,6 +99,15 @@ export function ListingScreen({
 
           <ArenaSelect label="Width" options={SIZES} value={size} onChange={setSize} />
           <ArenaSelect label="Quantity" options={QUANTITIES} value={quantity} onChange={setQuantity} />
+          <ArenaCombobox
+            label="Deliver to"
+            placeholder="Search countries"
+            icon="ph-bold ph-map-pin"
+            required
+            options={COUNTRIES}
+            value={country}
+            onChange={setCountry}
+          />
 
           <ArenaButton className="arena-fill" icon="ph-bold ph-basket" onClick={() => onBasket(one.id)}>
             Add to basket
@@ -107,8 +122,8 @@ export function ListingScreen({
 
           <ArenaKeyValue
             rows={[
-              { term: 'Delivery', value: one.freeDelivery ? 'Free' : money(4.95), numeric: !one.freeDelivery },
-              { term: 'Arrives', value: '18 to 24 September' },
+              { term: 'Delivery', value: free ? 'Free' : money(home ? 4.95 : 14.5), numeric: !free },
+              { term: 'Arrives', value: home ? '18 to 24 September' : '29 September to 9 October' },
               { term: 'Returns', value: 'Accepted within 30 days' },
               { term: 'Ships from', value: one.madeIn },
             ]}

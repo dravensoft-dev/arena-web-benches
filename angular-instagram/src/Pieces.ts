@@ -93,3 +93,17 @@ export class Carousel {
   protected readonly index = signal(0);
   protected readonly many = computed(() => this.media().length > 1);
 }
+
+/* The lock-up a signed-out screen carries: the glyph and the wordmark, the same two the
+   primary nav opens with. */
+@Component({
+  selector: 'app-wordmark',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'wordmark' },
+  template: `
+    <img src="img/brand-glyph.svg" alt="" class="wordmark__glyph" />
+    <span class="wordmark__word">Instagram</span>
+  `,
+})
+export class Wordmark {}

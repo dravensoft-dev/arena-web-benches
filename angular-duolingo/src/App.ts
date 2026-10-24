@@ -1,10 +1,33 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ArenaIcon, ArenaIconButton, ArenaThemeService } from '@dravensoft/arena-angular';
+import { ChangeDetectionStrategy, Component, afterRenderEffect, computed, inject, signal } from '@angular/core';
+import { ArenaIcon, ArenaIconButton, ArenaOnboarding, ArenaThemeService } from '@dravensoft/arena-angular';
 import { PathScreen } from './screens/PathScreen';
 import { LessonScreen } from './screens/LessonScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
+import { TOUR, TOUR_SEEN } from './data/Course';
 
 type Screen = 'path' | 'lesson' | 'profile';
+
+type Anchor = { left: number; bottom: number };
+
+/* Storage can be absent or refuse, in a private window or a sandboxed frame; the tour then
+   opens on every visit, which is the first run repeated rather than an error. */
+function tourSeen(): boolean {
+  try { return window.localStorage.getItem(TOUR_SEEN) === '1'; } catch { return false; }
+}
+
+function markTourSeen(): void {
+  try { window.localStorage.setItem(TOUR_SEEN, '1'); } catch { /* the tour reopens next visit */ }
+}
+
+/* The coachmark positions from viewport coordinates, so the anchor is read from the target
+   after it has been scrolled into view, and read again whenever the page scrolls or resizes. */
+function anchorFor(target: string, reveal: boolean): Anchor | undefined {
+  const element = document.querySelector(`[data-tour="${target}"]`);
+  if (!element) return undefined;
+  if (reveal) element.scrollIntoView({ block: 'center' });
+  const { left, bottom } = element.getBoundingClientRect();
+  return { left, bottom };
+}
 
 const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] = [
   { id: 'path', label: 'Learn', icon: 'ph-fill ph-house', slot: 1 },
@@ -19,11 +42,15 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaIcon, ArenaIconButton, LessonScreen, PathScreen, ProfileScreen],
+  imports: [ArenaIcon, ArenaIconButton, ArenaOnboarding, LessonScreen, PathScreen, ProfileScreen],
   // The React shell returns a different root element per branch: `<div className="app">` for the
   // two shell screens and `<div className="lesson">` for the lesson. An Angular host element is
   // always in the document, so the layout class is a conditional binding rather than a branch.
-  host: { '[class.app]': "screen() !== 'lesson'" },
+  host: {
+    '[class.app]': "screen() !== 'lesson'",
+    '(window:scroll)': 'measure()',
+    '(window:resize)': 'measure()',
+  },
   template: `
     @if (screen() === 'lesson') {
       <app-lesson-screen (quit)="screen.set('path')" />
@@ -39,6 +66,7 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
               <button
                 type="button"
                 class="nav__item"
+                [attr.data-tour]="item.id === 'profile' ? 'profile' : null"
                 [attr.aria-current]="screen() === item.id ? 'page' : null"
                 (click)="go(item.id)"
               >
@@ -50,6 +78,7 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
         </ul>
 
         <div class="nav__foot">
+          <arena-icon-button icon="ph-bold ph-question" label="Take the tour" (click)="startTour()" />
           <arena-icon-button [icon]="themeIcon()" label="Switch appearance" (click)="toggleTheme()" />
         </div>
       </nav>
@@ -58,6 +87,17 @@ const NAV: { id: Screen | string; label: string; icon: string; slot: number }[] 
         @if (screen() === 'path') { <app-path-screen (start)="screen.set('lesson')" /> }
         @if (screen() === 'profile') { <app-profile-screen /> }
       </main>
+
+      <arena-onboarding
+        [open]="showing()"
+        [steps]="tour"
+        [index]="step()"
+        [anchor]="anchor()"
+        (next)="step.set(step() + 1)"
+        (back)="step.set(step() - 1)"
+        (skip)="endTour()"
+        (done)="endTour()"
+      />
     }
   `,
 })
@@ -69,6 +109,21 @@ export class App {
     this.asked === 'lesson' || this.asked === 'profile' ? this.asked : 'path',
   );
   protected readonly nav = NAV;
+  protected readonly tour = TOUR;
+
+  protected readonly touring = signal(this.screen() === 'path' && !tourSeen());
+  protected readonly step = signal(0);
+  protected readonly anchor = signal<Anchor | undefined>(undefined);
+
+  protected readonly showing = computed(() => this.touring() && this.screen() === 'path');
+  private readonly target = computed(() => TOUR[this.step()]?.target);
+
+  constructor() {
+    afterRenderEffect(() => {
+      const target = this.target();
+      if (this.showing() && target) this.anchor.set(anchorFor(target, true));
+    });
+  }
 
   protected readonly themeIcon = computed(() =>
     this.themes.theme() === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon',
@@ -76,6 +131,22 @@ export class App {
 
   protected go(id: Screen | string): void {
     if (id === 'path' || id === 'profile') this.screen.set(id);
+  }
+
+  protected measure(): void {
+    const target = this.target();
+    if (this.showing() && target) this.anchor.set(anchorFor(target, false));
+  }
+
+  protected startTour(): void {
+    this.step.set(0);
+    this.screen.set('path');
+    this.touring.set(true);
+  }
+
+  protected endTour(): void {
+    this.touring.set(false);
+    markTourSeen();
   }
 
   protected toggleTheme(): void {

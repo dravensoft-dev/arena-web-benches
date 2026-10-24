@@ -5,6 +5,7 @@ import {
   ArenaBadge,
   ArenaBreadcrumbs,
   ArenaButton,
+  ArenaCombobox,
   ArenaFigure,
   ArenaKeyValue,
   ArenaMedia,
@@ -17,6 +18,7 @@ import {
 import type { ArenaKeyValueRow, ArenaSelectOption } from '@dravensoft/arena-angular';
 import { ListingCard, Mark, Price, Stars } from './pieces';
 import { LISTINGS, listing as findListing, money } from '../data/Shop';
+import { COUNTRIES, HOME_COUNTRY } from '../data/Countries';
 
 const SIZES: ArenaSelectOption[] = [
   { value: '60', label: '60 cm' },
@@ -31,7 +33,7 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   imports: [
-    ArenaAlert, ArenaAvatar, ArenaBadge, ArenaBreadcrumbs, ArenaButton, ArenaFigure,
+    ArenaAlert, ArenaAvatar, ArenaBadge, ArenaBreadcrumbs, ArenaButton, ArenaCombobox, ArenaFigure,
     ArenaKeyValue, ArenaMedia, ArenaOverlay, ArenaScroller, ArenaScrollerItem,
     ArenaSection, ArenaSelect, ListingCard, Mark, Price, Stars,
   ],
@@ -87,6 +89,15 @@ const QUANTITIES: ArenaSelectOption[] = ['1', '2', '3', '4'].map((value) => ({ v
 
           <arena-select label="Width" [options]="sizes" [value]="size()" (change)="size.set($event)" />
           <arena-select label="Quantity" [options]="quantities" [value]="quantity()" (change)="quantity.set($event)" />
+          <arena-combobox
+            label="Deliver to"
+            placeholder="Search countries"
+            icon="ph-bold ph-map-pin"
+            required
+            [options]="countries"
+            [value]="country()"
+            (change)="country.set($event)"
+          />
 
           <arena-button class="arena-fill" icon="ph-bold ph-basket" (click)="basket.emit(one().id)">
             Add to basket
@@ -131,12 +142,16 @@ export class ListingScreen {
 
   protected readonly sizes = SIZES;
   protected readonly quantities = QUANTITIES;
+  protected readonly countries = COUNTRIES;
 
   protected readonly shot = signal(0);
   protected readonly size = signal('80');
   protected readonly quantity = signal('1');
+  protected readonly country = signal(HOME_COUNTRY);
 
   protected readonly one = computed(() => findListing(this.id()));
+  protected readonly home = computed(() => this.country() === HOME_COUNTRY);
+  protected readonly free = computed(() => this.one().freeDelivery && this.home());
   protected readonly more = computed(() => LISTINGS.filter((other) => other.id !== this.one().id).slice(0, 8));
 
   protected readonly trail = computed(() => [
@@ -146,8 +161,8 @@ export class ListingScreen {
   ]);
 
   protected readonly rows = computed<ArenaKeyValueRow[]>(() => [
-    { term: 'Delivery', value: this.one().freeDelivery ? 'Free' : money(4.95), numeric: !this.one().freeDelivery },
-    { term: 'Arrives', value: '18 to 24 September' },
+    { term: 'Delivery', value: this.free() ? 'Free' : money(this.home() ? 4.95 : 14.5), numeric: !this.free() },
+    { term: 'Arrives', value: this.home() ? '18 to 24 September' : '29 September to 9 October' },
     { term: 'Returns', value: 'Accepted within 30 days' },
     { term: 'Ships from', value: this.one().madeIn },
   ]);

@@ -91,6 +91,28 @@
 
 .results__pages { display: flex; justify-content: center; padding-block-start: var(--sp-4); }
 
+/* ---- the filters over the results ---- */
+
+.results__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  align-items: end;
+  justify-content: space-between;
+}
+
+.results__price { inline-size: 100%; max-inline-size: calc(var(--sp-24) * 4); }
+
+.results__none { color: var(--ink-muted); line-height: var(--lh-prose); margin: 0; }
+
+/* A placeholder stands for a card at the narrowest the grid lets one get, which is the height a
+   picture of the card's own proportion takes there. */
+.ghost {
+  display: grid;
+  gap: var(--sp-3);
+  --arena-skeleton-height: calc(var(--grid-min) / var(--aspect-media));
+}
+
 /* ---- a listing card ---- */
 
 .card { position: relative; min-inline-size: 0; }
@@ -217,6 +239,12 @@
   font-weight: var(--fw-control);
   color: var(--color-success);
 }
+
+/* ---- the landing ---- */
+
+.home { padding-block: var(--sp-6) var(--sp-16); display: grid; gap: var(--sp-12); }
+
+.home > * { min-inline-size: 0; }
 
 /* ---- the listing page ---- */
 

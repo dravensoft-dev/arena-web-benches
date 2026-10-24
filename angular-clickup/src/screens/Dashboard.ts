@@ -7,17 +7,26 @@ import {
   ArenaCard,
   ArenaChartCard,
   ArenaDoughnutChart,
+  ArenaFunnelChart,
   ArenaHorizontalBarChart,
   ArenaIconButton,
   ArenaLineChart,
   ArenaMenu,
+  ArenaPyramidChart,
   ArenaStatCard,
+  ArenaTimeline,
 } from '@dravensoft/arena-angular';
 import type { ArenaMenuItem, ArenaStatDelta } from '@dravensoft/arena-angular';
 import {
   ACTIVITY,
   BURNDOWN,
   BURNDOWN_LABELS,
+  FUNNEL,
+  FUNNEL_LABELS,
+  MILESTONES,
+  MILESTONE_NOW,
+  OPEN_CLOSE,
+  OPEN_CLOSE_LABELS,
   STATUS_SPLIT,
   STATUS_SPLIT_LABELS,
   THROUGHPUT,
@@ -61,7 +70,8 @@ export class CardActions {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ArenaActions, ArenaActivityFeed, ArenaBarChart, ArenaButton, ArenaCard, ArenaChartCard,
-    ArenaDoughnutChart, ArenaHorizontalBarChart, ArenaLineChart, ArenaStatCard, CardActions,
+    ArenaDoughnutChart, ArenaFunnelChart, ArenaHorizontalBarChart, ArenaLineChart, ArenaPyramidChart,
+    ArenaStatCard, ArenaTimeline, CardActions,
   ],
   host: { class: 'screen' },
   template: `
@@ -123,6 +133,29 @@ export class CardActions {
           />
         </arena-chart-card>
 
+        <arena-chart-card title="Status funnel">
+          <app-card-actions actions name="Status funnel" />
+          <arena-funnel-chart
+            label="Tasks this sprint reaching each status"
+            [labels]="funnelLabels"
+            [series]="funnel"
+            valueSuffix=" tasks"
+          />
+        </arena-chart-card>
+
+        <arena-chart-card title="Opened and closed">
+          <app-card-actions actions name="Opened and closed" />
+          <arena-pyramid-chart
+            label="Tasks opened and closed this sprint by priority"
+            [labels]="openCloseLabels"
+            [series]="openClose"
+          />
+        </arena-chart-card>
+
+        <arena-card title="Sprint 32 milestones" eyebrow="Schedule">
+          <arena-timeline label="Sprint 32" [items]="milestones" [index]="milestoneNow" />
+        </arena-card>
+
         <arena-card title="Recent activity" eyebrow="Live">
           <arena-activity-feed [items]="activity" label="Recent activity in this space" />
         </arena-card>
@@ -139,6 +172,12 @@ export class Dashboard {
   protected readonly activity = ACTIVITY;
   protected readonly burndown = BURNDOWN;
   protected readonly burndownLabels = BURNDOWN_LABELS;
+  protected readonly funnel = FUNNEL;
+  protected readonly funnelLabels = FUNNEL_LABELS;
+  protected readonly milestones = MILESTONES;
+  protected readonly milestoneNow = MILESTONE_NOW;
+  protected readonly openClose = OPEN_CLOSE;
+  protected readonly openCloseLabels = OPEN_CLOSE_LABELS;
   protected readonly statusSplit = STATUS_SPLIT;
   protected readonly statusSplitLabels = STATUS_SPLIT_LABELS;
   protected readonly throughput = THROUGHPUT;

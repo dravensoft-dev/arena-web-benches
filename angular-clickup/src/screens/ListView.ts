@@ -3,25 +3,35 @@ import {
   ArenaBulkActionBar,
   ArenaButton,
   ArenaCheckbox,
+  ArenaFilterBar,
   ArenaIcon,
   ArenaIconButton,
   ArenaInput,
   ArenaMenu,
+  ArenaMultiSelect,
   ArenaProgressBar,
   ArenaSegmentedControl,
+  ArenaSelect,
   arenaCatColor,
 } from '@dravensoft/arena-angular';
 import type {
-  ArenaBulkAction, ArenaCatSlot, ArenaMenuItem, ArenaSegmentOption,
+  ArenaAppliedFilter, ArenaBulkAction, ArenaCatSlot, ArenaMenuItem, ArenaSegmentOption, ArenaSelectOption,
 } from '@dravensoft/arena-angular';
 import { Assignees, PriorityFlag, StatusDot, StatusPill, Tags } from '../Chrome';
-import { STATUS_ORDER, STATUS_SLOT, TASKS } from '../data/Space';
+import { PEOPLE, PRIORITY_ORDER, STATUS_ORDER, STATUS_SLOT, TASKS } from '../data/Space';
 import type { Status, Task } from '../data/Space';
 
 const GROUPINGS: ArenaSegmentOption[] = [
   { value: 'status', label: 'Status' },
   { value: 'assignee', label: 'Assignee' },
   { value: 'priority', label: 'Priority' },
+];
+
+const ASSIGNEES: ArenaSelectOption[] = Object.keys(PEOPLE).map((id) => ({ value: id, label: PEOPLE[id].name }));
+
+const PRIORITIES: ArenaSelectOption[] = [
+  { value: '', label: 'Any priority' },
+  ...PRIORITY_ORDER.map((priority) => ({ value: priority, label: priority })),
 ];
 
 const BULK: ArenaBulkAction[] = [
@@ -49,7 +59,7 @@ const ROW_MENU: ArenaMenuItem[] = [
   ],
   host: { class: 'row', '[attr.data-checked]': "checked() ? 'yes' : 'no'" },
   template: `
-    <span class="row__check"><arena-checkbox [checked]="checked()" (change)="check.emit($event)" /></span>
+    <span class="row__check"><arena-checkbox [label]="'Select ' + task().name" [showLabel]="false" [checked]="checked()" (change)="check.emit($event)" /></span>
     <span class="row__grip"><arena-icon icon="ph-bold ph-dots-six-vertical" /></span>
     <span class="row__name">
       <span class="row__title">{{ task().name }}</span>
@@ -91,8 +101,8 @@ export class Row {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ArenaBulkActionBar, ArenaButton, ArenaIcon, ArenaIconButton, ArenaInput, ArenaSegmentedControl, Row,
-    StatusDot,
+    ArenaBulkActionBar, ArenaButton, ArenaFilterBar, ArenaIcon, ArenaIconButton, ArenaInput, ArenaMultiSelect,
+    ArenaSegmentedControl, ArenaSelect, Row, StatusDot,
   ],
   host: { class: 'screen' },
   template: `
@@ -114,6 +124,20 @@ export class Row {
     </div>
 
     <div class="list">
+      <div class="filters">
+        <arena-filter-bar label="Task filters" [applied]="applied()" (remove)="onRemove($event)" (clear)="onClear()">
+          <arena-multi-select
+            label="Assignees"
+            placeholder="Anyone"
+            [options]="assigneeOptions"
+            [value]="assignees()"
+            [maxVisible]="2"
+            (change)="assignees.set($event.values)"
+          />
+          <arena-select label="Priority" [options]="priorities" [value]="priority()" (change)="priority.set($event)" />
+        </arena-filter-bar>
+      </div>
+
       @for (status of statusOrder; track status) {
         @if (group(status).length > 0) {
           <section class="group">
@@ -166,14 +190,31 @@ export class ListView {
   protected readonly checked = signal<Record<string, boolean>>({});
   protected readonly query = signal('');
   protected readonly grouping = signal('status');
+  protected readonly assignees = signal<readonly string[]>([]);
+  protected readonly priority = signal('');
 
   protected readonly groupings = GROUPINGS;
   protected readonly bulk = BULK;
   protected readonly statusOrder = STATUS_ORDER;
+  protected readonly assigneeOptions = ASSIGNEES;
+  protected readonly priorities = PRIORITIES;
 
   protected readonly rows = computed(() => {
     const needle = this.query().toLowerCase();
-    return TASKS.filter((task) => task.name.toLowerCase().includes(needle));
+    const assignees = this.assignees();
+    const priority = this.priority();
+    return TASKS.filter((task) =>
+      task.name.toLowerCase().includes(needle)
+      && (assignees.length === 0 || task.assignees.some((id) => assignees.includes(id)))
+      && (priority === '' || task.priority === priority));
+  });
+
+  protected readonly applied = computed<ArenaAppliedFilter[]>(() => {
+    const priority = this.priority();
+    return [
+      ...this.assignees().map((id) => ({ id: `assignee:${id}`, label: `Assignee: ${PEOPLE[id].name}` })),
+      ...(priority === '' ? [] : [{ id: 'priority', label: `Priority: ${priority}` }]),
+    ];
   });
 
   protected readonly selected = computed(() => {
@@ -200,5 +241,15 @@ export class ListView {
 
   protected onCheck(id: string, next: boolean): void {
     this.checked.update((prev) => ({ ...prev, [id]: next }));
+  }
+
+  protected onRemove(filter: ArenaAppliedFilter): void {
+    if (filter.id === 'priority') this.priority.set('');
+    else this.assignees.update((prev) => prev.filter((id) => `assignee:${id}` !== filter.id));
+  }
+
+  protected onClear(): void {
+    this.assignees.set([]);
+    this.priority.set('');
   }
 }

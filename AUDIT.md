@@ -36,37 +36,49 @@ is in [`CLAUDE.md`](./CLAUDE.md).
 
 Every half is read with `bun run measure`, which runs `arena build`, `arena check`, `arena audit`
 and `arena usage` over `src` and `design`, against Arena 12.1.1 packed from the Arena working tree
-on `develop` at `9237c5edf`. The two halves of every pair agree on both figures below, which is the
+on `develop` at `e1275b850`. The two halves of every pair agree on both figures below, which is the
 claim the paired mock exists to test.
 
 | Product | Components drawn | Parts the plugin paints |
 |---|---|---|
-| Calendly | 12 | 5 |
-| ClickUp | 31 | 14 |
-| Duolingo | 8 | 7 |
-| Etsy | 23 | 2 |
-| Grafana | 20 | 0 |
-| Instagram | 11 | 8 |
-| Notion | 24 | 12 |
-| Superhuman | 13 | 0 |
+| Calendly | 21 | 5 |
+| ClickUp | 37 | 14 |
+| Duolingo | 10 | 4 |
+| Etsy | 27 | 2 |
+| Grafana | 29 | 0 |
+| Instagram | 17 | 7 |
+| Notion | 28 | 12 |
+| Superhuman | 20 | 0 |
 
-Forty-one distinct parts are painted by hand across the six plugins that paint any. No bench
+**Every one of the hundred components Arena ships is drawn by at least one pair**, in both of its
+halves, so no component reaches a release without a bench having asked for it in each layer.
+
+Thirty-nine distinct parts are painted by hand across the six plugins that paint any. No bench
 reports a raw colour, a bare length, a gradient outside a declared mark, a rule reaching into an
-`arena-` class, or a declaration restating what the slot it selects already paints.
+`arena-` class, or a declaration restating what the slot it selects already paints. Four plugin
+rules reach nothing the half draws: Duolingo's `input.field`, `input.label` and `menu.item`, which
+`arena usage` names, and Instagram's `menu.item-destructive`, a part no component declares, which
+`arena audit` reports as `unknown-part`.
 
-**Sixteen of the sixteen build.** `build` runs `arena audit --strict=audit` first, and it reports
-nothing in any half.
+**Eleven of the sixteen build.** `build` runs `arena audit --strict=audit` first. Both ClickUp
+halves stop on two `unknown-property` findings, the `--arena-tag-cat` and `--arena-board-column-cat`
+their plugin reads and nothing defines. Both Instagram halves stop on `menu.item-destructive`. React
+Instagram and React Notion stop as well on a `raw-glyph` their Angular halves do not report, which
+is entry 50. Every other half reports nothing.
 
 **Every half answers every role the kernel declares.** `arena build` names no role left to Arena's
 default in any half. Grafana sets its links in its secondary, which holds 4.5:1 at the body level.
 Every other half keeps its links in the body ink: Calendly's, ClickUp's and Instagram's primary does
 not hold 4.5:1 there, and Notion, Etsy, Duolingo and Superhuman set links as prose. Calendly,
 ClickUp, Instagram and Superhuman colour the text action of a toast in their primary and Grafana in
-its secondary.
+its secondary. Notion marks its selected tab in the heading ink through `edge-tab-selected`, and
+every other half keeps the primary.
 
 **Every glyph is an `ArenaIcon`.** No half links Phosphor's web font, and every glyph a half draws
 comes from the `icons-<hash>.svg` sprite `arena build` writes, handed over through
 `ArenaIconsProvider` or `provideArenaIcons`. Both halves of every pair write the same sprite.
+`arena check` still names glyphs in ClickUp, Duolingo, Notion and React Etsy as drawn by nothing,
+which entries 49 and 51 record.
 
 **Superhuman's plugin carries no rule.** Its side nav rows are answered by `pad-nav-row-y`
 and Etsy's band by `pad-band-y`, so those two decisions are roles and not sheets.
@@ -82,9 +94,10 @@ rather than a sheet.
 - **In Arena**: the version the release build stamps into `frameworks/react/dist/package.json` and
   `frameworks/angular/dist/package.json`.
 - **What it does**: both packages assembled from `develop` say `12.1.1`, the version npm serves,
-  while `develop` holds 454 commits past the `v12.1.1` tag. Among them, Arena ships no icon font, so
-  a `<i class="ph-…">` that painted under the published 12.1.1 paints nothing, and `ArenaTabs` emits
-  `valueChange` (`onValueChange` in React) where it emitted `change`.
+  while `develop` holds 605 commits past the `v12.1.1` tag. Among them, Arena ships no icon font, so
+  a `<i class="ph-…">` that painted under the published 12.1.1 paints nothing; `ArenaTabs` emits
+  `valueChange` (`onValueChange` in React) where it emitted `change`; `ArenaCheckbox` requires
+  `label`; and a plugin that answers `heat-step-1` is refused, since the role is gone.
 - **What it should do**: a release that removes the icon font and renames an output is a major
   version, so the tree that holds them says 13.0.0, or a pre-release of it, before anything is
   packed from it.
@@ -97,166 +110,117 @@ rather than a sheet.
   lands, so a pack of the tree never carries a published number.
 - **Closed when**: a pack of `develop` names a version npm has not published, and `benches.json`
   declares it.
-- **The bench**: draws every glyph through `ArenaIcon` and binds `valueChange`, which is how it asks
-  for what it already draws.
+- **The bench**: draws every glyph through `ArenaIcon`, binds `valueChange`, names its row
+  checkboxes and answers no heat step, which is how it asks for what it already draws.
 
-### 2. `arena check` reports `ArenaIconsProvider` as a component Arena does not ship
+### 49. `iconMemberGlyphs` loses an `ArenaIcon`'s `icon` when a braced attribute comes before it
 
-- **In Arena**: `resolveComponents` in `scripts/generate/core/arena-cli/components.ts`, whose
-  `unplaced` list becomes the `[components]` report in `scripts/generate/core/arena-cli/steps.ts`.
-- **What it does**: a React name imported from the package and opened as a JSX tag, which the
-  component map does not hold, is reported. `ArenaIconsProvider` is both, so every React project
-  that follows the install guide prints
-  `[components] ArenaIconsProvider is not a component this package ships, so no sheet was added for it`.
-- **What it should do**: the report exists to separate a typo from a component whose sheet is
-  missing, as `unplacedProblems` in `scripts/check/arena/check-consumer.ts` states. A provider Arena
-  exports and its install guide (`skills/design/references/install.md`) tells the project to render
-  is neither, so it is not reported.
-- **Reproduce**: `cd react-etsy && bun run measure`. `arena check` prints the line above;
-  `cd angular-etsy && bun run measure` prints no `[components]` line.
-- **Benches**: every React half, and no Angular half, whose `provideArenaIcons` is a function and
-  not a tag. So every pair disagrees by exactly one report: React counts one more than Angular in
-  all eight.
-- **Correction**: the component map the package carries names the package's non-component exports
-  that a consumer renders as a tag (`ArenaIconsProvider`, and any other provider or context
-  component the index exports), and `resolveComponents` places them as drawing no sheet, the way a
-  chart already resolves to none. Generating that list from the package index minus the components
-  keeps it from drifting.
-- **Closed when**: `arena check` reports the same count in both halves of every pair, and prints no
-  `[components]` line for any React half.
-- **The bench**: nothing; the report does not stop a build.
+- **In Arena**: `ANY_ATTRIBUTE` and `iconMemberGlyphs` in `scripts/generate/core/arena-cli/audit.ts`,
+  read by the `glyph` report of `spriteFiles` in `scripts/generate/core/arena-cli/plan.ts`.
+- **What it does**: `iconMemberGlyphs` runs `ANY_ATTRIBUTE`, `(?:^|\s)[[(]?[\w.:@-]+[\])]?\s*=\s*`,
+  over the tag's attributes with every `{…}` blanked to spaces. After a braced attribute such as
+  `key={n}`, the trailing `\s*` of that match swallows the blanked value and the space after it, so
+  the `(?:^|\s)` the next attribute needs is gone and `icon` is never read. React Etsy's stars are
+  `<ArenaIcon key={n} icon={n < whole ? 'ph-fill ph-star' : 'ph-bold ph-star'} />`, and `arena check`
+  prints `[glyph] ph-star is in the sprite, and no ArenaIcon, arena-icon or icon attribute in your
+  sources draws it`. Angular Etsy writes `<arena-icon [icon]="…">` with no attribute before it and
+  reports nothing, so the pair disagrees on a report count.
+- **What it should do**: a literal in an `ArenaIcon`'s `icon` is drawn, which is what the `glyph`
+  report counts as drawn, whatever attributes stand before it.
+- **Reproduce**: two files, `<ArenaIcon key="k" icon="ph-bold ph-star" />` and
+  `<ArenaIcon key={n} icon="ph-bold ph-star" />`; `iconMemberGlyphs` returns `ph-star` for the first
+  and nothing for the second. In a bench, `cd react-etsy && bun run measure`.
+- **Benches**: Etsy, React only; Angular binds its attributes in brackets and quotes.
+- **Correction**: match an attribute start without consuming the separator, a lookbehind or a
+  lookahead for the space, so each attribute is found whatever precedes it. `ownAttributeStarts`
+  reads `from` off the match end, so its callers are read with the same case.
+- **Closed when**: the reproduction returns `ph-star` for both files, and React Etsy's `measure`
+  prints no `[glyph]` line.
+- **The bench**: nothing.
 
-### 3. `raw-glyph` reads a glyph nested in a JSX prop as a class of the component holding the prop
+### 50. `raw-glyph` reports a React `className` that toggles an `arena-` class, which Angular's `[class.x]` does not
 
-- **In Arena**: the `raw-glyph` rule of `arena audit`, in the tag loop of
-  `scripts/generate/core/arena-cli/audit.ts`, which tests `classValues(raw)` over a tag's whole
-  attribute text.
-- **What it does**: in JSX a tag's attribute text holds every element passed through a prop, so a
-  glyph inside a prop is reported twice: once at its own `<i>`, and once at the tag that holds the
-  prop, which carries no glyph. `<ArenaAppBar brand={<a><i className="ph-fill ph-storefront" /></a>}>`
-  is reported at the `<i>` and at `ArenaAppBar`. Every rule that reads `classValues(raw)` reads a
-  nested element's `className` as the outer tag's own in the same way.
-- **What it should do**: report an element for the classes on that element only, which is how the
-  Angular half of the same markup is read, since Angular projects the brand as a child.
-- **Reproduce**: a `.tsx` file holding the line above, under `arena audit --src <dir>`, prints two
-  `raw-glyph` lines whose line numbers are the `ArenaAppBar` line and the `<i>` line.
-- **Benches**: the Etsy brand slot is the shape that shows it. No half draws a raw glyph, so none
-  reports it today; the probe above reproduces it from the React package of this tree.
-- **Correction**: `classValues` reads only the tag's own attributes, skipping any `{…}` expression
-  whose content opens a JSX element, so a nested element is read when the loop reaches its own tag.
-  Every rule that reads `classValues(raw)` takes the corrected reading at once.
-- **Closed when**: the probe prints one `raw-glyph` line, at the `<i>`.
-- **The bench**: nothing; it draws no raw glyph.
+- **In Arena**: `bindsClass` and the `raw-glyph` branch of `lineFindings` in
+  `scripts/generate/core/arena-cli/audit.ts`.
+- **What it does**: in a file that names a Phosphor glyph anywhere, `bindsClass` treats any
+  `className` whose value starts with `{` as a class bound to a value, and `arena audit` prints
+  `an element whose class is bound to a value, in a file that names a Phosphor glyph, so it may hold
+  a Phosphor class, which paints nothing because Arena ships no icon font (raw-glyph)`. React Notion
+  writes `<ArenaTag … className={task.status === 'In progress' ? 'arena-accent-primary' : undefined}>`
+  and React Instagram `<ArenaAvatar … className={size === 'lg' ? 'arena-size-lg' : undefined} />`:
+  each value is one fixed `arena-` class or nothing, and neither can hold a glyph. Their Angular halves
+  write the same toggle as `[class.arena-accent-primary]="…"` and `[class.arena-size-lg]="…"`, which
+  `bindsClass` does not read, so the audit reports nothing there. Under `--strict=audit` the React
+  half does not build and the Angular half does.
+- **What it should do**: the same markup gets the same verdict in both layers, and an instrument
+  reports a class that can hold a glyph, not one whose every possible value is a fixed `arena-` class.
+- **Reproduce**: a `.tsx` holding `const I = 'ph-bold ph-star';` and
+  `<ArenaTag className={on ? 'arena-accent-primary' : undefined}>x</ArenaTag>`, under
+  `arena audit`: one `raw-glyph` finding. In a bench, `cd react-notion && bun run build`.
+- **Benches**: Notion and Instagram, React only; both Angular halves build.
+- **Correction**: two. (a) A braced value whose every string literal is a class that is not a
+  Phosphor class, and that holds no identifier read from elsewhere, is not a bound class. (b) Read
+  Angular's `[class.ph-…]` toggles as React's are, so both layers report alike; this keeps the false
+  report and makes it agree.
+- **Closed when**: the reproduction prints no finding, and React Notion and React Instagram build.
+- **The bench**: nothing; both halves stay as written, and React Notion and React Instagram do not
+  build.
 
-### 4. `raw-glyph` misses a glyph whose class comes from a value, which `arena build` reads
+### 51. The `glyph` report says no `ArenaIcon` draws a glyph that an `ArenaIcon` draws from a value
 
-- **In Arena**: the `raw-glyph` rule of `arena audit` in `scripts/generate/core/arena-cli/audit.ts`,
-  against the glyph scan of `scripts/generate/core/arena-cli/icon-css.ts` that `arena build` reads
-  the sprite from.
-- **What it does**: an `<i>` whose class is a value, such as `className={tab.icon}`,
-  `class="{{ entry.icon }} ptabs__icon"` or `[class]="themeIcon()"`, is not reported, although the
-  value is a whole `ph-*` literal elsewhere in the same sources and `arena build` writes that glyph
-  into the sprite. The element paints nothing and the audit says nothing.
-- **What it should do**: `arena build` and `arena audit` read the same sources, so a glyph the build
-  finds and that no `ArenaIcon` draws is one the audit can name: the rule's own description in
-  `audit.ts` is an element that holds a Phosphor class, and this element holds one at runtime.
-- **Reproduce**: a source holding `const TABS = [{ icon: 'ph-bold ph-kanban' }]` and
-  `<i className={TABS[0].icon} />`, under `arena build` then `arena audit`: the sprite holds
-  `ph-bold-kanban` and the audit prints no finding.
-- **Benches**: one ClickUp glyph, four of Duolingo's, three of Instagram's and six of Notion's, each
-  drawn from a data table, and both halves of each of those pairs agree. Instagram's theme toggle is
-  one more in Angular only, because that half reads it from a computed where the React half writes
-  the ternary inline; the rule answers the same way in both layers, and the markup is what differs.
-  No half draws a raw glyph today, so none reports it.
-- **Correction**: two, and the first is the one the benches would take. (a) The audit reports an
-  element other than `ArenaIcon` whose class is bound to an expression, in a file whose sources the
-  glyph scan found a `ph-*` literal in, as `raw-glyph` with the wording "may hold a Phosphor class",
-  since the binding cannot be resolved statically. (b) `arena build` reports a glyph it wrote into the
-  sprite that no `ArenaIcon`, `arena-icon` or `icon` member draws, which catches the same element
-  from the other end at the cost of a report per data table.
-- **Closed when**: the reproduction above prints one `raw-glyph` finding.
-- **The bench**: nothing; it draws every glyph through `ArenaIcon`.
+- **In Arena**: the `glyph` loop of `spriteFiles` in `scripts/generate/core/arena-cli/plan.ts`, which
+  takes drawn glyphs from `iconMemberGlyphs` in `scripts/generate/core/arena-cli/audit.ts`.
+- **What it does**: the report counts a glyph as drawn only when a literal stands in an
+  `ArenaIcon` or `arena-icon` attribute, an `icon` attribute of an Arena tag, or a `#ph-` symbol
+  reference. Every other glyph a source names is reported as `[glyph] ph-link is in the sprite, and
+  no ArenaIcon, arena-icon or icon attribute in your sources draws it; an element that draws it
+  through a class of its own paints nothing, so hand it to ArenaIcon as icon`. Duolingo's path,
+  lesson and profile glyphs sit in data tables drawn as `<ArenaIcon icon={item.icon}>`; ClickUp's
+  and Notion's sit in the `items` handed to `ArenaMenu` and `ArenaCommandPalette`, which draw each
+  item's `icon`. Every one is on screen, drawn by `ArenaIcon`, and no element draws one through a
+  class, so the report's cause is false and its advice is already followed. The exception taken for
+  a fill-swapping component bound to an expression covers Grafana's and Superhuman's side nav and
+  no other half. The theme toggle splits the pairs further: React writes
+  `icon={theme === 'dark' ? 'ph-bold ph-sun' : 'ph-bold ph-moon'}` in the attribute, Angular binds
+  `[icon]="themeIcon()"` to a `computed` holding the literals, so ClickUp, Duolingo and Notion report
+  `ph-sun` and `ph-moon` in Angular only.
+- **What it should do**: an instrument reports nothing where there is nothing and says what is
+  true where it reports (the bench's `CLAUDE.md`); the report's own text names a class as the cause.
+- **Reproduce**: `cd react-duolingo && bun run measure`: seventeen `[glyph]` lines, nineteen in
+  Angular, each a glyph the path or profile screen draws.
+- **Benches**: ClickUp, Duolingo and Notion, both halves, Angular two lines longer.
+- **Correction**: two. (a) A glyph a source names is drawn when that source hands an `icon`
+  attribute or member an expression, the rule already taken for the fill-swapping components,
+  which costs the report on a project that both binds and draws by class. (b) The report says what
+  it measured, "no literal in an ArenaIcon, arena-icon or icon attribute names it", and drops the
+  cause it cannot know.
+- **Closed when**: under (a), the three products' `measure` prints no `[glyph]` line; under (b), no
+  `[glyph]` line names a cause no source has.
+- **The bench**: nothing; it reads its glyphs from its tables, which is how the members say to pass
+  them.
 
-### 5. Four role defaults are written in a form a style plugin is refused for writing
+### 52. A click inside an Angular `ArenaCard` stops at the card, and in React it reaches the document
 
-- **In Arena**: the defaults in `contracts/design/roles.json`, against `pluginTokenProblems` in
-  `scripts/generate/core/arena-cli/theme-css.ts`.
-- **What it does**: `tt-key` defaults to `{case.none}`, and a plugin that writes that value is
-  refused with `"tt-key" is "{case.none}", not one of none, uppercase, lowercase, capitalize.`
-  `ink-key` defaults to `{ink-muted}`, `ink-link` to `{ink-body}`, and a plugin that writes either is
-  refused with `a colour role takes a {color.*} alias only`. `arena build` prints these roles as
-  "take Arena's default", so a project that answers one by copying its default from the contract is
-  stopped. A plugin cannot say "a key follows the muted ink" at all, although that is what the
-  kernel does.
-- **What it should do**: a role's default is an answer, so a plugin may write it. That is the claim
-  of `contracts/design/StylePlugins.md`, where every role is a question the plugin answers.
-- **Reproduce**: in any bench, set `"tt-key": { "$type": "keyword", "$value": "{case.none}" }` or
-  `"ink-key": { "$type": "color", "$value": "{ink-muted}" }` in `plugin.tokens.json` and run
-  `arena build`.
-- **Benches**: every half, in both layers alike. Each answers `tt-key` with `none` and the three ink
-  roles with `{color.base-content}`, which the kernel holds back at each role's own level.
-- **Correction**: `pluginTokenProblems` accepts a keyword role's alias when it resolves to one of
-  the role's values, and a colour role's alias when it names another colour role; both resolve
-  through the catalogue the build already holds. Rewriting the defaults into plugin grammar instead
-  costs the meaning of `{ink-muted}`, which follows a plugin that moves the muted ink.
-- **Closed when**: the reproduction builds, and `arena build` writes `--tt-key: none` and
-  `--ink-key: var(--ink-muted)`.
-- **The bench**: answers each role in the grammar the build accepts, which is the answer it would
-  give anyway.
-
-### 6. The five heat steps are roles a style plugin can answer only one way
-
-- **In Arena**: `heat-step-1` to `heat-step-5` in `contracts/design/roles.json`, against the
-  colour-role rule of `pluginTokenProblems` in `scripts/generate/core/arena-cli/theme-css.ts` and
-  `heatLadder` in `scripts/generate/core/arena-cli/oklab.ts`.
-- **What it does**: a colour role takes a `{color.*}` alias only, and a palette holds exactly one
-  ladder that keeps the order and the 0.06 OKLab L gap the roles demand, `heat-1` to `heat-5`, which
-  `heatLadder` derives from `cat-4` unless the palette pins all five. Every other colour of a palette
-  is a category or a tone, chosen for identity rather than magnitude, so an alias to one breaks the
-  order in one theme or the other, and the answer a plugin can give in practice is the default. The
-  decision the roles present as a style plugin's is the palette's.
-- **What it should do**: a role is a question with more than one honest answer
-  (`contracts/design/StylePlugins.md`). A decision with one answer is either not a role or a role
-  that takes something a plugin can vary.
-- **Reproduce**: in Etsy, answer `heat-step-1` with `{color.cat-2}` and `heat-step-2` with
-  `{color.primary}`, then run `arena check`: it prints `[heat] light: heat, steps 2 and 3: step 3 is
-  no further from the surface than step 2, and roles.json orders the steps by magnitude`, and the
-  same for dark.
-- **Benches**: every half, which answers `heat-step-N` with `{color.heat-N}`. No bench draws a
-  heatmap.
-- **Correction**: two. (a) The roles go, and the ladder stays the palette's, pinned in
-  `arena.config.json` or derived. (b) One role replaces the five and names the slot the ladder is
-  grown from, `heat-source`, defaulting to `{color.cat-4}`, so a plugin chooses the hue and
-  `heatLadder` keeps the order and the gap.
-- **Closed when**: no role a style plugin answers has only its default as a valid answer, which a
-  `check:role-contract` case can hold.
-- **The bench**: answers with the default, which is the one valid answer.
-
-### 7. A side nav badge given as a string is drawn in React and refused in Angular
-
-- **In Arena**: the `badge` member of `ArenaSideNavItem` in both layers, and `arenaBadgeCount` in
-  `frameworks/react/components/navigation/NavRow` and its Angular twin.
-- **What it does**: the contract types `badge` as a number. React draws a string without a word:
-  `arenaBadgeCount('2')` returns `"2"` and `arenaBadgeCount('120')` returns `"99+"`, since the
-  comparisons coerce, and a non-numeric string draws nothing. Angular's strict template check refuses
-  a string at compile time. So the same data in both halves of a pair is drawn by one layer and
-  refused by the other, and React holds the contract only where a project type-checks its JSX, which
-  a project built by a bundler that strips types does not.
-- **What it should do**: both layers answer the same value the same way, which is the claim the
-  paired layers make.
-- **Reproduce**: `<ArenaSideNavItem id="a" label="A" badge={'120' as unknown as number} />` in React
-  draws `99+`; `<arena-side-nav-item id="a" label="A" [badge]="'120'" />` in Angular fails `ng build`.
-- **Benches**: Grafana and Superhuman, whose nav data holds the count as a string. The React half
-  passes it through as it is; the Angular half converts it with a `badge()` helper of its own, so
-  the two halves are written differently to draw the same row.
-- **Correction**: two. (a) Both layers accept a numeric string: Angular's input takes
-  `transform: numberAttribute`, React's prop is typed `number | \`${number}\`` and normalised with
-  `Number()` before `arenaBadgeCount`, so a count read from data needs no helper. (b) Both refuse
-  it: React warns once through `arenaWarnOnce` when `badge` is not a number, and draws nothing, as
-  Angular's build refuses it.
-- **Closed when**: Angular Grafana and Angular Superhuman build with `[badge]="one.badge"` and no
-  helper under (a), or React Grafana warns in the console under (b).
-- **The bench**: nothing; each half stays as written, which is what makes the divergence visible.
+- **In Arena**: `onClick` and `onAnchorClick` in
+  `frameworks/angular/components/display/arena-card/ArenaCard.ts`, against `ArenaCard.tsx`.
+- **What it does**: the Angular card calls `event.stopPropagation()` on every click that starts in
+  it, interactive or not, before it tests `interactive()`, so the host's `(click)` is not run on a
+  card that is not a control. The React card leaves the native event alone, so it bubbles to the
+  document. A listener the host holds on `document` or on an ancestor hears a click inside a React
+  card and never one inside an Angular card.
+- **What it should do**: the two layers answer the same markup alike (the bench's `CLAUDE.md`);
+  `ArenaCard.json` describes `click` as reporting an activation and says nothing of what it stops.
+- **Reproduce**: a non-interactive card and `document.addEventListener('click', () => n++)`; a click
+  on the body leaves `n` at `0` in Angular and `1` in React, and the host's own click handler runs in
+  neither.
+- **Benches**: none depends on it on screen; read in a scratch scene against the same pack.
+- **Correction**: two. (a) The React card stops propagation as the Angular card does, which is the
+  shape `ArenaTableRow` takes, and the contract says a click inside a card stops there. (b) The
+  Angular card stops propagation only on the activations it reports, and keeps a host `(click)` off
+  a non-interactive card by naming its output apart from the native event.
+- **Closed when**: the reproduction reads the same `n` in both layers, and `ArenaCard.json` says
+  which.
+- **The bench**: nothing.
 
 ## Answered
 
@@ -296,3 +260,13 @@ reason, not an omission.
   attribute on an `arena-` element in an Angular template, which is what its description in
   `scripts/generate/core/arena-cli/audit.ts` says; a React project reads a prop it lacks through its
   type check.
+- **The sprite is served by a step the toolchain adds.** `arena.icons.generated.js` exports the
+  sprite's file name, not a URL a bundler wrote, so every React half copies `icons-<hash>.svg` in its
+  `build` and serves it from `Server.ts`, and every Angular half adds an `assets` entry. Importing
+  the `.svg` as an asset is refused because Vite inlines a small one as a `data:` URL an
+  `<svg><use>` does not load; each bundler family page under `skills/design/references/bundlers/`
+  carries the step instead, Bun's beside the others.
+- **The focus ring takes no role.** Fifteen manifests read `var(--focus-ring)`, which
+  `contracts/design/colors.css` maps to the secondary and `COMPAT_ALIASES` refuses a plugin. The
+  ring is one of the floors `contracts/design/StylePlugins.md` keeps out of a plugin's reach with the
+  3:1 it carries, so its colour moves with the palette and no plugin answers it.

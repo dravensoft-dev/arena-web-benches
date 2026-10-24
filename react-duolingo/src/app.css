@@ -65,7 +65,7 @@
 .nav__icon[data-slot='5'] { color: var(--color-cat-5); }
 .nav__icon[data-slot='6'] { color: var(--color-cat-6); }
 
-.nav__foot { display: grid; justify-items: start; }
+.nav__foot { display: flex; gap: var(--sp-2); }
 
 /* ---- path screen ---- */
 

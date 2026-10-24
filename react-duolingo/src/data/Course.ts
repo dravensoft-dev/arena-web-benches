@@ -111,3 +111,15 @@ export const STATS = [
   { id: 's3', label: 'Current league', value: 'Ruby', icon: 'ph-fill ph-shield-star', slot: 5 },
   { id: 's4', label: 'Top 3 finishes', value: '11', icon: 'ph-fill ph-medal', slot: 2 },
 ];
+
+/* First-run tour. Each step points at the element whose data-tour names its target. */
+
+export type TourStep = { target: string; eyebrow?: string; title: string; body: string };
+
+export const TOUR: TourStep[] = [
+  { target: 'lesson', eyebrow: 'Welcome back', title: 'Your next lesson', body: 'The ringed circle is where you left off. Tap it to finish The bill.' },
+  { target: 'streak', title: 'Keep the flame lit', body: 'One lesson a day grows your streak. Miss a day and it starts again from zero.' },
+  { target: 'profile', title: 'Everything you have earned', body: 'Your profile keeps your statistics, your achievements and the friends you follow.' },
+];
+
+export const TOUR_SEEN = 'duolingo.tour.seen';

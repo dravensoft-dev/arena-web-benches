@@ -1,5 +1,8 @@
 import React from 'react';
-import { ArenaAvatar, ArenaButton, ArenaIcon, ArenaCard, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar, arenaCatColor } from '@dravensoft/arena-react';
+import {
+  ArenaAvatar, ArenaButton, ArenaIcon, ArenaCard, ArenaPaletteScope, ArenaPeopleList, ArenaPersonRow, ArenaProgressBar,
+  arenaCatColor, useArenaTheme,
+} from '@dravensoft/arena-react';
 import {
   GEMS,
   HEARTS,
@@ -20,6 +23,7 @@ function Node({ node, slot, onStart }: { node: PathNode; slot: number; onStart: 
       type="button"
       className="node__btn"
       data-state={node.state}
+      data-tour={node.state === 'active' ? 'lesson' : undefined}
       style={{ background: colour }}
       aria-label={`${node.label}, ${node.state}`}
       onClick={onStart}
@@ -72,6 +76,9 @@ function UnitBlock({ unit, onStart }: { unit: Unit; onStart: () => void }) {
 
 export function PathScreen({ onStart }: { onStart: () => void }) {
   const pct = Math.round((XP_TODAY / XP_GOAL) * 100);
+  const [theme] = useArenaTheme();
+  // The Super offer is drawn in the palette the page is not wearing, so it stands apart either way.
+  const promo = theme === 'dark' ? 'light' : 'dark';
 
   return (
     <div className="path-screen">
@@ -81,7 +88,7 @@ export function PathScreen({ onStart }: { onStart: () => void }) {
 
       <aside className="rail">
         <div className="rail__row">
-          <span className="chip chip--streak"><ArenaIcon icon="ph-fill ph-fire" />{STREAK}</span>
+          <span className="chip chip--streak" data-tour="streak"><ArenaIcon icon="ph-fill ph-fire" />{STREAK}</span>
           <span className="chip chip--gems"><ArenaIcon icon="ph-fill ph-diamond" />{GEMS}</span>
           <span className="chip chip--hearts">
             <ArenaIcon icon="ph-fill ph-heart" />{HEARTS}
@@ -113,10 +120,12 @@ export function PathScreen({ onStart }: { onStart: () => void }) {
           </ArenaPeopleList>
         </ArenaCard>
 
-        <ArenaCard title="Unlock Super">
-          <p className="rail__blurb">No ads, unlimited hearts, and a personalised practice hub.</p>
-          <ArenaButton className="arena-fill" icon="ph-bold ph-crown-simple">Try 2 weeks free</ArenaButton>
-        </ArenaCard>
+        <ArenaPaletteScope palette={promo}>
+          <ArenaCard title="Unlock Super">
+            <p className="rail__blurb">No ads, unlimited hearts, and a personalised practice hub.</p>
+            <ArenaButton className="arena-fill" icon="ph-bold ph-crown-simple">Try 2 weeks free</ArenaButton>
+          </ArenaCard>
+        </ArenaPaletteScope>
       </aside>
     </div>
   );

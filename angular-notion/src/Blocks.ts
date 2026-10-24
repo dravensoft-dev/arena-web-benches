@@ -1,6 +1,10 @@
-import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
-import { ArenaCheckbox, ArenaFigure, ArenaIcon, ArenaMedia } from '@dravensoft/arena-angular';
-import type { Block } from './data/Workspace';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import {
+  ArenaAccordion, ArenaAccordionItem, ArenaCheckbox, ArenaDivider, ArenaFigure, ArenaIcon, ArenaLink,
+  ArenaMedia,
+} from '@dravensoft/arena-angular';
+import type { Block, Run } from './data/Workspace';
+import type { Screen } from './Sidebar';
 
 @Component({
   selector: 'app-todo',
@@ -25,31 +29,33 @@ export class Todo {
 }
 
 @Component({
-  selector: 'app-toggle',
+  selector: 'app-rich',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaIcon],
+  imports: [ArenaLink],
   host: { style: 'display: contents' },
   template: `
-    <details class="block block--toggle">
-      <summary class="toggle__summary">
-        <span class="toggle__caret" aria-hidden="true"><arena-icon icon="ph-bold ph-caret-right" /></span>
-        <span>{{ text() }}</span>
-      </summary>
-      <p class="toggle__body">{{ body() }}</p>
-    </details>
+    <p class="block block--text">
+      @for (run of runs(); track $index) {
+        @if ('screen' in run) {
+          <arena-link [href]="run.href" (navigate)="screenChange.emit(run.screen)">{{ run.text }}</arena-link>
+        } @else if ('external' in run) {
+          <arena-link [href]="run.href" external>{{ run.text }}</arena-link>
+        } @else {<ng-container>{{ run.text }}</ng-container>}
+      }
+    </p>
   `,
 })
-export class Toggle {
-  readonly text = input.required<string>();
-  readonly body = input.required<string>();
+export class Rich {
+  readonly runs = input.required<readonly Run[]>();
+  readonly screenChange = output<Screen>();
 }
 
 @Component({
   selector: 'app-blocks',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaFigure, ArenaIcon, ArenaMedia, Todo, Toggle],
+  imports: [ArenaAccordion, ArenaAccordionItem, ArenaDivider, ArenaFigure, ArenaIcon, ArenaMedia, Rich, Todo],
   host: { class: 'blocks' },
   template: `
     @for (block of blocks(); track $index) {
@@ -58,6 +64,7 @@ export class Toggle {
         @case ('h2') { <h2 class="block block--h2">{{ block.text }}</h2> }
         @case ('h3') { <h3 class="block block--h3">{{ block.text }}</h3> }
         @case ('text') { <p class="block block--text">{{ block.text }}</p> }
+        @case ('rich') { <app-rich [runs]="block.runs" (screenChange)="screenChange.emit($event)" /> }
         @case ('bullet') {
           <div class="block block--list">
             <span class="list__marker" aria-hidden="true">&bull;</span>
@@ -78,14 +85,28 @@ export class Toggle {
             <p class="callout__text">{{ block.text }}</p>
           </aside>
         }
-        @case ('toggle') { <app-toggle [text]="block.text" [body]="block.body" /> }
+        @case ('toggles') {
+          <div class="block block--toggles">
+            <arena-accordion multiple>
+              @for (item of block.items; track item.value) {
+                <arena-accordion-item [value]="item.value" [label]="item.label">
+                  <p class="toggle__body">{{ item.body }}</p>
+                </arena-accordion-item>
+              }
+            </arena-accordion>
+          </div>
+        }
         @case ('code') {
           <div class="block block--code">
             <span class="code__lang">{{ block.language }}</span>
             <pre class="code__pre"><code>{{ block.text }}</code></pre>
           </div>
         }
-        @case ('divider') { <hr class="block block--divider" /> }
+        @case ('divider') {
+          <div class="block block--divider">
+            <arena-divider [label]="block.label" />
+          </div>
+        }
         @case ('image') {
           <div class="block block--figure">
             <arena-figure class="arena-ratio-video" [caption]="block.caption">
@@ -99,4 +120,5 @@ export class Toggle {
 })
 export class Blocks {
   readonly blocks = input.required<readonly Block[]>();
+  readonly screenChange = output<Screen>();
 }

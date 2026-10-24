@@ -1,7 +1,7 @@
 @layer properties;
 @layer theme, base, components, utilities, arena-plugin;
 
-/* The bench's own markup: three panes, a conversation row and a keyboard cap. Tokens only. */
+/* The bench's own markup: three panes, a conversation row, a reply and a snooze panel. Tokens only. */
 
 .mail {
   display: grid;
@@ -46,22 +46,6 @@
   font-size: var(--step-eyebrow);
   color: var(--ink-eyebrow);
   padding-inline-start: var(--sp-1);
-}
-
-/* A keyboard cap is what r-marker, bw-marker and edge-marker are for by name, and this is the
-   register that has one on every screen. */
-.cap {
-  display: inline-grid;
-  place-items: center;
-  min-inline-size: var(--sp-5);
-  padding: 0 var(--sp-1);
-  border-radius: var(--r-marker);
-  border: var(--bw-marker) solid var(--edge-marker);
-  background: var(--fill-surface);
-  color: var(--ink-body);
-  font-family: var(--ff-label);
-  font-size: var(--step-eyebrow);
-  line-height: var(--dz-ctl-h-sm);
 }
 
 /* ---- the list ---- */
@@ -222,3 +206,22 @@
 }
 
 .read__reply-hint { display: inline-flex; align-items: center; gap: var(--sp-1); padding-inline-start: var(--sp-2); }
+
+/* ---- the reply, the snooze panel and an emptied split ---- */
+
+.compose {
+  display: grid;
+  gap: var(--sp-2);
+  padding-block-start: var(--sp-3);
+  border-block-start: var(--bw-separator) solid var(--edge-separator);
+}
+
+.compose__foot { display: flex; align-items: center; gap: var(--sp-2); }
+
+.snooze { display: grid; gap: var(--sp-3); min-inline-size: calc(var(--sp-24) * 2); }
+
+.snooze__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+
+.snooze__hint { display: inline-flex; align-items: center; gap: var(--sp-1); }
+
+.zero { padding: var(--sp-10) var(--gutter); max-inline-size: calc(var(--measure-prose) + var(--sp-24)); }

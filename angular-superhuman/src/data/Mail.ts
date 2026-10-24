@@ -177,6 +177,19 @@ export const COMMANDS = [
   { id: 'split', label: 'Move to Other', icon: 'ph-bold ph-arrows-split', group: 'Organise' },
 ];
 
+/* Where a snoozed conversation comes back, and what the send caret offers besides sending now. */
+export const SNOOZES = [
+  { value: 'evening', label: 'Later today', hint: 'Today at 18:00' },
+  { value: 'tomorrow', label: 'Tomorrow', hint: 'Wednesday at 08:00' },
+  { value: 'weekend', label: 'This weekend', hint: 'Saturday at 09:00' },
+  { value: 'week', label: 'Next week', hint: 'Monday at 08:00' },
+];
+
+export const SENDS = [
+  { label: 'Send later', icon: 'ph-bold ph-clock' },
+  { label: 'Send and archive', icon: 'ph-bold ph-archive' },
+];
+
 export function thread(id: string) {
   const found = THREADS.find((one) => one.id === id);
   if (!found) throw new Error(`no thread ${id}`);

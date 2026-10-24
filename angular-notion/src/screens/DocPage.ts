@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import {
-  ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaIcon, ArenaIconButton, ArenaMenu,
+  ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaDivider, ArenaIcon, ArenaIconButton, ArenaMenu,
 } from '@dravensoft/arena-angular';
 import type { ArenaCrumb, ArenaMenuItem } from '@dravensoft/arena-angular';
 import { Blocks } from '../Blocks';
 import { DOC_BLOCKS, PAGE_COVER, PAGE_ICON, PAGE_TITLE } from '../data/Workspace';
+import type { Screen } from '../Sidebar';
 
 const CRUMBS: ArenaCrumb[] = [
   { label: 'Acme Platform', href: '#/' },
@@ -28,7 +29,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
   selector: 'app-doc-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaIcon, ArenaIconButton, ArenaMenu, Blocks],
+  imports: [ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaDivider, ArenaIcon, ArenaIconButton, ArenaMenu, Blocks],
   host: { class: 'doc' },
   template: `
     <header class="topbar">
@@ -36,6 +37,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
       <div class="topbar__actions">
         <span class="topbar__edited">Edited 12 minutes ago</span>
         <arena-button class="arena-emphasis-ghost arena-size-sm" icon="ph-bold ph-share-network">Share</arena-button>
+        <arena-divider class="arena-orientation-vertical" />
         <arena-icon-button icon="ph-bold ph-chat-circle" label="Comments" class="arena-size-sm" />
         <arena-icon-button icon="ph-bold ph-clock-counter-clockwise" label="Page history" class="arena-size-sm" />
         <arena-icon-button icon="ph-bold ph-star" label="Add to favourites" class="arena-size-sm" />
@@ -75,7 +77,7 @@ const PAGE_MENU: ArenaMenuItem[] = [
           </div>
         </div>
 
-        <app-blocks [blocks]="blocks" />
+        <app-blocks [blocks]="blocks" (screenChange)="screenChange.emit($event)" />
 
         <div class="doc__add">
           <arena-icon icon="ph-bold ph-plus" />
@@ -92,4 +94,6 @@ export class DocPage {
   protected readonly cover = PAGE_COVER;
   protected readonly icon = PAGE_ICON;
   protected readonly title = PAGE_TITLE;
+
+  readonly screenChange = output<Screen>();
 }

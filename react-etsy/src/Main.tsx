@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArenaAppBar,
@@ -22,6 +22,7 @@ import './arena.generated.css';
 import './plugin.generated.css';
 import './app.css';
 
+import { HomeScreen } from './screens/HomeScreen';
 import { SearchScreen } from './screens/SearchScreen';
 import { ListingScreen } from './screens/ListingScreen';
 import { CATEGORIES, listing, money } from './data/Shop';
@@ -43,7 +44,31 @@ function Shop() {
   const [saved, setSaved] = useState<string[]>(['stoneware-mug']);
   const [basket, setBasket] = useState<string[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [view, setView] = useState<'home' | 'search'>(
+    () => (/\/search$/.test(window.location.pathname) ? 'search' : 'home'),
+  );
   const [query, setQuery] = useState('floating shelf');
+  const [loading, setLoading] = useState(false);
+  const pending = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const goHome = () => {
+    setOpen(null);
+    setView('home');
+  };
+
+  const goSearch = () => {
+    setOpen(null);
+    setView('search');
+  };
+
+  // A new query is a round trip in the real shop, so the results stand in placeholders for a beat.
+  const search = (text: string) => {
+    setQuery(text);
+    goSearch();
+    setLoading(true);
+    clearTimeout(pending.current);
+    pending.current = setTimeout(() => setLoading(false), 700);
+  };
 
   const toggleSaved = (id: string) => setSaved(
     saved.includes(id) ? saved.filter((one) => one !== id) : [...saved, id],
@@ -62,7 +87,7 @@ function Shop() {
 
       <ArenaAppBar
         brand={
-          <a className="brand" href="/" onClick={(event) => { event.preventDefault(); setOpen(null); }}>
+          <a className="brand" href="/" onClick={(event) => { event.preventDefault(); goHome(); }}>
             <span className="brand__glyph" aria-hidden="true"><ArenaIcon icon="ph-fill ph-storefront" /></span>
             <span className="brand__word">Maker&apos;s Row</span>
           </a>
@@ -73,7 +98,7 @@ function Shop() {
               label="Search for anything"
               icon="ph-bold ph-magnifying-glass"
               value={query}
-              onChange={setQuery}
+              onChange={search}
             />
           </div>
         }
@@ -98,7 +123,7 @@ function Shop() {
         <ul className="cats__list">
           {CATEGORIES.map((one) => (
             <li key={one}>
-              <a className="cats__link" href={`/c/${one}`} onClick={(event) => event.preventDefault()}>{one}</a>
+              <a className="cats__link" href={`/c/${one}`} onClick={(event) => { event.preventDefault(); goSearch(); }}>{one}</a>
             </li>
           ))}
         </ul>
@@ -116,7 +141,9 @@ function Shop() {
                 onBasket={addToBasket}
               />
             )
-            : <SearchScreen saved={saved} onOpen={setOpen} onSave={toggleSaved} />}
+            : view === 'home'
+              ? <HomeScreen saved={saved} onOpen={setOpen} onSave={toggleSaved} onShop={goSearch} />
+              : <SearchScreen loading={loading} saved={saved} onOpen={setOpen} onSave={toggleSaved} />}
         </div>
       </ArenaMain>
 

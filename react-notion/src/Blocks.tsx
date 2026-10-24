@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
-import { ArenaCheckbox, ArenaFigure, ArenaIcon } from '@dravensoft/arena-react';
-import type { Block } from './data/Workspace';
+import {
+  ArenaAccordion,
+  ArenaAccordionItem,
+  ArenaCheckbox,
+  ArenaDivider,
+  ArenaFigure,
+  ArenaIcon,
+  ArenaLink,
+} from '@dravensoft/arena-react';
+import type { Block, Run } from './data/Workspace';
+import type { Screen } from './Sidebar';
 
 function Todo({ text, done }: { text: string; done: boolean }) {
   const [checked, setChecked] = useState(done);
@@ -11,19 +20,23 @@ function Todo({ text, done }: { text: string; done: boolean }) {
   );
 }
 
-function Toggle({ text, body }: { text: string; body: string }) {
+function Rich({ runs, onScreen }: { runs: readonly Run[]; onScreen: (next: Screen) => void }) {
   return (
-    <details className="block block--toggle">
-      <summary className="toggle__summary">
-        <span className="toggle__caret" aria-hidden="true"><ArenaIcon icon="ph-bold ph-caret-right" /></span>
-        <span>{text}</span>
-      </summary>
-      <p className="toggle__body">{body}</p>
-    </details>
+    <p className="block block--text">
+      {runs.map((run, index) => {
+        if ('screen' in run) {
+          return <ArenaLink key={index} href={run.href} onNavigate={() => onScreen(run.screen)}>{run.text}</ArenaLink>;
+        }
+        if ('external' in run) {
+          return <ArenaLink key={index} href={run.href} external>{run.text}</ArenaLink>;
+        }
+        return <React.Fragment key={index}>{run.text}</React.Fragment>;
+      })}
+    </p>
   );
 }
 
-export function Blocks({ blocks }: { blocks: readonly Block[] }) {
+export function Blocks({ blocks, onScreen }: { blocks: readonly Block[]; onScreen: (next: Screen) => void }) {
   return (
     <div className="blocks">
       {blocks.map((block, index) => {
@@ -37,6 +50,8 @@ export function Blocks({ blocks }: { blocks: readonly Block[] }) {
             return <h3 key={key} className="block block--h3">{block.text}</h3>;
           case 'text':
             return <p key={key} className="block block--text">{block.text}</p>;
+          case 'rich':
+            return <Rich key={key} runs={block.runs} onScreen={onScreen} />;
           case 'bullet':
             return (
               <div key={key} className="block block--list">
@@ -62,8 +77,18 @@ export function Blocks({ blocks }: { blocks: readonly Block[] }) {
                 <p className="callout__text">{block.text}</p>
               </aside>
             );
-          case 'toggle':
-            return <Toggle key={key} text={block.text} body={block.body} />;
+          case 'toggles':
+            return (
+              <div key={key} className="block block--toggles">
+                <ArenaAccordion multiple>
+                  {block.items.map((item) => (
+                    <ArenaAccordionItem key={item.value} value={item.value} label={item.label}>
+                      <p className="toggle__body">{item.body}</p>
+                    </ArenaAccordionItem>
+                  ))}
+                </ArenaAccordion>
+              </div>
+            );
           case 'code':
             return (
               <div key={key} className="block block--code">
@@ -72,7 +97,11 @@ export function Blocks({ blocks }: { blocks: readonly Block[] }) {
               </div>
             );
           case 'divider':
-            return <hr key={key} className="block block--divider" />;
+            return (
+              <div key={key} className="block block--divider">
+                <ArenaDivider label={block.label} />
+              </div>
+            );
           case 'image':
             return (
               <div key={key} className="block block--figure">

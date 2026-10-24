@@ -1,7 +1,19 @@
 import type { ArenaCatSlot } from '@dravensoft/arena-angular';
+import type { Screen } from '../Sidebar';
+
+/** One run of a paragraph: plain text, or a link to another page of the workspace. A link with
+    an `external` address leaves the workspace and opens in a new tab. */
+export type Run =
+  | { text: string }
+  | { text: string; href: string; screen: Screen }
+  | { text: string; href: string; external: true };
+
+/** One toggle of a toggle block. Toggles open independently of each other, as they do in a page. */
+export type ToggleItem = { value: string; label: string; body: string };
 
 export type Block =
   | { kind: 'text'; text: string }
+  | { kind: 'rich'; runs: Run[] }
   | { kind: 'h1'; text: string }
   | { kind: 'h2'; text: string }
   | { kind: 'h3'; text: string }
@@ -10,9 +22,9 @@ export type Block =
   | { kind: 'todo'; text: string; done: boolean }
   | { kind: 'quote'; text: string }
   | { kind: 'callout'; icon: string; text: string }
-  | { kind: 'toggle'; text: string; body: string }
+  | { kind: 'toggles'; items: ToggleItem[] }
   | { kind: 'code'; language: string; text: string }
-  | { kind: 'divider' }
+  | { kind: 'divider'; label?: string }
   | { kind: 'image'; src: string; caption: string };
 
 export const PAGE_TITLE = 'Engineering wiki';
@@ -21,10 +33,14 @@ export const PAGE_COVER = 'img/cover.jpg';
 
 export const DOC_BLOCKS: Block[] = [
   {
-    kind: 'text',
-    text:
-      'Everything a new engineer needs in their first week. Start with the environment setup, '
-      + 'then read the architecture note, then pick a starter issue from the board.',
+    kind: 'rich',
+    runs: [
+      { text: 'Everything a new engineer needs in their first week. Start with the environment setup, then read the architecture note, then pick a starter issue from ' },
+      { text: 'the sprint board', href: '?screen=database', screen: 'database' },
+      { text: '. Pages you visited lately are on ' },
+      { text: 'your home page', href: '?screen=home', screen: 'home' },
+      { text: '.' },
+    ],
   },
   { kind: 'callout', icon: 'ph-fill ph-lightbulb', text: 'Ask in #eng-help before you spend more than thirty minutes stuck. Nobody here reads a long silence as diligence.' },
   { kind: 'h2', text: 'Getting set up' },
@@ -44,7 +60,12 @@ export const DOC_BLOCKS: Block[] = [
   { kind: 'bullet', text: 'The gateway terminates TLS and resolves the session' },
   { kind: 'bullet', text: 'Each service owns its own schema and migrates it independently' },
   { kind: 'bullet', text: 'Nothing shares a database, and nothing reads another service tables' },
-  { kind: 'toggle', text: 'Why we do not share a database', body: 'A shared schema turns every deploy into a coordination problem, and the coordination cost is paid by whoever ships last. Two services that need the same fact exchange it over an API and each keeps its own copy.' },
+  {
+    kind: 'toggles',
+    items: [
+      { value: 'shared-database', label: 'Why we do not share a database', body: 'A shared schema turns every deploy into a coordination problem, and the coordination cost is paid by whoever ships last. Two services that need the same fact exchange it over an API and each keeps its own copy.' },
+    ],
+  },
   { kind: 'h2', text: 'Shipping' },
   { kind: 'numbered', text: 'Open a pull request against main', index: 1 },
   { kind: 'numbered', text: 'Wait for the gate to go green', index: 2 },
@@ -52,7 +73,25 @@ export const DOC_BLOCKS: Block[] = [
   { kind: 'divider' },
   { kind: 'quote', text: 'A deploy nobody watched is a deploy nobody owns.' },
   { kind: 'h3', text: 'Rolling back' },
-  { kind: 'text', text: 'Every release is a tag and every tag is deployable. Rolling back is deploying the previous tag, and it needs no approval.' },
+  {
+    kind: 'rich',
+    runs: [
+      { text: 'Every release is a tag and every tag is deployable. Rolling back is deploying the previous tag, and it needs no approval. Post the rollback on ' },
+      { text: 'the status page', href: 'https://status.acme.example', external: true },
+      { text: ' so support hears it from us first.' },
+    ],
+  },
+  { kind: 'h2', text: 'Questions new starters ask' },
+  {
+    kind: 'toggles',
+    items: [
+      { value: 'on-call', label: 'When do I join the on-call rotation?', body: 'After your sixth week, and only once you have shadowed two full shifts. Your first shift as primary has a secondary who has done at least ten.' },
+      { value: 'review', label: 'Who reviews my first pull request?', body: 'Your onboarding buddy, and one owner of the service you touched. The gate names the owners, so you never have to guess who to ask.' },
+      { value: 'laptop', label: 'Can I work from my own laptop?', body: 'No. Staging credentials only live on a managed machine, and the bootstrap script refuses to run anywhere else.' },
+    ],
+  },
+  { kind: 'divider', label: 'Archived' },
+  { kind: 'text', text: 'The manual deploy checklist that used to live here is retired. The gate runs every step it listed, in the same order.' },
 ];
 
 export type Task = {

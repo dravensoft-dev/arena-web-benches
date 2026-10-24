@@ -4,10 +4,12 @@ import {
   ArenaPagination,
   ArenaSegmentedControl,
   ArenaSelect,
+  ArenaSkeleton,
+  ArenaSlider,
   ArenaTag,
 } from '@dravensoft/arena-react';
 import { ListingCard } from '../Pieces';
-import { FACETS, LISTINGS } from '../data/Shop';
+import { CURRENCY, FACETS, LISTINGS } from '../data/Shop';
 
 const SORTS = [
   { value: 'relevance', label: 'Most relevant' },
@@ -22,9 +24,16 @@ const KINDS = [
   { value: 'vintage', label: 'Vintage' },
 ];
 
+const PRICE_FLOOR = 0;
+const PRICE_CEILING = 250;
+
+// As many placeholders as a first page holds, so the grid fills in rather than jumping.
+const GHOSTS = [0, 1, 2, 3, 4, 5, 6, 7];
+
 export function SearchScreen({
-  saved, onOpen, onSave,
+  loading, saved, onOpen, onSave,
 }: {
+  loading: boolean;
   saved: string[];
   onOpen: (id: string) => void;
   onSave: (id: string) => void;
@@ -33,14 +42,16 @@ export function SearchScreen({
   const [kind, setKind] = useState('all');
   const [facets, setFacets] = useState<string[]>(['delivery']);
   const [page, setPage] = useState(1);
+  const [low, setLow] = useState(PRICE_FLOOR);
+  const [high, setHigh] = useState(PRICE_CEILING);
 
   const shown = useMemo(() => {
-    const list = [...LISTINGS];
+    const list = LISTINGS.filter((one) => one.price >= low && one.price <= high);
     if (facets.includes('delivery')) return list.filter((one) => one.freeDelivery);
     if (sort === 'low') return list.sort((a, b) => a.price - b.price);
     if (sort === 'high') return list.sort((a, b) => b.price - a.price);
     return list;
-  }, [facets, sort]);
+  }, [facets, sort, low, high]);
 
   return (
     <div className="results arena-band">
@@ -68,30 +79,66 @@ export function SearchScreen({
         </div>
       </div>
 
-      <div className="results__facets arena-row">
-        {FACETS.map((facet) => (
-          <ArenaTag
-            key={facet.id}
-            className={facets.includes(facet.id) ? 'arena-accent-primary' : undefined}
-            removable={facets.includes(facet.id)}
-            onRemove={() => setFacets(facets.filter((one) => one !== facet.id))}
-          >
-            {facet.label}
-          </ArenaTag>
-        ))}
+      <div className="results__filters">
+        <div className="results__facets arena-row">
+          {FACETS.map((facet) => (
+            <ArenaTag
+              key={facet.id}
+              className={facets.includes(facet.id) ? 'arena-accent-primary' : undefined}
+              removable={facets.includes(facet.id)}
+              onRemove={() => setFacets(facets.filter((one) => one !== facet.id))}
+            >
+              {facet.label}
+            </ArenaTag>
+          ))}
+        </div>
+        <div className="results__price">
+          <ArenaSlider
+            label="Price"
+            hint="Before delivery"
+            range
+            min={PRICE_FLOOR}
+            max={PRICE_CEILING}
+            step={5}
+            valuePrefix={CURRENCY}
+            value={low}
+            valueEnd={high}
+            onChange={setLow}
+            onChangeEnd={setHigh}
+          />
+        </div>
       </div>
 
-      <ArenaGrid>
-        {shown.map((one) => (
-          <ListingCard
-            key={one.id}
-            listing={one}
-            saved={saved.includes(one.id)}
-            onOpen={onOpen}
-            onSave={onSave}
-          />
-        ))}
-      </ArenaGrid>
+      {loading
+        ? (
+          <div role="status" aria-label="Loading results">
+            <div aria-hidden="true">
+              <ArenaGrid>
+                {GHOSTS.map((n) => (
+                  <div key={n} className="ghost">
+                    <ArenaSkeleton />
+                    <ArenaSkeleton lines={3} />
+                  </div>
+                ))}
+              </ArenaGrid>
+            </div>
+          </div>
+        )
+        : shown.length
+          ? (
+            <ArenaGrid>
+              {shown.map((one) => (
+                <ListingCard
+                  key={one.id}
+                  listing={one}
+                  saved={saved.includes(one.id)}
+                  onOpen={onOpen}
+                  onSave={onSave}
+                />
+              ))}
+            </ArenaGrid>
+          )
+          : <p className="results__none">Nothing made in that price range yet.</p>}
 
       <div className="results__pages">
         <ArenaPagination
