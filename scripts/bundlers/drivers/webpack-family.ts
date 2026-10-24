@@ -40,9 +40,9 @@ const ARENA_STYLES = String.raw`[{ input: 'src/arena.package.generated.css', bun
 /** The JS config of the same page ("How do I keep Arena's JS in a chunk of its own?"), verbatim: probe `js-recipe`; rspack takes it unchanged. */
 const JS_FILE_NAMES = `{ filename: '[name]-[contenthash:8].js', chunkFilename: '[name]-[contenthash:8].js' }`;
 const JS_FILES = `output: ${JS_FILE_NAMES},`;
-const jsApart = `${JS_FILES}
+const jsApart = String.raw`${JS_FILES}
   optimization: { splitChunks: { chunks: 'all', cacheGroups: {
-    arena: { test: /node_modules[\\\\/]@dravensoft[\\\\/]arena-/, name: 'arena', enforce: true },
+    arena: { test: /node_modules[\\/]@dravensoft[\\/]arena-/, name: 'arena', enforce: true, type: /^javascript/ },
   } } },`;
 
 /** rspack's one added rule, verbatim from the page. */

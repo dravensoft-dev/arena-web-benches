@@ -13,7 +13,7 @@ const F6 = [
   'vite8.js-apart', 'vite8.sheet-apart', 'vite8.sheet-by-name',
   'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied',
   'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type',
-  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto',
+  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular',
   'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-stops', 'parcel.react-with-app', 'parcel.shared-stem',
   'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
   'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
@@ -46,7 +46,7 @@ test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot
   expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual([...F6, ...F6B].sort());
   for (const o of OBSERVATIONS) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
   expect(OBSERVATIONS.filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
-    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', ...F6B].sort(),
+    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', 'rspack.css-auto-angular', ...F6B].sort(),
   );
 });
 
@@ -205,4 +205,16 @@ test('the four sheet-apart rows say the sheet is apart on both layers', () => {
     expect(one(`${id}.sheet-apart`).claim).toContain('the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes');
   }
   expect(one('rspack.sheet-apart').claim).toContain('with the `css/auto` rule and, on Angular, the sheet as its own `styles` entry');
+});
+
+test('rspack.needs-css-auto holds on React when the probe stops on `@layer properties`, and css-auto-angular records the sheet (D14)', () => {
+  const o = one('rspack.needs-css-auto');
+  expect(o.layers).toEqual(['react']);
+  expect(judge(o, ctx({ 'no-css-auto': output({}, false, 'parse error\n @layer properties;') })).holds).toBe(true);
+  expect(judge(o, ctx({ 'no-css-auto': output({}, false, 'Error: other') })).holds).toBe(false);
+  expect(judge(o, ctx({ 'no-css-auto': output({ 'a.css': PKG }) })).holds).toBe(false);
+  const a = one('rspack.css-auto-angular');
+  expect([a.layers, a.expect]).toEqual([['angular'], 'record']);
+  const yes = judge(a, ctx({ 'no-css-auto': output({ 'arena-sheet.css': PKG, 'styles.css': APPCSS }) }));
+  expect([yes.outcome, yes.holds]).toEqual([true, true]);
 });

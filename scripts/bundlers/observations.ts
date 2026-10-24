@@ -327,13 +327,8 @@ export const OBSERVATIONS: Observation[] = [
 
   jsRow('rspack', 'the webpack recipe keeps Arena\'s JS apart, unchanged'),
   sheetRow('rspack', `${SHEET_APART}, with the \`css/auto\` rule and, on Angular, the sheet as its own \`styles\` entry`),
-  row({
-    id: 'rspack.needs-css-auto', bundler: 'rspack', claim: 'without the `css/auto` rule the sheet is not in a file of its own', needs: ['no-css-auto'],
-    check: (ctx) => {
-      const one = run(ctx, 'no-css-auto');
-      return one.ok ? noSheetAlone('no-css-auto')(ctx) : pass(true, `'no-css-auto' exits non-zero`);
-    },
-  }),
+  row({ id: 'rspack.needs-css-auto', bundler: 'rspack', layers: ['react'], claim: 'on React, without the `css/auto` rule the build stops on the package sheet\'s `@layer properties;`', needs: ['no-css-auto'], check: fails('no-css-auto', '@layer properties') }),
+  row({ id: 'rspack.css-auto-angular', bundler: 'rspack', layers: ['angular'], claim: 'on Angular through @nx/angular-rspack the `styles` entry places the sheet without `css/auto`', expect: 'record', needs: ['no-css-auto'], check: recordSheetAlone('no-css-auto') }),
 
   row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'an import of an Arena subpath, or Angular\'s `@angular/common/http`, fails without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports') }),
   row({ id: 'parcel.first-import-resolves', bundler: 'parcel', layers: ['react'], claim: 'the first Arena import resolves through the package\'s `module` field without `packageExports`', needs: ['no-package-exports'], check: builds('no-package-exports') }),
