@@ -33,14 +33,14 @@ import {
   WORKLOAD_LABELS,
 } from '../data/Space';
 
-const CARD_MENU = [
+export const CARD_MENU = [
   { label: 'Edit widget', icon: 'ph-bold ph-pencil-simple' },
   { label: 'Duplicate', icon: 'ph-bold ph-copy' },
   { divider: true },
   { label: 'Remove', icon: 'ph-bold ph-trash', destructive: true },
 ];
 
-function CardActions({ name }: { name: string }) {
+export function CardActions({ name }: { name: string }) {
   return (
     <ArenaMenu
       align="end"

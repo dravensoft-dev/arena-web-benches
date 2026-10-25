@@ -88,7 +88,10 @@ export function evaluate(draft: Draft): Evaluation {
 
 const escaped = (key: string) => key.replace(/[-]/g, '\\-');
 
-/* Which messages name a slot: its key as a whole word, or for a chart category the colour it holds. */
+/* Which messages name a slot: its key as a whole word, or for a chart category the colour it holds.
+ * The placement is a heuristic over Arena's own text: ArenaPaletteReport is { kind, message, rule? }
+ * and carries no key, and the thrown messages carry none either, so nothing says which slot a
+ * report is about. A message that names no slot is shown in the summary only. */
 export function messagesOf(slot: Slot, draft: Draft, evaluation: Evaluation): string[] {
   const named = new RegExp(`(?:(?<![\\w-])|(?<=--color-))${escaped(slot.key)}(?![\\w-])`);
   const colour = /^cat-\d$/.test(slot.key) ? (draft.colors[slot.key] ?? '').toLowerCase() : '';
@@ -99,6 +102,8 @@ export function messagesOf(slot: Slot, draft: Draft, evaluation: Evaluation): st
   ];
 }
 
+/* Decides only what the swatch paints. It validates nothing: whether a value is a colour is Arena's
+ * call, and the functions above answer it with their reports and errors. */
 export const isHex = (value: string | undefined): value is string => value !== undefined && /^#[0-9a-fA-F]{6}$/.test(value);
 
 /* The colour a slot paints now: what the draft holds, else what Arena derived for it. */

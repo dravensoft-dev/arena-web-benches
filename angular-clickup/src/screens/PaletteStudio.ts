@@ -40,6 +40,8 @@ import {
   ArenaThemeService,
   ArenaTimeline,
   ArenaToast,
+  ArenaToastHost,
+  ArenaToastQueue,
   ArenaTooltip,
 } from '@dravensoft/arena-angular';
 import type {
@@ -139,6 +141,7 @@ const SCOPE: ArenaStatDelta = { value: '+13', direction: 'up', tone: 'negative' 
         <span class="slot__hex arena-num">{{ given() === undefined ? 'derived' : given() }}</span>
       </arena-button>
       <div class="pick">
+        <!-- A native colour input always holds a #rrggbb; it takes #000000 only when Arena has none to show. -->
         <input
           class="pick__native"
           type="color"
@@ -194,13 +197,14 @@ export class SlotEditor {
     ArenaBulkActionBar, ArenaButton, ArenaCard, ArenaChartCard, ArenaCheckbox, ArenaCommandPalette, ArenaDoughnutChart,
     ArenaFilterBar, ArenaFunnelChart, ArenaHorizontalBarChart, ArenaIcon, ArenaIconButton, ArenaInput, ArenaLineChart,
     ArenaMultiSelect, ArenaProgressBar, ArenaPyramidChart, ArenaSegmentedControl, ArenaSelect, ArenaSideNav,
-    ArenaSideNavCollapsible, ArenaSideNavItem, ArenaSideNavSection, ArenaStatCard, ArenaTag, ArenaTimeline, ArenaToast,
+    ArenaSideNavCollapsible, ArenaSideNavItem, ArenaSideNavSection, ArenaStatCard, ArenaTag, ArenaTimeline, ArenaToast, ArenaToastHost,
     ArenaTooltip, CardActions,
   ],
+  providers: [ArenaToastQueue],
   host: { class: 'grid' },
   template: `
-    <section class="cell" data-wide="no" aria-label="ArenaButton">
-      <h3 class="cell__t">ArenaButton</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenabutton">
+      <h3 class="cell__t" id="cell-arenabutton">ArenaButton</h3>
       <div class="cell__body"><div class="cell__row">
         <arena-button icon="ph-bold ph-plus">Primary</arena-button>
         <arena-button class="arena-emphasis-secondary">Secondary</arena-button>
@@ -208,91 +212,102 @@ export class SlotEditor {
         <arena-button class="arena-emphasis-secondary arena-size-sm">Small</arena-button>
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaIconButton, ArenaIcon, ArenaTooltip">
-      <h3 class="cell__t">ArenaIconButton, ArenaIcon, ArenaTooltip</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenaiconbutton-arenaicon-arenatooltip">
+      <h3 class="cell__t" id="cell-arenaiconbutton-arenaicon-arenatooltip">ArenaIconButton, ArenaIcon, ArenaTooltip</h3>
       <div class="cell__body"><div class="cell__row">
         <arena-tooltip label="Notifications"><arena-icon-button icon="ph-bold ph-bell" label="Notifications" /></arena-tooltip>
         <arena-icon-button icon="ph-bold ph-gear" label="Settings" class="arena-size-sm" />
         <span class="cell__icon"><arena-icon icon="ph-fill ph-rocket-launch" /></span>
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaTag">
-      <h3 class="cell__t">ArenaTag</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenatag">
+      <h3 class="cell__t" id="cell-arenatag">ArenaTag</h3>
       <div class="cell__body"><div class="cell__row">
         @for (slot of slots; track slot) { <arena-tag [colorId]="slot">Slot {{ slot }}</arena-tag> }
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaAvatar">
-      <h3 class="cell__t">ArenaAvatar</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenaavatar">
+      <h3 class="cell__t" id="cell-arenaavatar">ArenaAvatar</h3>
       <div class="cell__body"><div class="cell__row">
         <arena-avatar [name]="ada.name" [src]="ada.image" status="online" />
         <arena-avatar [name]="ben.name" [src]="ben.image" class="arena-size-sm" />
         <arena-avatar [name]="cai.name" [src]="cai.image" class="arena-size-xs" />
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaCheckbox">
-      <h3 class="cell__t">ArenaCheckbox</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenacheckbox">
+      <h3 class="cell__t" id="cell-arenacheckbox">ArenaCheckbox</h3>
       <div class="cell__body"><div class="cell__row">
         <arena-checkbox label="Select task" [checked]="checked()" (valueChange)="checked.set($event)" />
         <arena-checkbox label="Not selected" [checked]="false" />
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaInput">
-      <h3 class="cell__t">ArenaInput</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenainput">
+      <h3 class="cell__t" id="cell-arenainput">ArenaInput</h3>
       <div class="cell__body">
         <arena-input label="Search tasks" icon="ph-bold ph-magnifying-glass" [value]="query()" (valueChange)="query.set($event)" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaSelect">
-      <h3 class="cell__t">ArenaSelect</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenaselect">
+      <h3 class="cell__t" id="cell-arenaselect">ArenaSelect</h3>
       <div class="cell__body">
         <arena-select label="Priority" [options]="priorities" [value]="priority()" (valueChange)="priority.set($event)" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaMultiSelect">
-      <h3 class="cell__t">ArenaMultiSelect</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenamultiselect">
+      <h3 class="cell__t" id="cell-arenamultiselect">ArenaMultiSelect</h3>
       <div class="cell__body">
         <arena-multi-select label="Assignees" placeholder="Anyone" [options]="assigneeOptions" [value]="assignees()" [maxVisible]="2" (valueChange)="assignees.set($event.values)" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaSegmentedControl">
-      <h3 class="cell__t">ArenaSegmentedControl</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenasegmentedcontrol">
+      <h3 class="cell__t" id="cell-arenasegmentedcontrol">ArenaSegmentedControl</h3>
       <div class="cell__body">
         <arena-segmented-control ariaLabel="Group tasks by" [options]="groupings" [value]="grouping()" (valueChange)="grouping.set($event)" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaProgressBar">
-      <h3 class="cell__t">ArenaProgressBar</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenaprogressbar">
+      <h3 class="cell__t" id="cell-arenaprogressbar">ArenaProgressBar</h3>
       <div class="cell__body"><div class="cell__stack">
         <arena-progress-bar label="Onboarding" [progressPercentage]="64" />
         <arena-progress-bar label="Search rewrite" [progressPercentage]="92" class="arena-size-sm" />
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaMenu">
-      <h3 class="cell__t">ArenaMenu</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenamenu">
+      <h3 class="cell__t" id="cell-arenamenu">ArenaMenu</h3>
       <div class="cell__body">
         <app-card-actions name="the widget" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaBreadcrumbs">
-      <h3 class="cell__t">ArenaBreadcrumbs</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenabreadcrumbs">
+      <h3 class="cell__t" id="cell-arenabreadcrumbs">ArenaBreadcrumbs</h3>
       <div class="cell__body"><arena-breadcrumbs ariaLabel="Location" [items]="crumbs" /></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaAppLogo">
-      <h3 class="cell__t">ArenaAppLogo</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenaapplogo">
+      <h3 class="cell__t" id="cell-arenaapplogo">ArenaAppLogo</h3>
       <div class="cell__body">
         <arena-app-logo name="ClickUp"><img mark src="img/brand-mark.svg" alt="" class="side__mark" /></arena-app-logo>
       </div>
     </section>
-    <section class="cell" data-wide="yes" aria-label="ArenaToast">
-      <h3 class="cell__t">ArenaToast</h3>
+    <section class="cell" data-wide="yes" aria-labelledby="cell-arenatoast">
+      <h3 class="cell__t" id="cell-arenatoast">ArenaToast</h3>
       <div class="cell__body"><div class="cell__stack">
         <arena-toast tone="success" title="Task created" />
         <arena-toast tone="danger" title="Pipeline failed" message="e2e tests in checkout" />
       </div></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaCommandPalette">
-      <h3 class="cell__t">ArenaCommandPalette</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenatoasthost">
+      <h3 class="cell__t" id="cell-arenatoasthost">ArenaToastHost</h3>
+      <div class="cell__body">
+        <arena-button class="arena-emphasis-secondary" (activate)="toasts.raise({ title: 'Task created', tone: 'success' })">Raise a toast</arena-button>
+        <arena-toast-host class="arena-placement-top-end">
+          @for (toast of toasts.toasts(); track toast.id) {
+            <arena-toast [tone]="toast.tone" [title]="toast.title" (close)="toasts.dismiss(toast.id)" />
+          }
+        </arena-toast-host>
+      </div>
+    </section>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenacommandpalette">
+      <h3 class="cell__t" id="cell-arenacommandpalette">ArenaCommandPalette</h3>
       <div class="cell__body">
         <arena-button class="arena-emphasis-secondary" icon="ph-bold ph-magnifying-glass" (activate)="palette.set(true)">Open the palette</arena-button>
         <arena-command-palette
@@ -305,48 +320,48 @@ export class SlotEditor {
       </div>
     </section>
 
-    <section class="cell" data-wide="no" aria-label="ArenaStatCard">
-      <h3 class="cell__t">ArenaStatCard</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenastatcard">
+      <h3 class="cell__t" id="cell-arenastatcard">ArenaStatCard</h3>
       <div class="cell__body">
         <arena-stat-card label="Velocity" value="19" sub="story points this week" icon="ph-bold ph-lightning" [delta]="velocity" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaStatCard (danger)">
-      <h3 class="cell__t">ArenaStatCard (danger)</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenastatcard-danger-">
+      <h3 class="cell__t" id="cell-arenastatcard-danger-">ArenaStatCard (danger)</h3>
       <div class="cell__body">
         <arena-stat-card label="Blocked" value="2" sub="tasks waiting" icon="ph-bold ph-prohibit" tone="danger" [delta]="blocked" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaStatCard (warning)">
-      <h3 class="cell__t">ArenaStatCard (warning)</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenastatcard-warning-">
+      <h3 class="cell__t" id="cell-arenastatcard-warning-">ArenaStatCard (warning)</h3>
       <div class="cell__body">
         <arena-stat-card label="Scope added" value="13" sub="points after start" icon="ph-bold ph-plus-circle" tone="warning" [delta]="scope" />
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaCard">
-      <h3 class="cell__t">ArenaCard</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenacard">
+      <h3 class="cell__t" id="cell-arenacard">ArenaCard</h3>
       <div class="cell__body">
         <arena-card title="Sprint 32" eyebrow="Schedule">Twelve tasks, five people, eleven days left.</arena-card>
       </div>
     </section>
 
-    <section class="cell" data-wide="yes" aria-label="ArenaFilterBar">
-      <h3 class="cell__t">ArenaFilterBar</h3>
+    <section class="cell" data-wide="yes" aria-labelledby="cell-arenafilterbar">
+      <h3 class="cell__t" id="cell-arenafilterbar">ArenaFilterBar</h3>
       <div class="cell__body">
         <arena-filter-bar label="Task filters" [applied]="applied()" (remove)="onRemove($event)" (clear)="onClear()">
           <arena-select label="Priority" [options]="priorities" [value]="priority()" (valueChange)="priority.set($event)" />
         </arena-filter-bar>
       </div>
     </section>
-    <section class="cell" data-wide="yes" aria-label="ArenaBulkActionBar">
-      <h3 class="cell__t">ArenaBulkActionBar</h3>
+    <section class="cell" data-wide="yes" aria-labelledby="cell-arenabulkactionbar">
+      <h3 class="cell__t" id="cell-arenabulkactionbar">ArenaBulkActionBar</h3>
       <div class="cell__body">
         <arena-bulk-action-bar [count]="3" noun="task" [actions]="bulk" clearable />
       </div>
     </section>
 
-    <section class="cell" data-wide="yes" aria-label="ArenaLineChart">
-      <h3 class="cell__t">ArenaLineChart</h3>
+    <section class="cell" data-wide="yes" aria-labelledby="cell-arenalinechart">
+      <h3 class="cell__t" id="cell-arenalinechart">ArenaLineChart</h3>
       <div class="cell__body">
         <arena-chart-card title="Burndown">
           <app-card-actions actions name="Burndown" />
@@ -354,8 +369,8 @@ export class SlotEditor {
         </arena-chart-card>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaDoughnutChart">
-      <h3 class="cell__t">ArenaDoughnutChart</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenadoughnutchart">
+      <h3 class="cell__t" id="cell-arenadoughnutchart">ArenaDoughnutChart</h3>
       <div class="cell__body">
         <arena-chart-card title="Tasks by status">
           <app-card-actions actions name="Tasks by status" />
@@ -363,8 +378,8 @@ export class SlotEditor {
         </arena-chart-card>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaBarChart">
-      <h3 class="cell__t">ArenaBarChart</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenabarchart">
+      <h3 class="cell__t" id="cell-arenabarchart">ArenaBarChart</h3>
       <div class="cell__body">
         <arena-chart-card title="Throughput">
           <app-card-actions actions name="Throughput" />
@@ -372,8 +387,8 @@ export class SlotEditor {
         </arena-chart-card>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaHorizontalBarChart">
-      <h3 class="cell__t">ArenaHorizontalBarChart</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenahorizontalbarchart">
+      <h3 class="cell__t" id="cell-arenahorizontalbarchart">ArenaHorizontalBarChart</h3>
       <div class="cell__body">
         <arena-chart-card title="Workload">
           <app-card-actions actions name="Workload" />
@@ -381,8 +396,8 @@ export class SlotEditor {
         </arena-chart-card>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaFunnelChart">
-      <h3 class="cell__t">ArenaFunnelChart</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenafunnelchart">
+      <h3 class="cell__t" id="cell-arenafunnelchart">ArenaFunnelChart</h3>
       <div class="cell__body">
         <arena-chart-card title="Status funnel">
           <app-card-actions actions name="Status funnel" />
@@ -390,8 +405,8 @@ export class SlotEditor {
         </arena-chart-card>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaPyramidChart">
-      <h3 class="cell__t">ArenaPyramidChart</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenapyramidchart">
+      <h3 class="cell__t" id="cell-arenapyramidchart">ArenaPyramidChart</h3>
       <div class="cell__body">
         <arena-chart-card title="Opened and closed">
           <app-card-actions actions name="Opened and closed" />
@@ -399,17 +414,17 @@ export class SlotEditor {
         </arena-chart-card>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaTimeline">
-      <h3 class="cell__t">ArenaTimeline</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenatimeline">
+      <h3 class="cell__t" id="cell-arenatimeline">ArenaTimeline</h3>
       <div class="cell__body"><arena-timeline label="Sprint 32" [items]="milestones" [index]="milestoneNow" /></div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaActivityFeed">
-      <h3 class="cell__t">ArenaActivityFeed</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenaactivityfeed">
+      <h3 class="cell__t" id="cell-arenaactivityfeed">ArenaActivityFeed</h3>
       <div class="cell__body"><arena-activity-feed [items]="activity" label="Recent activity in this space" /></div>
     </section>
 
-    <section class="cell" data-wide="yes" aria-label="ArenaBoard, ArenaBoardColumn">
-      <h3 class="cell__t">ArenaBoard, ArenaBoardColumn</h3>
+    <section class="cell" data-wide="yes" aria-labelledby="cell-arenaboard-arenaboardcolumn">
+      <h3 class="cell__t" id="cell-arenaboard-arenaboardcolumn">ArenaBoard, ArenaBoardColumn</h3>
       <div class="cell__body">
         <arena-board label="Sprint 32 tasks by status">
           @for (column of columns; track column.title) {
@@ -421,8 +436,8 @@ export class SlotEditor {
         </arena-board>
       </div>
     </section>
-    <section class="cell" data-wide="no" aria-label="ArenaSideNav, ArenaSideNavSection, ArenaSideNavCollapsible, ArenaSideNavItem">
-      <h3 class="cell__t">ArenaSideNav, ArenaSideNavSection, ArenaSideNavCollapsible, ArenaSideNavItem</h3>
+    <section class="cell" data-wide="no" aria-labelledby="cell-arenasidenav-arenasidenavsection-arenasidenavcollapsible-arenasidenavitem">
+      <h3 class="cell__t" id="cell-arenasidenav-arenasidenavsection-arenasidenavcollapsible-arenasidenavitem">ArenaSideNav, ArenaSideNavSection, ArenaSideNavCollapsible, ArenaSideNavItem</h3>
       <div class="cell__body">
         <arena-side-nav ariaLabel="Spaces" active="board">
           <arena-side-nav-section label="Spaces">
@@ -443,11 +458,13 @@ export class PaletteGrid {
   protected readonly ben = PEOPLE['ben'];
   protected readonly cai = PEOPLE['cai'];
 
+  /* The studio's own queue, provided on this component: the root host never hears it. */
+  protected readonly toasts = inject(ArenaToastQueue);
   protected readonly grouping = signal('status');
   protected readonly checked = signal(true);
   protected readonly query = signal('');
   protected readonly priority = signal('Urgent');
-  protected readonly assignees = signal<readonly string[]>([]);
+  protected readonly assignees = signal<readonly string[]>(['ada']);
   protected readonly palette = signal(false);
 
   protected readonly applied = computed<ArenaAppliedFilter[]>(() => {
@@ -517,7 +534,9 @@ export class PaletteGrid {
       </div>
 
       <div class="studio__form">
-        <arena-input label="Palette name" [value]="draft().name" (valueChange)="setName($event)" />
+        <form (submit)="$event.preventDefault(); confirmName()">
+          <arena-input label="Palette name" hint="Applied on Enter or when you leave the field" [value]="nameField()" (valueChange)="nameField.set($event)" (blur)="confirmName()" />
+        </form>
         <arena-segmented-control
           ariaLabel="Polarity"
           [options]="polarities"
@@ -527,12 +546,13 @@ export class PaletteGrid {
         />
         <div class="studio__row">
           @for (name of declared; track name) {
-            <arena-button class="arena-emphasis-secondary arena-size-sm" (activate)="draft.set(draftFrom(name))">Start from {{ name }}</arena-button>
+            <arena-button class="arena-emphasis-secondary arena-size-sm" (activate)="startFrom(name)">Start from {{ name }}</arena-button>
           }
         </div>
       </div>
 
-      <div class="studio__summary" aria-live="polite" [attr.data-tone]="tone()">
+      <div class="studio__summary" [attr.data-tone]="tone()">
+        <p class="arena-sr-only" aria-live="polite">{{ title() }}</p>
         <arena-alert [tone]="tone()" [title]="title()">
           @if (messages().length === 0) {
             The build would have said nothing about this palette.
@@ -541,7 +561,7 @@ export class PaletteGrid {
               @for (message of messages(); track $index) { <li>{{ message }}</li> }
             </ul>
           }
-          @if (evaluation().errors.length > 0 && applied(); as kept) {
+          @if (errors().length > 0 && applied(); as kept) {
             <p class="studio__kept">The page keeps painting {{ kept.name }} as it was last accepted.</p>
           }
         </arena-alert>
@@ -578,22 +598,27 @@ export class PaletteStudio {
   protected readonly polarities = POLARITIES;
   protected readonly declared = DECLARED_NAMES;
   protected readonly groups = SLOT_GROUPS;
-  protected readonly draftFrom = draftFrom;
 
   protected readonly draft = signal<Draft>(draftFrom('light'));
   protected readonly evaluation = computed(() => evaluate(this.draft()));
   protected readonly applied = signal<ArenaRuntimePalette | null>(null);
 
+  protected readonly nameField = signal(this.draft().name);
+  protected readonly registerError = signal<string | null>(null);
+  protected readonly errors = computed(() => {
+    const failed = this.registerError();
+    return failed === null ? this.evaluation().errors : [...this.evaluation().errors, failed];
+  });
   protected readonly messages = computed(() => [
-    ...this.evaluation().errors,
+    ...this.errors(),
     ...this.evaluation().reports.map((report) => report.message),
   ]);
   protected readonly tone = computed<'danger' | 'warning' | 'success'>(() =>
-    this.evaluation().errors.length > 0 ? 'danger' : this.evaluation().reports.length > 0 ? 'warning' : 'success',
+    this.errors().length > 0 ? 'danger' : this.evaluation().reports.length > 0 ? 'warning' : 'success',
   );
   protected readonly title = computed(() => {
-    const { errors, reports } = this.evaluation();
-    if (errors.length > 0) return 'Arena refused this palette';
+    const { reports } = this.evaluation();
+    if (this.errors().length > 0) return 'Arena refused this palette';
     if (reports.length > 0) return `${reports.length} report${reports.length === 1 ? '' : 's'} from Arena`;
     return 'Arena reports nothing';
   });
@@ -602,14 +627,27 @@ export class PaletteStudio {
     /* Arena built a palette: register it, and the scope below paints it. A refused draft leaves the last one painted. */
     effect(() => {
       const { palette } = this.evaluation();
-      if (palette === null) return;
-      this.themes.register(palette);
-      this.applied.set(palette);
+      if (palette === null) {
+        this.registerError.set(null);
+        return;
+      }
+      try {
+        this.themes.register(palette);
+        this.applied.set(palette);
+        this.registerError.set(null);
+      } catch (error) {
+        this.registerError.set(error instanceof Error ? error.message : String(error));
+      }
     });
   }
 
-  protected setName(name: string): void {
-    this.draft.update((prev) => ({ ...prev, name }));
+  /* The name is applied when it is confirmed, so the registry holds one entry per name the user settles on. */
+  protected confirmName(): void {
+    this.draft.update((prev) => (prev.name === this.nameField() ? prev : { ...prev, name: this.nameField() }));
+  }
+
+  protected startFrom(declared: string): void {
+    this.draft.update((prev) => ({ ...draftFrom(declared), name: prev.name }));
   }
 
   protected setPolarity(value: string): void {

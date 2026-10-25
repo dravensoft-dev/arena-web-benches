@@ -22,7 +22,6 @@ import {
   ArenaIconButton,
   ArenaInput,
   ArenaLineChart,
-  ArenaMenu,
   ArenaMultiSelect,
   ArenaPaletteScope,
   ArenaPopover,
@@ -38,10 +37,13 @@ import {
   ArenaTag,
   ArenaTimeline,
   ArenaToast,
+  ArenaToastHost,
   ArenaTooltip,
   registerArenaPalette,
+  useArenaToasts,
 } from '@dravensoft/arena-react';
 import type { ArenaAppliedFilter, ArenaCommand } from '@dravensoft/arena-react';
+import { CardActions } from './Dashboard';
 import {
   ACTIVITY,
   BURNDOWN,
@@ -74,13 +76,6 @@ import type { ArenaRuntimePalette } from '@dravensoft/arena-react/palette';
 const POLARITIES = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
-];
-
-const MENU = [
-  { label: 'Edit widget', icon: 'ph-bold ph-pencil-simple' },
-  { label: 'Duplicate', icon: 'ph-bold ph-copy' },
-  { divider: true },
-  { label: 'Remove', icon: 'ph-bold ph-trash', destructive: true },
 ];
 
 const GROUPINGS = [
@@ -141,6 +136,7 @@ function SlotEditor({
             className="pick__native"
             type="color"
             aria-label={`Pick ${slot.key}`}
+            /* A native colour input always holds a #rrggbb; it takes this one only when Arena has none to show. */
             value={shown ?? '#000000'}
             onChange={(event) => onColour(slot.key, event.target.value)}
           />
@@ -169,21 +165,12 @@ function SlotEditor({
 /* ---- the grid ---- */
 
 function Cell({ name, wide, children }: { name: string; wide?: boolean; children: React.ReactNode }) {
+  const id = `cell-${name.replace(/\W+/g, '-').toLowerCase()}`;
   return (
-    <section className="cell" data-wide={wide ? 'yes' : 'no'} aria-label={name}>
-      <h3 className="cell__t">{name}</h3>
+    <section className="cell" data-wide={wide ? 'yes' : 'no'} aria-labelledby={id}>
+      <h3 className="cell__t" id={id}>{name}</h3>
       <div className="cell__body">{children}</div>
     </section>
-  );
-}
-
-function CardActions({ name }: { name: string }) {
-  return (
-    <ArenaMenu
-      align="end"
-      items={MENU}
-      trigger={<ArenaIconButton icon="ph-bold ph-dots-three" label={`Actions for ${name}`} className="arena-size-sm" />}
-    />
   );
 }
 
@@ -192,8 +179,9 @@ function Grid() {
   const [checked, setChecked] = useState(true);
   const [query, setQuery] = useState('');
   const [priority, setPriority] = useState('Urgent');
-  const [assignees, setAssignees] = useState<readonly string[]>([]);
+  const [assignees, setAssignees] = useState<readonly string[]>(['ada']);
   const [palette, setPalette] = useState(false);
+  const { toasts, raise, dismiss } = useArenaToasts();
   const applied: ArenaAppliedFilter[] = [
     ...assignees.map((id) => ({ id, label: `Assignee: ${PEOPLE[id].name}` })),
     ...(priority === '' ? [] : [{ id: 'priority', label: `Priority: ${priority}` }]),
@@ -273,6 +261,14 @@ function Grid() {
           <ArenaToast tone="success" title="Task created" />
           <ArenaToast tone="danger" title="Pipeline failed" message="e2e tests in checkout" />
         </div>
+      </Cell>
+      <Cell name="ArenaToastHost">
+        <ArenaButton className="arena-emphasis-secondary" onActivate={() => raise({ title: 'Task created', tone: 'success' })}>Raise a toast</ArenaButton>
+        <ArenaToastHost className="arena-placement-top-end">
+          {toasts.map((toast) => (
+            <ArenaToast key={toast.id} tone={toast.tone} title={toast.title} onClose={() => dismiss(toast.id)} />
+          ))}
+        </ArenaToastHost>
       </Cell>
       <Cell name="ArenaCommandPalette">
         <ArenaButton className="arena-emphasis-secondary" icon="ph-bold ph-magnifying-glass" onActivate={() => setPalette(true)}>Open the palette</ArenaButton>
@@ -381,13 +377,26 @@ export function PaletteStudio() {
   const [draft, setDraft] = useState<Draft>(() => draftFrom('light'));
   const evaluation = useMemo(() => evaluate(draft), [draft]);
   const [applied, setApplied] = useState<ArenaRuntimePalette | null>(null);
+  const [nameField, setNameField] = useState(draft.name);
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
-  /* Arena built a palette: register it, and the scope below paints it. A refused draft leaves the last one painted. */
+  /* Arena built a palette: register it, and the scope below paints it. A refused draft leaves the last one painted.
+     The name is applied when it is confirmed, so the registry holds one entry per name the user settles on. */
   useEffect(() => {
-    if (evaluation.palette === null) return;
-    registerArenaPalette(evaluation.palette);
-    setApplied(evaluation.palette);
+    if (evaluation.palette === null) {
+      setRegisterError(null);
+      return;
+    }
+    try {
+      registerArenaPalette(evaluation.palette);
+      setApplied(evaluation.palette);
+      setRegisterError(null);
+    } catch (error) {
+      setRegisterError(error instanceof Error ? error.message : String(error));
+    }
   }, [evaluation]);
+
+  const confirmName = () => setDraft((prev) => (prev.name === nameField ? prev : { ...prev, name: nameField }));
 
   const setColour = (key: string, value: string | null) =>
     setDraft((prev) => {
@@ -397,8 +406,15 @@ export function PaletteStudio() {
       return { ...prev, colors };
     });
 
-  const messages = [...evaluation.errors, ...evaluation.reports.map((report) => report.message)];
-  const tone = evaluation.errors.length > 0 ? 'danger' : evaluation.reports.length > 0 ? 'warning' : 'success';
+  const errors = registerError === null ? evaluation.errors : [...evaluation.errors, registerError];
+  const messages = [...errors, ...evaluation.reports.map((report) => report.message)];
+  const tone = errors.length > 0 ? 'danger' : evaluation.reports.length > 0 ? 'warning' : 'success';
+  const title =
+    errors.length > 0
+      ? 'Arena refused this palette'
+      : evaluation.reports.length > 0
+        ? `${evaluation.reports.length} report${evaluation.reports.length === 1 ? '' : 's'} from Arena`
+        : 'Arena reports nothing';
 
   return (
     <div className="studio">
@@ -409,7 +425,9 @@ export function PaletteStudio() {
         </div>
 
         <div className="studio__form">
-          <ArenaInput label="Palette name" value={draft.name} onValueChange={(name) => setDraft((prev) => ({ ...prev, name }))} />
+          <form onSubmit={(event) => { event.preventDefault(); confirmName(); }}>
+            <ArenaInput label="Palette name" hint="Applied on Enter or when you leave the field" value={nameField} onValueChange={setNameField} onBlur={confirmName} />
+          </form>
           <ArenaSegmentedControl
             ariaLabel="Polarity"
             options={POLARITIES}
@@ -419,24 +437,16 @@ export function PaletteStudio() {
           />
           <div className="studio__row">
             {DECLARED_NAMES.map((name) => (
-              <ArenaButton key={name} className="arena-emphasis-secondary arena-size-sm" onActivate={() => setDraft(draftFrom(name))}>
+              <ArenaButton key={name} className="arena-emphasis-secondary arena-size-sm" onActivate={() => setDraft((prev) => ({ ...draftFrom(name), name: prev.name }))}>
                 {`Start from ${name}`}
               </ArenaButton>
             ))}
           </div>
         </div>
 
-        <div className="studio__summary" aria-live="polite" data-tone={tone}>
-          <ArenaAlert
-            tone={tone}
-            title={
-              evaluation.errors.length > 0
-                ? 'Arena refused this palette'
-                : evaluation.reports.length > 0
-                  ? `${evaluation.reports.length} report${evaluation.reports.length === 1 ? '' : 's'} from Arena`
-                  : 'Arena reports nothing'
-            }
-          >
+        <div className="studio__summary" data-tone={tone}>
+          <p className="arena-sr-only" aria-live="polite">{title}</p>
+          <ArenaAlert tone={tone} title={title}>
             {messages.length === 0
               ? 'The build would have said nothing about this palette.'
               : (
@@ -444,7 +454,7 @@ export function PaletteStudio() {
                   {messages.map((message, at) => <li key={at}>{message}</li>)}
                 </ul>
               )}
-            {evaluation.errors.length > 0 && applied !== null && (
+            {errors.length > 0 && applied !== null && (
               <p className="studio__kept">{`The page keeps painting ${applied.name} as it was last accepted.`}</p>
             )}
           </ArenaAlert>
