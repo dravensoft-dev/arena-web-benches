@@ -2,13 +2,13 @@ import { afterAll, expect, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
+import { jsRow, noSprite_ } from '../../bench-kit/src/observations.ts';
 import { judge, OBSERVATIONS, type Built, type Context, type Observation } from './observations.ts';
 
 const roots: string[] = [];
 afterAll(() => roots.forEach((path) => rmSync(path, { recursive: true, force: true })));
 
 const F6 = [
-  'rollup.js-apart', 'rollup.no-css', 'rollup.sprite-not-copied',
   'vite7.js-apart', 'vite7.sheet-apart', 'vite7.sheet-by-name',
   'vite8.js-apart', 'vite8.sheet-apart', 'vite8.sheet-by-name',
   'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied',
@@ -20,9 +20,12 @@ const F6 = [
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
   'next.js-apart', 'next.sheet-apart', 'next.sprite-public',
 ];
-const F6B = ['rollup.linked-sheets', 'rolldown.linked-sheets', 'parcel.linked-sheets'];
+const F6B = ['rolldown.linked-sheets', 'parcel.linked-sheets'];
 
 const one = (id: string): Observation => OBSERVATIONS.find((o) => o.id === id)!;
+
+/** The rollup rows are the etsy halves' (`measure.ts`); the factories they are made with are the kit's. */
+const rollupJs = jsRow('rollup', 'x');
 
 /** An output directory holding `files`, as a `Built`. */
 function output(files: Record<string, string>, ok = true, log = ''): Built {
@@ -50,11 +53,11 @@ test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot
   );
 });
 
-test('rollup.js-apart holds when arena-*.js keeps its bytes, and fails when the app change moves it', () => {
+test('the js-apart check holds when arena-*.js keeps its bytes, and fails when the app change moves it', () => {
   const plain = output({ 'arena-AAAA1111.js': ARENA, 'index-BBBB2222.js': APP });
   const same = output({ 'arena-AAAA1111.js': ARENA, 'index-CCCC3333.js': APP + ' ' });
   const moved = output({ 'arena-ZZZZ9999.js': ARENA + ' ', 'index-CCCC3333.js': APP });
-  const o = one('rollup.js-apart');
+  const o = rollupJs;
   expect(judge(o, ctx({ recipe: plain, 'app-text': same })).holds).toBe(true);
   expect(judge(o, ctx({ recipe: plain, 'app-text': moved })).holds).toBe(false);
 });
@@ -72,7 +75,7 @@ test('parcel.js-apart finds Arena by content, whatever the stem', () => {
   const a = output({ 'bundler.parcel-AAAA1111.js': ARENA, 'index-BBBB2222.js': APP });
   const b = output({ 'bundler.parcel-AAAA1111.js': ARENA, 'index-CCCC3333.js': APP + ' ' });
   expect(judge(one('parcel.js-apart'), ctx({ recipe: a, 'app-text': b })).holds).toBe(true);
-  expect(judge(one('rollup.js-apart'), ctx({ recipe: a, 'app-text': b })).holds).toBe(false);
+  expect(judge(rollupJs, ctx({ recipe: a, 'app-text': b })).holds).toBe(false);
 });
 
 test('vite7.sheet-apart holds on a sheet of its own that survives both app changes, fails when the sheet moves', () => {
@@ -112,8 +115,8 @@ test('parcel.shared-stem holds on two shared bundles of one stem and not on two 
   expect(judge(o, ctx({ recipe: apart })).holds).toBe(false);
 });
 
-test('rollup.sprite-not-copied fails when the recipe output holds a sprite', () => {
-  const o = one('rollup.sprite-not-copied');
+test('the sprite-not-copied check fails when the recipe output holds a sprite', () => {
+  const o = noSprite_('rollup', 'x');
   expect(judge(o, ctx({ recipe: output({ 'index.js': APP }) })).holds).toBe(true);
   expect(judge(o, ctx({ recipe: output({ 'index.js': APP, 'icons-abc123.svg': '<svg/>' }) })).holds).toBe(false);
 });
@@ -127,16 +130,16 @@ test('a record row never contradicts and says its outcome', () => {
   expect(no.detail).toBe('no');
 });
 
-test('the linked-sheets rows record that the package sheet imports package specifiers', () => {
+test('the linked-sheets rows record whether the package sheet is flat, with no @import of a package specifier', () => {
   const dir = mkdtempSync(join(tmpdir(), 'obs-dir-'));
   roots.push(dir);
   mkdirSync(join(dir, 'src'));
   writeFileSync(join(dir, 'src', 'arena.package.generated.css'), "/* GENERATED */\n@import '@dravensoft/arena-react/css/reset.css';\n");
   const result = judge(one('parcel.linked-sheets'), ctx({}, dir));
-  expect(result.outcome).toBe(true);
+  expect(result.outcome).toBe(false);
   expect(result.holds).toBe(true);
   writeFileSync(join(dir, 'src', 'arena.package.generated.css'), "@import './reset.css';\n");
-  expect(judge(one('parcel.linked-sheets'), ctx({}, dir)).outcome).toBe(false);
+  expect(judge(one('parcel.linked-sheets'), ctx({}, dir)).outcome).toBe(true);
 });
 
 test('a missing run, an unreadable output and a throwing check are failed outcomes with the message, never a crash', () => {
@@ -161,7 +164,7 @@ test('a failed build is not read as a pass for a claim about its output', () => 
 
 test('js-apart fails when the file holding Arena also holds the app, even unchanged between runs', () => {
   const both = () => output({ 'arena-AAAA1111.js': ARENA + APP });
-  expect(judge(one('rollup.js-apart'), ctx({ recipe: both(), 'app-text': both() })).holds).toBe(false);
+  expect(judge(rollupJs, ctx({ recipe: both(), 'app-text': both() })).holds).toBe(false);
   const parcel = () => output({ 'bundler.parcel-AAAA1111.js': ARENA + APP });
   expect(judge(one('parcel.js-apart'), ctx({ recipe: parcel(), 'app-text': parcel() })).holds).toBe(false);
 });

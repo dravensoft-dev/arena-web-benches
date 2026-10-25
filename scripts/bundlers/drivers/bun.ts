@@ -1,7 +1,7 @@
 import { readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Driver, Layer } from '../types.ts';
-import { compileAot } from '../angular-link.ts';
+import { compileAot } from '../../../bench-kit/src/angular-link.ts';
 import { HOOKS_URL } from './angular-hooks.ts';
 import { angularEntry, angularPage, run } from './common.ts';
 

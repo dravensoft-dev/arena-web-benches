@@ -1,7 +1,7 @@
 import { cpSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import type { Driver, Layer } from '../types.ts';
-import { compileAot, NGC_OUT } from '../angular-link.ts';
+import { compileAot, NGC_OUT } from '../../../bench-kit/src/angular-link.ts';
 import { angularPage, pointedPage, rootOf, run } from './common.ts';
 
 const STAGE = '.bundler.parcel';

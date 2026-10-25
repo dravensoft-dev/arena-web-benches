@@ -1,7 +1,7 @@
 import { readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Driver, Layer } from '../types.ts';
-import { compileAot } from '../angular-link.ts';
+import { compileAot } from '../../../bench-kit/src/angular-link.ts';
 import { HOOKS_URL } from './angular-hooks.ts';
 import { angularEntry, angularPage, node, pointedPage } from './common.ts';
 
@@ -50,8 +50,6 @@ await build({
   assetNames: '[name]-[hash]',
   minify: true,
   target: 'es2022',
-  // arena-cdk.css imports the CDK overlay sheet, whose package exports name only the style condition.
-  conditions: ['style'],
   plugins: [buildLinker(process.cwd())],
   define: { 'process.env.NODE_ENV': '"production"'${defineDevMode ? ", ngDevMode: 'false'" : ''} },
   logLevel: 'warning',

@@ -1,30 +1,26 @@
-/* The runner: every claim a bundler page makes, checked on the half the rotation assigns that bundler. Per half it
- * builds the runs its observations ask for, plus the five the figures need, reads the bare outputs for the
- * observations, and only then links the sheets and copies the sprite before weighing. `bun run bundlers` writes
+/* The runner: every claim a bundler page makes, checked on the half the rotation assigns that bundler. A half that
+ * carries its own measuring (`measure.ts`, run as `bun run --cwd <half> measure`) measures itself, halves in parallel,
+ * and this gathers what each wrote; the others are built here, through the driver the rotation assigns, serially. Per
+ * half the runs its observations ask for are built, plus the five the figures need, the bare outputs are read for the
+ * observations, and only then are the sheets linked and the sprite copied before weighing. `bun run bundlers` writes
  * `bundlers-results.json` even when a claim is contradicted, prints each contradiction and exits 1. */
 
-import { readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { availableParallelism } from 'node:os';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { halves, RESULTS } from './build.ts';
-import { judge, OBSERVATIONS } from './bundlers/observations.ts';
+import { OBSERVATIONS, judge } from './bundlers/observations.ts';
 import type { Built, RunKey } from './bundlers/observations.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
 import { assigned, table } from './bundlers/rotation.ts';
-import { entryOf, hold, rebase, scratch, scratchPath } from './bundlers/scratch.ts';
-import { finish, firstSelectors, linkSheets } from './bundlers/static.ts';
-import type { BundlerId, Driver, Layer, Mutation, Probe, Table } from './bundlers/types.ts';
-import { brotliKB, changedKB, loaded } from './bundlers/weigh.ts';
-import type { Figures } from './bundlers/weigh.ts';
+import { entryOf, hold, rebase, scratch, scratchPath } from '../bench-kit/src/scratch.ts';
+import { finish, linkSheets } from './bundlers/static.ts';
+import { firstSelectors } from '../bench-kit/src/static.ts';
+import type { BundlerId, Driver, Layer, Probe, Table } from './bundlers/types.ts';
+import { FIGURE_RUNS, PLAIN_TEXT, RESULT, figures, spec } from '../bench-kit/src/runner.ts';
+import type { HalfResult, Key } from '../bench-kit/src/runner.ts';
 
-export type HalfResult = {
-  product: string;
-  layer: Layer;
-  dir: string;
-  bundler: BundlerId;
-  version: string;
-  observations: ReturnType<typeof judge>[];
-  figures: Figures;
-};
+export type { HalfResult };
 
 export type Results = {
   arena: string;
@@ -35,28 +31,6 @@ export type Results = {
   pins: Record<string, string>;
   halves: HalfResult[];
 };
-
-/** The runs every half builds for the figures, whatever its observations ask. */
-const FIGURE_RUNS: RunKey[] = ['plain', 'recipe', 'app-text', 'app-sheet', 'arena-patch'];
-
-/** The app-text scratch built with the page's no-sheet config `plain`, for the app-release figure of the plain column. */
-const PLAIN_TEXT = 'plain:app-text';
-
-type Key = RunKey | typeof PLAIN_TEXT;
-
-/** The mutation a run's scratch takes and the variant the driver builds. */
-function spec(key: Key): { mutation: Mutation; variant: 'plain' | 'recipe' | Probe } {
-  switch (key) {
-    case 'plain': return { mutation: 'none', variant: 'plain' };
-    case 'recipe': return { mutation: 'none', variant: 'recipe' };
-    case 'app-text': return { mutation: 'app-text', variant: 'recipe' };
-    case 'app-sheet': return { mutation: 'app-sheet', variant: 'recipe' };
-    case 'arena-patch': return { mutation: 'arena-patch', variant: 'recipe' };
-    case 'js-recipe:app-text': return { mutation: 'app-text', variant: 'js-recipe' };
-    case PLAIN_TEXT: return { mutation: 'app-text', variant: 'plain' };
-    default: return { mutation: 'none', variant: key };
-  }
-}
 
 /** The pin whose version is the bundler's own. */
 const PIN: Partial<Record<BundlerId, string>> = { angular: '@angular/build', rspack: '@rspack/core', vite8: 'vite' };
@@ -69,40 +43,6 @@ function attempt(driver: Driver, dir: string, layer: Layer, variant: 'plain' | '
   } catch (error) {
     return { ok: false, out: '', log: error instanceof Error ? error.message : String(error) };
   }
-}
-
-const round = (n: number): number => Math.round(n * 100) / 100;
-
-/** Brotli KB summed over every file of `out` whose name matches `pattern`. */
-function weigh(out: string, pattern: RegExp): number {
-  let sum = 0;
-  for (const rel of new Bun.Glob('**/*').scanSync({ cwd: out })) {
-    if (pattern.test(rel)) sum += brotliKB(readFileSync(join(out, rel)));
-  }
-  return round(sum);
-}
-
-const sumLoaded = (out: string, ext: '.js' | '.css'): number =>
-  round(loaded(out, ext).reduce((sum, rel) => sum + brotliKB(readFileSync(join(out, rel))), 0));
-
-function figures(out: Record<string, string>): Figures {
-  const patch = changedKB(out['recipe']!, out['arena-patch']!);
-  return {
-    firstVisit: { plain: sumLoaded(out['plain']!, '.js'), recipe: sumLoaded(out['recipe']!, '.js') },
-    appRelease: {
-      plain: changedKB(out['plain']!, out[PLAIN_TEXT]!).plain,
-      recipe: changedKB(out['recipe']!, out['app-text']!).plain,
-    },
-    patch: patch.plain,
-    dictionary: patch.dictionary,
-    // Google Fonts are remote, so the fonts the output carries are the ones it holds, none for these pages.
-    total: {
-      js: sumLoaded(out['recipe']!, '.js'),
-      css: sumLoaded(out['recipe']!, '.css'),
-      sprite: weigh(out['recipe']!, /(^|\/)icons-[^/]*\.svg$/),
-      fonts: weigh(out['recipe']!, /\.(woff2?|ttf|otf|eot)$/i),
-    },
-  };
 }
 
 async function runHalf(t: Table, root: string, half: { product: string; layer: Layer; dir: string }): Promise<HalfResult> {
@@ -163,14 +103,48 @@ async function runHalf(t: Table, root: string, half: { product: string; layer: L
   }
 }
 
+/** The half carries its own measuring: `measure.ts` at its root. */
+export const converted = (dir: string, root = '.'): boolean => existsSync(join(root, dir, 'measure.ts'));
+
+/**
+ * `bun run --cwd <half> measure` of each half, at most `width` at once, each at the scratch paths of its own (D16). A
+ * half that exits 1 with a result file has contradicted a claim, and what it wrote is gathered; a half that exits 1
+ * without one did not measure, and that is a throw naming it with the tail of its output.
+ */
+export async function measureHalves(dirs: string[], root = '.', width = Math.max(1, Math.floor(availableParallelism() / 2))): Promise<Map<string, HalfResult>> {
+  const done = new Map<string, HalfResult>();
+  const queue = [...dirs];
+  const failed: string[] = [];
+  const worker = async () => {
+    for (let dir = queue.shift(); dir !== undefined; dir = queue.shift()) {
+      const file = join(root, dir, RESULT);
+      rmSync(file, { force: true });
+      console.log(`bundlers: ${dir}`);
+      const child = Bun.spawn(['bun', 'run', '--cwd', join(root, dir), 'measure'], { stdout: 'pipe', stderr: 'pipe' });
+      const [out, err] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
+      if (existsSync(file)) done.set(dir, JSON.parse(readFileSync(file, 'utf8')) as HalfResult);
+      else failed.push(`${dir}: measure exited ${child.exitCode} and wrote no ${RESULT}:\n${`${out}${err}`.trim().split('\n').slice(-12).join('\n')}`);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(width, dirs.length) }, worker));
+  if (failed.length > 0) throw new Error(failed.join('\n'));
+  return done;
+}
+
 export async function run(t: Table, root = '.', only?: string): Promise<Results> {
   const all = halves(t.products).filter((one) => only === undefined || one.dir === only);
   const first = t.products[0]!.react;
   const arena = installedVersion('@dravensoft/arena-react', join(root, first));
   if (!arena) throw new Error(`@dravensoft/arena-react is not installed under ${first}`);
 
+  const own = await measureHalves(all.filter((one) => converted(one.dir, root)).map((one) => one.dir), root);
   const result: HalfResult[] = [];
   for (const one of all) {
+    const measured = own.get(one.dir);
+    if (measured) {
+      result.push(measured);
+      continue;
+    }
     console.log(`bundlers: ${one.dir}`);
     result.push(await runHalf(t, root, one));
   }

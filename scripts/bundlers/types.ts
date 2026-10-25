@@ -1,17 +1,6 @@
-export type Layer = 'react' | 'angular';
+import type { BundlerId, Layer, Mutation, Probe } from '../../bench-kit/src/types.ts';
 
-export type BundlerId =
-  | 'rollup'
-  | 'vite7'
-  | 'vite8'
-  | 'rolldown'
-  | 'webpack'
-  | 'rspack'
-  | 'parcel'
-  | 'angular'
-  | 'bun'
-  | 'esbuild'
-  | 'next';
+export type { BundlerId, Layer, Mutation, Probe };
 
 export type Product = { product: string; label: string; skin: string; react: string; angular: string };
 
@@ -23,18 +12,6 @@ export type Table = {
   products: Product[];
   pins: Record<string, string>;
 };
-
-export type Mutation = 'none' | 'app-text' | 'app-sheet' | 'arena-patch';
-
-export type Probe =
-  | 'css-import'
-  | 'js-only-test'
-  | 'js-recipe'
-  | 'untyped-group'
-  | 'no-css-auto'
-  | 'no-package-exports'
-  | 'twice'
-  | 'no-define';
 
 export type Driver = {
   id: BundlerId;

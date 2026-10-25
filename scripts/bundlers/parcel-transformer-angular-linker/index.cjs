@@ -1,8 +1,8 @@
 // A local Parcel transformer (F5, D1): links a partially compiled Angular package with the Angular linker.
-// `linkPartial` is the benches' one Babel call (../angular-link.ts); `options.projectRoot` is the half whose
+// `linkPartial` is the benches' one Babel call (bench-kit/src/angular-link.ts); `options.projectRoot` is the half whose
 // `@angular/compiler-cli` runs. A file with no `ɵɵngDeclare` is returned as it is.
 const { Transformer } = require('@parcel/plugin');
-const { linkPartial } = require('../angular-link.ts');
+const { linkPartial } = require('../../../bench-kit/src/angular-link.ts');
 
 module.exports = new Transformer({
   async transform({ asset, options }) {

@@ -1,9 +1,10 @@
 import { afterAll, expect, test } from 'bun:test';
 import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { scratch } from '../scratch.ts';
+import { scratch } from '../../../bench-kit/src/scratch.ts';
 import { assignment, table } from '../rotation.ts';
-import { finish, firstSelectors, linkSheets, sheetOrder } from '../static.ts';
+import { finish, linkSheets } from '../static.ts';
+import { firstSelectors, sheetOrder } from '../../../bench-kit/src/static.ts';
 import type { Driver, Layer } from '../types.ts';
 
 const made: string[] = [];

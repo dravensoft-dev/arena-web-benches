@@ -1,8 +1,8 @@
 import { afterAll, describe, expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { finish, linkSheets, sheetOrder } from './static.ts';
+import { sheetOrder } from './static.ts';
 import { hold, rebase, scratch, scratchPath } from './scratch.ts';
 import type { Mutation } from './types.ts';
 
@@ -29,7 +29,7 @@ function tree(root: string, skip: string[], base = root, out: Record<string, str
   return out;
 }
 
-const SKIP = ['dist', 'out', '.next', '.angular', 'node_modules'];
+const SKIP = ['dist', 'out', '.next', '.angular', '.ngc', 'node_modules', 'bundlers-result.json'];
 const mutations: Mutation[] = ['none', 'app-text', 'app-sheet', 'arena-patch'];
 const entry = { 'react-etsy': 'src/Main.tsx', 'angular-etsy': 'src/main.ts' } as const;
 const patched = {
@@ -59,29 +59,32 @@ describe('scratch', () => {
     }
   }
 
-  test('the scratch keeps the half\'s links and leaves out dist, out, .next and .angular', () => {
+  test('the scratch links each package of the half to where the install put it and leaves out dist, out, .next, .angular and .ngc', () => {
     const path = make('angular-etsy', 't-links', 'none');
     expect(lstatSync(join(path, 'node_modules/@dravensoft/arena-angular')).isSymbolicLink()).toBe(true);
-    expect(existsSync(join(path, '.angular'))).toBe(false);
-    expect(existsSync(join(path, 'dist'))).toBe(false);
-    expect(existsSync(join(path, 'node_modules/.bin'))).toBe(existsSync('angular-etsy/node_modules/.bin'));
+    expect(realpathSync(join(path, 'node_modules/@dravensoft/arena-angular'))).toBe(realpathSync('angular-etsy/node_modules/@dravensoft/arena-angular'));
+    expect(realpathSync(join(path, 'node_modules/rollup'))).toBe(realpathSync('angular-etsy/node_modules/rollup'));
+    expect(existsSync(join(path, 'node_modules/@dravensoft/arena-angular/package.json'))).toBe(true);
+    expect(existsSync(join(path, 'node_modules/.bin/rollup'))).toBe(true);
+    for (const left of ['.angular', '.ngc', 'dist']) expect(existsSync(join(path, left))).toBe(false);
   });
 
   for (const half of ['react-etsy', 'angular-etsy'] as const) {
-    test(`${half} arena-patch: a real copy is patched, the root's copy is not`, async () => {
+    test(`${half} arena-patch: a real copy is patched, the half's install is not`, async () => {
       const layer = half.split('-')[0]!;
-      const root = readlinkSync(`${half}/node_modules/@dravensoft/arena-${layer}`);
-      const hashBefore = Bun.hash(await Bun.$`cd node_modules/.bun && find . -path '*arena-${layer}*' -type f | sort | xargs cat`.arrayBuffer());
+      const installed = `${half}/node_modules/@dravensoft/arena-${layer}`;
+      const real = realpathSync(installed);
+      const hashBefore = Bun.hash(await Bun.$`cd ${real} && find . -type f | sort | xargs cat`.arrayBuffer());
       const path = make(half, 't-patch', 'arena-patch');
       const link = join(path, 'node_modules/@dravensoft', `arena-${layer}`);
       expect(lstatSync(link).isSymbolicLink()).toBe(false);
       const patchedText = readFileSync(join(link, patched[half]), 'utf8');
       expect(patchedText.endsWith('globalThis.__arenaPatch = (globalThis.__arenaPatch ?? 0) + 1;\n')).toBe(true);
-      const original = readFileSync(join(`${half}/node_modules/@dravensoft/arena-${layer}`, patched[half]), 'utf8');
+      const original = readFileSync(join(installed, patched[half]), 'utf8');
       expect(original).not.toContain('__arenaPatch');
       expect(patchedText.startsWith(original)).toBe(true);
-      expect(readlinkSync(`${half}/node_modules/@dravensoft/arena-${layer}`)).toBe(root);
-      const hashAfter = Bun.hash(await Bun.$`cd node_modules/.bun && find . -path '*arena-${layer}*' -type f | sort | xargs cat`.arrayBuffer());
+      expect(realpathSync(installed)).toBe(real);
+      const hashAfter = Bun.hash(await Bun.$`cd ${real} && find . -type f | sort | xargs cat`.arrayBuffer());
       expect(hashAfter).toBe(hashBefore);
     });
   }
@@ -104,69 +107,17 @@ describe('hold', () => {
     const b = hold(building, scratchPath('react-etsy', 't-hold-b'));
     expect(b).not.toBe(a);
     expect(readFileSync(join(a, 'src/Main.tsx'), 'utf8')).not.toBe(readFileSync(join(b, 'src/Main.tsx'), 'utf8'));
-    // the links are relative to the parent, which does not change
+    // the packages are links to the half's install, which does not move
     expect(lstatSync(join(b, 'node_modules/@dravensoft/arena-react')).isSymbolicLink()).toBe(true);
     expect(existsSync(join(b, 'node_modules/@dravensoft/arena-react/package.json'))).toBe(true);
   });
 });
 
 describe('static steps', () => {
-  test('a half whose styles.css carries the app rules gets them as a fourth sheet, linked last', () => {
-    const half = 'angular-clickup';
-    const dir = make(half, 't-link-rules', 'none');
-    const out = join(dir, 'out-test');
-    mkdirSync(out, { recursive: true });
-    writeFileSync(join(out, 'index.html'), '<!doctype html><html><head></head><body></body></html>');
-    expect(sheetOrder(dir, 'angular')).toEqual(['arena.package.generated.css', 'arena.generated.css', 'plugin.generated.css', 'app.css']);
-    linkSheets(dir, 'angular', out);
-    const styles = readFileSync(`${half}/src/styles.css`, 'utf8');
-    const rules = readFileSync(join(out, 'app.css'), 'utf8');
-    expect(rules).not.toMatch(/^@import/m);
-    expect(rules).toBe(styles.replace(/^@import[^\n]*\n/gm, ''));
-    expect(rules).toContain('.app {');
-    const html = readFileSync(join(out, 'index.html'), 'utf8');
-    expect([...html.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)].map((m) => m[1]).at(-1)).toBe('app.css');
-  });
-
   const order = ['arena.package.generated.css', 'arena.generated.css', 'plugin.generated.css', 'app.css'];
 
   test('sheetOrder is the entry\'s import order in both layers', () => {
     expect(sheetOrder('react-etsy', 'react')).toEqual(order);
     expect(sheetOrder('angular-etsy', 'angular')).toEqual(order);
   });
-
-  for (const [half, layer] of [['react-etsy', 'react'], ['angular-etsy', 'angular']] as const) {
-    test(`${half}: linkSheets inlines the package specifiers and links the four sheets in order`, () => {
-      const dir = make(half, 't-link', 'none');
-      const out = join(dir, 'out-test');
-      mkdirSync(out, { recursive: true });
-      writeFileSync(join(out, 'index.html'), '<!doctype html><html><head><title>x</title></head><body></body></html>');
-      linkSheets(dir, layer, out);
-
-      const pkg = readFileSync(join(out, 'arena.package.generated.css'), 'utf8');
-      expect(pkg).not.toMatch(/@import\s+['"]@dravensoft\//);
-      expect(pkg).not.toMatch(/@import\s+['"]\.\.?\//);
-      const reset = readFileSync(`${half}/node_modules/@dravensoft/arena-${layer}/css/reset.css`, 'utf8');
-      const firstRule = reset.replace(/\/\*[\s\S]*?\*\//g, '').match(/[^{}@;]+\{/)![0].trim();
-      expect(pkg).toContain(firstRule);
-      expect(readFileSync(join(out, 'app.css'), 'utf8')).toBe(readFileSync(`${half}/src/app.css`, 'utf8'));
-      expect(readFileSync(join(out, 'arena.generated.css'), 'utf8')).toContain('@import url(');
-
-      const html = readFileSync(join(out, 'index.html'), 'utf8');
-      const hrefs = [...html.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)].map((m) => m[1]);
-      expect(hrefs).toEqual(order);
-      expect(html.indexOf(`./${order[3]}`)).toBeLessThan(html.indexOf('</head>'));
-    });
-
-    test(`${half}: finish copies the sprite${layer === 'angular' ? ' and public/**' : ''}`, () => {
-      const dir = make(half, 't-finish', 'none');
-      const out = join(dir, 'out-test');
-      finish(dir, layer, out);
-      const sprite = readdirSync(join(dir, 'src')).filter((n) => /^icons-.*\.svg$/.test(n));
-      expect(sprite.length).toBeGreaterThan(0);
-      for (const s of sprite) expect(existsSync(join(out, s))).toBe(true);
-      expect(existsSync(join(out, 'img'))).toBe(layer === 'angular');
-      expect(existsSync(join(out, 'p1.jpg'))).toBe(false);
-    });
-  }
 });

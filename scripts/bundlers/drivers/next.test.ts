@@ -2,7 +2,7 @@ import { afterAll, expect, test } from 'bun:test';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { scratch } from '../scratch.ts';
+import { scratch } from '../../../bench-kit/src/scratch.ts';
 import { driverContract, halfOf } from './contract.ts';
 import driver from './next.ts';
 

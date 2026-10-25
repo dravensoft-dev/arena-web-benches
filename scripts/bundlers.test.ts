@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { contradictions, run } from './bundlers.ts';
+import { contradictions, converted, measureHalves, run } from './bundlers.ts';
 import type { Results } from './bundlers.ts';
 import { table } from './bundlers/rotation.ts';
 
@@ -40,6 +40,35 @@ describe('run', () => {
     await expect(run(t, root, t.products[0]!.react)).rejects.toThrow(/rollup: pinned 0\.0\.0, installed nothing/);
     expect(readdirSync(root).filter((name) => name.startsWith('.run-'))).toEqual([]);
     expect(existsSync(join(root, 'dist'))).toBe(false);
+  });
+});
+
+describe('measureHalves', () => {
+  const half = (root: string, name: string, measure: string) => {
+    mkdirSync(join(root, name), { recursive: true });
+    writeFileSync(join(root, name, 'package.json'), JSON.stringify({ name, scripts: { measure } }));
+  };
+
+  test('gathers the result each half wrote, also from a half that exits 1 on a contradiction', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'bundlers-own-'));
+    made.push(root);
+    half(root, 'react-a', `echo '{"dir":"react-a"}' > bundlers-result.json`);
+    half(root, 'react-b', `echo '{"dir":"react-b"}' > bundlers-result.json; exit 1`);
+    const found = await measureHalves(['react-a', 'react-b'], root, 2);
+    expect([...found.keys()].sort()).toEqual(['react-a', 'react-b']);
+    expect(found.get('react-b')).toEqual({ dir: 'react-b' } as never);
+  });
+
+  test('a half that wrote no result did not measure: a throw naming it, with what it printed', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'bundlers-own-'));
+    made.push(root);
+    half(root, 'react-a', 'echo nothing built; exit 3');
+    await expect(measureHalves(['react-a'], root, 1)).rejects.toThrow(/react-a: measure exited 3 and wrote no bundlers-result\.json:\n.*nothing built/);
+  });
+
+  test('a half carries its own measuring when it has a measure.ts', () => {
+    expect(converted('react-etsy')).toBe(true);
+    expect(converted('react-calendly')).toBe(false);
   });
 });
 

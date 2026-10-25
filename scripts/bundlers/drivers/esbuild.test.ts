@@ -1,7 +1,7 @@
 import { afterAll, expect, test } from 'bun:test';
 import { readdirSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { scratch } from '../scratch.ts';
+import { scratch } from '../../../bench-kit/src/scratch.ts';
 import { driverContract, halfOf } from './contract.ts';
 import driver from './esbuild.ts';
 

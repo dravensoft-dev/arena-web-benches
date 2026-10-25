@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { node } from './common.ts';
 
 /** The `file:` URL of angular-link.ts, which the loader written into a half imports. */
-const LINK_URL = pathToFileURL(resolve(import.meta.dirname, '..', 'angular-link.ts')).href;
+const LINK_URL = pathToFileURL(resolve(import.meta.dirname, '..', '..', '..', 'bench-kit', 'src', 'angular-link.ts')).href;
 
 /** What differs between the webpack and rspack drivers. */
 export type WebpackFlavour = {
@@ -80,7 +80,10 @@ function angularRspackConfig(variant: 'plain' | 'recipe' | Probe): string {
   // `js-recipe` is the page's JS config, which carries no CSS rule; the sheet config carries `css/auto` (the probe drops it).
   const rules = variant === 'plain' || variant === 'js-recipe' || variant === 'no-css-auto' ? [] : [CSS_AUTO];
   const sheet = variant !== 'plain' && variant !== 'js-recipe';
-  const overrides = variant === 'plain' ? '{}' : `{
+  // The icon list `arena build` writes is a `.ts` module that `main.ts` imports as `.js`.
+  const alias = `resolve: { extensionAlias: { '.js': ['.ts', '.js'] } },`;
+  const overrides = variant === 'plain' ? `{ ${alias} }` : `{
+  ${alias}
   ...recipe,
   output: { ...${JS_FILE_NAMES}, ...recipe.output },${rules.length > 0 ? `
   module: { rules: [${rules.join(', ')}] },` : ''}
@@ -153,7 +156,7 @@ function config(flavour: WebpackFlavour, layer: Layer, variant: 'plain' | 'recip
   }
   if (layer === 'angular') {
     entry = `['./src/styles.css', './src/main.ts']`;
-    resolveOptions = `extensions: ['.ts', '.mjs', '.js', '.json'], mainFields: ['es2020', 'es2015', 'browser', 'module', 'main'], conditionNames: ['es2020', 'es2015', '...']`;
+    resolveOptions = `extensions: ['.ts', '.mjs', '.js', '.json'], mainFields: ['es2020', 'es2015', 'browser', 'module', 'main'], conditionNames: ['es2020', 'es2015', '...'], extensionAlias: { '.js': ['.ts', '.js'] }`;
     if (web) {
       rules.push(`{ test: /\\.[cm]?ts$/, loader: '@ngtools/webpack' }`);
       rules.push(`{ test: /\\.[cm]?js$/, include: /node_modules/, resolve: { fullySpecified: false }, loader: resolve(${JSON.stringify(linkerName(flavour.id))}) }`);

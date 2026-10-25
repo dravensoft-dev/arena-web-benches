@@ -1,8 +1,9 @@
-import { appendFileSync, cpSync, existsSync, readdirSync, realpathSync, renameSync, rmSync } from 'node:fs';
+import { appendFileSync, cpSync, existsSync, mkdirSync, readdirSync, realpathSync, renameSync, rmSync, symlinkSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 import type { Layer, Mutation } from './types.ts';
 
-const SKIPPED = new Set(['dist', 'out', '.next', '.angular']);
+/** What a build or a run leaves at the top of a half: a scratch starts without it. `node_modules` is linked, not copied. */
+const SKIPPED = new Set(['dist', 'out', '.next', '.angular', '.ngc', '.parcel-cache', 'node_modules', 'bundlers-result.json']);
 
 /** The statement `arena-patch` appends to the module that defines `ArenaButton` (F7); `__arenaPatch` is its marker. */
 export const ARENA_PATCH = 'globalThis.__arenaPatch = (globalThis.__arenaPatch ?? 0) + 1;\n';
@@ -36,9 +37,30 @@ function buttonModule(pkgDir: string, layer: Layer): string {
 }
 
 /**
- * A fresh copy of the half `dir` at `<root>/.run-<dir>-<tag>/`, a direct child of the root so Bun's relative links
- * resolve (F3), with the app marker on the entry and the mutation applied. The half and the root's
- * `node_modules/.bun` are only read.
+ * `to` as a directory holding a link to the real path of each package of `from`, one level below a scope (`@scope/*`),
+ * and `.bin` as it is (its links are relative to `node_modules`, so they resolve through the new links). The packages
+ * stay where the install put them, so a scratch resolves what the half resolves, whatever the install's layout.
+ */
+function linkModules(from: string, to: string): void {
+  mkdirSync(to, { recursive: true });
+  if (!existsSync(from)) return;
+  for (const entry of readdirSync(from, { withFileTypes: true })) {
+    const source = join(from, entry.name);
+    if (entry.name === '.bin') {
+      cpSync(source, join(to, entry.name), { recursive: true, verbatimSymlinks: true });
+    } else if (entry.name.startsWith('@') && !entry.isSymbolicLink()) {
+      mkdirSync(join(to, entry.name), { recursive: true });
+      for (const inner of readdirSync(source)) symlinkSync(realpathSync(join(source, inner)), join(to, entry.name, inner));
+    } else {
+      symlinkSync(realpathSync(source), join(to, entry.name));
+    }
+  }
+}
+
+/**
+ * A fresh copy of the half `dir` at `<root>/.run-<dir>-<tag>/`, a direct child of the root so the half's `file:../`
+ * paths resolve, with the app marker on the entry and the mutation applied. The scratch's `node_modules` holds one link
+ * per package of the half's, pointing at the half's own tree (the half and its install are only read).
  */
 export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'): string {
   const layer = layerOf(dir);
@@ -50,6 +72,7 @@ export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'
     verbatimSymlinks: true,
     filter: (src) => !(SKIPPED.has(basename(src)) && relative(from, src) === basename(src)),
   });
+  linkModules(join(from, 'node_modules'), join(to, 'node_modules'));
 
   appendFileSync(join(to, entryOf(layer)), marker(mutation === 'app-text' ? `${dir} ·` : dir));
   if (mutation === 'app-sheet') {

@@ -1,29 +1,20 @@
 import { transformSync } from '@babel/core';
 import { createRequire } from 'node:module';
-import { cpSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { run } from './drivers/common.ts';
+import { exec } from './run.ts';
 
 /** Where `ngc` writes an Angular half's compiled modules, inside the half or its scratch (an ignored name). */
 export const NGC_OUT = '.bundler.ngc';
 
 /**
  * `ngc -p tsconfig.app.json` (AOT, D1) from the half's own `node_modules/.bin`, its output in `dir/.bundler.ngc/`
- * with the root at `dir`, so `src/main.ts` becomes `.bundler.ngc/src/main.js`. `entry` is that file; the `.js` modules
- * `src/` imports that `ngc` does not emit (the generated icon list) are copied beside it.
+ * with the root at `dir`, so `src/main.ts` becomes `.bundler.ngc/src/main.js`; `entry` is that file. The icon list
+ * `arena build` writes is a `.ts` module, so `ngc` emits it with the rest.
  */
 export function compileAot(dir: string): { ok: boolean; entry: string; log: string } {
   const root = resolve(dir);
   const entry = join(root, NGC_OUT, 'src', 'main.js');
-  const done = run(root, join(root, 'node_modules', '.bin', 'ngc'), ['-p', 'tsconfig.app.json', '--outDir', NGC_OUT, '--rootDir', '.', '--sourceMap', 'false']);
-  if (done.ok) {
-    for (const file of readdirSync(join(root, 'src'), { recursive: true, withFileTypes: true })) {
-      if (file.isFile() && file.name.endsWith('.js')) {
-        const from = join(file.parentPath, file.name);
-        cpSync(from, join(root, NGC_OUT, from.slice(root.length + 1)));
-      }
-    }
-  }
+  const done = exec(root, join(root, 'node_modules', '.bin', 'ngc'), ['-p', 'tsconfig.app.json', '--outDir', NGC_OUT, '--rootDir', '.', '--sourceMap', 'false']);
   return { ok: done.ok, entry, log: done.log };
 }
 
