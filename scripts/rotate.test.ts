@@ -6,7 +6,8 @@ import { halves } from './build.ts';
 import { assigned, assignment, table } from './bundlers/rotation.ts';
 import { pinFor } from './bundlers/pins.ts';
 import { ownHalves, partOf } from './halves/halves.ts';
-import { bundlerFiles, plan, rotate, swap } from './rotate.ts';
+import { cpSync } from 'node:fs';
+import { bundlerFiles, donorSource, plan, rotate, swap, templateSource } from './rotate.ts';
 
 const t = table();
 const made: string[] = [];
@@ -48,8 +49,51 @@ describe('plan', () => {
     expect(moves.filter((move) => move.donor === null).map((move) => move.dir).sort()).toEqual(['angular-calendly', 'angular-duolingo', 'react-calendly', 'react-duolingo']);
   });
 
-  test('a rotation that needs a bundler no half holds stops before it writes anything, naming it', () => {
-    expect(() => rotate('.', 1, false)).toThrow(/needs a half for bun, esbuild, and no half holds it now/);
+});
+
+/** The package whose installed version is a bundler's own, as each half's part names it. */
+const PIN: Partial<Record<string, string>> = { angular: '@angular/build', rspack: '@rspack/core', vite7: 'vite', vite8: 'vite' };
+
+describe('rotation 1 on a copy of the benches', () => {
+  const root = mkdtempSync(join(tmpdir(), 'rotate-1-'));
+  made.push(root);
+  cpSync('.', root, { recursive: true, filter: (from) => !/(^|[\\/])(node_modules|dist|\.git|vendor|\.run-[^\\/]*)$/.test(from) });
+  const moves = rotate(root, 1, false);
+  const next = table(root);
+
+  test('moves every half, from a donor or from the template of Bun and esbuild, and records the rotation', () => {
+    expect(moves.length).toBe(16);
+    expect(next.rotation).toBe(1);
+    expect(moves.filter((move) => move.donor === null).map((move) => `${move.dir}:${move.to}`).sort()).toEqual(['angular-calendly:bun', 'angular-duolingo:esbuild', 'react-calendly:bun', 'react-duolingo:esbuild']);
+  });
+
+  test.each(ownHalves())('%s agrees with assigned() of rotation 1: its part, its declared pin, its scripts and no file of another bundler', (dir) => {
+    const { bundler } = assigned(next, dir);
+    const measure = readFileSync(join(root, dir, 'measure.ts'), 'utf8');
+    expect(measure, `${dir} measure.ts`).toContain(`bundler: '${bundler}'`);
+    const manifest = JSON.parse(readFileSync(join(root, dir, 'package.json'), 'utf8')) as { packageManager: string; scripts: Record<string, string>; dependencies: Record<string, string>; devDependencies: Record<string, string> };
+    if (bundler === 'bun') expect(manifest.packageManager).toBe(`bun@${next.pins['bun']}`);
+    else {
+      const pin = PIN[bundler] ?? bundler;
+      expect(manifest.devDependencies[pin], `${dir} declares ${pin}`).toBe(pinFor(next, bundler, pin));
+    }
+    expect(manifest.scripts['bundle'], `${dir} bundle`).toBeString();
+    expect(manifest.scripts['build']).toContain('bun run bundle');
+    expect(manifest.dependencies[`@dravensoft/arena-${dir.startsWith('react') ? 'react' : 'angular'}`]).toMatch(/^file:\.\.\/vendor\//);
+    const part = /config: ['"]([^'"]+)['"]/.exec(measure)![1]!;
+    expect(existsSync(join(root, dir, part)) || part === 'package.json', `${dir} carries ${part}`).toBe(true);
+    // no config of a bundler it does not hold
+    const configs = readdirSync(join(root, dir)).filter((name) => /^(vite|rollup|rolldown|webpack|rspack|esbuild|next)\.config\.mjs$/.test(name));
+    expect(configs.length <= 1, `${dir}: ${configs}`).toBe(true);
+    if (configs[0]) expect(configs[0].startsWith(bundler.replace(/\d$/, '')) || bundler === 'angular', `${dir}: ${configs[0]}`).toBe(true);
+  });
+
+  test('a half moved from a template carries the pin of the table in its package.json and the files of its layer', () => {
+    expect(JSON.parse(readFileSync(join(root, 'react-duolingo', 'package.json'), 'utf8')).devDependencies.esbuild).toBe(next.pins['esbuild']);
+    expect(existsSync(join(root, 'angular-duolingo', 'entry.js'))).toBe(true);
+    expect(existsSync(join(root, 'angular-calendly', 'bun.config.mjs'))).toBe(true);
+    expect(readFileSync(join(root, 'react-calendly', 'README.md'), 'utf8')).toContain('react-calendly');
+    expect(existsSync(join(root, 'react-calendly', 'tsconfig.json'))).toBe(false);
   });
 });
 
@@ -79,7 +123,7 @@ function fixture(): string {
 describe('swap', () => {
   test('a half takes its donor\'s config, scripts, devDependencies and README with its own name, dev flow and sources, and loses its old files and lockfile', () => {
     const root = fixture();
-    swap(root, { dir: 'react-a', product: 'a', layer: 'react', from: 'rollup', to: 'vite7', donor: 'react-b' }, 'A', 'B');
+    swap(root, { dir: 'react-a', product: 'a', layer: 'react', from: 'rollup', to: 'vite7', donor: 'react-b' }, 'A', donorSource(root, 'react-b', 'react', ['rollup', 'vite7'], 'B'));
     expect(readdirSync(join(root, 'react-a')).sort()).toEqual(['README.md', 'Server.ts', 'finish.mjs', 'new.config.mjs', 'package.json', 'src']);
     const manifest = JSON.parse(readFileSync(join(root, 'react-a', 'package.json'), 'utf8')) as { name: string; scripts: Record<string, string>; devDependencies: Record<string, string> };
     expect(manifest.name).toBe('react-a-bench');
@@ -92,10 +136,8 @@ describe('swap', () => {
     expect(readFileSync(join(root, 'react-b', 'README.md'), 'utf8')).toBe('react-b is the B bench on 5102 with new\n');
   });
 
-  test('a target with no donor is a throw naming the half, the bundler and its part', () => {
-    const root = fixture();
-    expect(() => swap(root, { dir: 'react-a', product: 'a', layer: 'react', from: 'rollup', to: 'bun', donor: null }, 'A', 'B')).toThrow('react-a: no half holds bun; its part is bench-kit/parts/bun.ts');
-    expect(readFileSync(join(root, 'react-a', 'old.config.mjs'), 'utf8')).toBe('old\n');
+  test('a bundler with no donor and no template is a throw naming it', () => {
+    expect(() => templateSource('vite7', 'react', t.pins)).toThrow('no half holds vite7 and bench-kit/parts has no template for it');
   });
 
   test('the bundler\'s files leave out the half\'s sources, Arena configuration, dev server and install, and keep angular.json unless the builder is involved', () => {

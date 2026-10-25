@@ -3,18 +3,21 @@ import { checkSnippets, configOf } from '../src/runner.ts';
 import type { Part } from '../src/runner.ts';
 import { requireSnippet } from '../src/snippets.ts';
 import type { Layer } from '../src/types.ts';
-import { REFERENCE as BUN, SNIPPETS as BUN_SNIPPETS, bunPart } from '../parts/bun.ts';
-import { REFERENCE as ESBUILD, SNIPPETS as ESBUILD_SNIPPETS, esbuildPart } from '../parts/esbuild.ts';
+import { REFERENCE as BUN, SNIPPETS as BUN_SNIPPETS, bunPart, template as bunTemplate } from '../parts/bun.ts';
+import { REFERENCE as ESBUILD, SNIPPETS as ESBUILD_SNIPPETS, esbuildPart, template as esbuildTemplate } from '../parts/esbuild.ts';
+import { readFileSync } from 'node:fs';
 
 /** The parts of the bundlers no half carries in rotation 0: a rotation installs one into the half it assigns, with its reference config. */
 const PARTS = [
-  { name: 'bun', make: bunPart, reference: BUN, snippets: BUN_SNIPPETS },
-  { name: 'esbuild', make: esbuildPart, reference: ESBUILD, snippets: ESBUILD_SNIPPETS },
+  { name: 'bun', make: bunPart, reference: BUN, snippets: BUN_SNIPPETS, template: bunTemplate },
+  { name: 'esbuild', make: esbuildPart, reference: ESBUILD, snippets: ESBUILD_SNIPPETS, template: esbuildTemplate },
 ] as const;
 
 const LAYERS: Layer[] = ['react', 'angular'];
 
-describe.each(PARTS)('the $name part', ({ name, make, reference, snippets }) => {
+const PINS = (JSON.parse(readFileSync(new URL('../../bundlers.json', import.meta.url), 'utf8')) as { pins: Record<string, string> }).pins;
+
+describe.each(PARTS)('the $name part', ({ name, make, reference, snippets, template }) => {
   describe.each(LAYERS)('on %s', (layer) => {
     const part: Part = make(layer);
     const { file, text } = reference[layer];
@@ -34,10 +37,35 @@ describe.each(PARTS)('the $name part', ({ name, make, reference, snippets }) => 
       }
     });
 
-    test('a snippet the config lacks is a throw naming it', () => {
+    test('a snippet the config lacks is a throw naming it: the reference with that snippet\'s line out', () => {
       for (const [key, snippet] of Object.entries(part.snippets)) {
-        expect(() => requireSnippet('', key, snippet, file)).toThrow(`snippet '${key}'`);
+        const without = text.split('\n').filter((line) => line.trim() !== snippet).join('\n');
+        expect(without).not.toBe(text);
+        expect(() => checkSnippets(part, without)).toThrow(`snippet '${key}' is in ${file} 0 times`);
       }
+    });
+
+    test('its template carries the config, the scripts, the devDependencies at the pins, the measure.ts of the part, a README and a .gitignore', () => {
+      const made = template(layer, PINS);
+      expect(made.files[file === 'package.json' ? 'finish.mjs' : file]).toBeString();
+      if (file !== 'package.json') expect(made.files[file]).toBe(text);
+      for (const need of ['measure.ts', 'README.md', '.gitignore', 'finish.mjs']) expect(made.files[need], need).toBeString();
+      expect(made.files['README.md']).toContain('{{dir}}');
+      expect(made.scripts['bundle']).toBeString();
+      expect(made.scripts['build']).toBe(layer === 'angular' ? 'bun run compile && bun run bundle && bun run finish' : 'bun run bundle && bun run finish');
+      if (name === 'bun' && layer === 'react') expect(made.scripts['bundle']).toBe('bun build ./src/index.html --outdir dist --minify');
+      if (name === 'esbuild') expect(made.devDependencies['esbuild']).toBe(PINS['esbuild']);
+      if (layer === 'angular') {
+        expect(made.devDependencies['@babel/core']).toBe(PINS['@babel/core']);
+        expect(made.files['entry.js']).toContain('./.ngc/src/main.js');
+        expect(made.scripts['compile']).toContain('ngc -p tsconfig.app.json');
+      }
+      const measure = made.files['measure.ts']!;
+      expect(measure).toContain(`bundler: '${name}'`);
+      for (const o of part.observations.filter((one) => one.layers.includes(layer))) expect(measure, o.id).toContain(o.id.endsWith('.sprite-not-copied') ? `noSprite_('${name}'` : `'${o.id}'`);
+      // the config the part rewrites is the one in the template, with every snippet of the part in it exactly once
+      if (file !== 'package.json') expect(() => checkSnippets(part, made.files[file]!)).not.toThrow();
+      for (const [key, snippet] of Object.entries(part.snippets)) expect(measure, key).toContain(JSON.stringify(snippet).slice(1, -1));
     });
 
     test('carries the rows of its page that apply to the layer, each with the runs it reads', () => {

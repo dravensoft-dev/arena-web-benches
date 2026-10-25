@@ -13,6 +13,11 @@ import { hasScript } from '../../bench-kit/src/runner.ts';
 import { layerOf, scratch } from '../../bench-kit/src/scratch.ts';
 import { firstSelectors, sheetOrder } from '../../bench-kit/src/static.ts';
 import { ownHalves, partOf } from './halves.ts';
+import { table } from '../bundlers/rotation.ts';
+import { swap, templateSource } from '../rotate.ts';
+import { bunPart } from '../../bench-kit/parts/bun.ts';
+import { esbuildPart } from '../../bench-kit/parts/esbuild.ts';
+import type { Part } from '../../bench-kit/src/runner.ts';
 
 const made: string[] = [];
 afterAll(() => made.forEach((path) => rmSync(path, { recursive: true, force: true })));
@@ -79,4 +84,49 @@ describe.each(ownHalves())('%s', (dir) => {
       expect(vite.version).toBe(part.bundler === 'vite7' ? '7.3.7' : '8.3.5');
     });
   }
+});
+
+// The two bundlers no half holds in rotation 0: each template is installed into a scratch of an Etsy half (the
+// Etsy halves hold rollup, so everything of rollup goes) and built, and holds the same contract.
+describe.each(['bun', 'esbuild'] as const)('the %s template', (id) => {
+  describe.each(['react', 'angular'] as const)('installed into a scratch of the %s Etsy half', (layer) => {
+    test('builds with its own scripts, keeps the base, the sprite, both sheets and Arena\'s code, links no partial declaration, and its measure.ts is its part', async () => {
+      const base = `${layer}-etsy`;
+      const before = status();
+      const path = scratch(base, `part-${id}`, 'none', '.');
+      made.push(path);
+      const t = table();
+      swap('.', { dir: path, product: 'etsy', layer, from: 'rollup', to: id, donor: null }, 'Etsy', templateSource(id, layer, t.pins));
+
+      let log = '';
+      for (const step of layer === 'angular' ? ['compile', 'bundle', 'finish'] : ['bundle', 'finish']) {
+        const done = script(path, step);
+        if (!done.ok) throw new Error(`${id} ${layer}: ${step} failed:\n${done.log}`);
+        log += done.log;
+      }
+      const out = join(path, 'dist');
+      const page = readFileSync(join(out, 'index.html'), 'utf8');
+      expect(page).toMatch(BASE);
+      expect(readdirSync(out).filter((name) => /^icons-.*\.svg$/.test(name))).toHaveLength(1);
+      const { packageSelector, appSelector } = firstSelectors(path, layer);
+      const css = filesText(out, '.css').join('\n').replace(/\s+/g, '');
+      expect(css).toMatch(startsRule(packageSelector));
+      expect(css).toMatch(startsRule(appSelector));
+      const js = filesText(out, '.js');
+      expect(js.some((text) => text.includes('data-arena-part'))).toBe(true);
+      if (layer === 'angular') for (const text of js) expect(text).not.toContain('ɵɵngDeclare');
+      const loads = [...page.matchAll(/<(?:link|script)\b[^>]*?\b(?:href|src)=["']?([^"' >]+)/g)].map((match) => match[1]!).filter((file) => !/^[a-z][a-z0-9+.-]*:/i.test(file));
+      for (const file of loads) expect(existsSync(join(out, file.replace(/^\.\//, ''))), `the page loads ${file}`).toBe(true);
+      expect(log).toBeString();
+
+      // its measure.ts is the part the kit carries: the same rows and the same snippets
+      const part = (await import(join(process.cwd(), path, 'measure.ts'))).part as Part;
+      const expected = (id === 'bun' ? bunPart : esbuildPart)(layer);
+      expect(part.observations.map((o) => o.id)).toEqual(expected.observations.filter((o) => o.layers.includes(layer)).map((o) => o.id));
+      expect(part.snippets).toEqual(expected.snippets);
+      expect(Object.keys(part.variants).sort()).toEqual(Object.keys(expected.variants).sort());
+      expect(part.config).toBe(expected.config);
+      expect(status()).toBe(before);
+    });
+  });
 });

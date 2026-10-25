@@ -73,10 +73,11 @@ by one each time the benches move to an Arena release, and a re-run for a newer 
 two consecutive rotations build all eleven.
 
 ```bash
+bun run build      # installs each half's lockfile first
 bun run bundlers
 ```
 
-runs the `measure` of each half, halves in parallel, and gathers what each wrote into
+`bundlers` measures what is installed, so on a fresh clone `bun run build` (or `bun install` in each half) comes first; it stops with that hint when a half has no install. It runs the `measure` of each half, halves in parallel, and gathers what each wrote into
 `bundlers-results.json`. A half carries its own config, install, lockfile, README and the part of
 [`bench-kit/`](./bench-kit) its bundler needs: the page's snippets, the variants (the half's config
 with a snippet removed or swapped, in a scratch copy) and the observation rows. For each half, the
@@ -91,17 +92,18 @@ printing each claim a build contradicts. `bun scripts/bundlers.ts --only react-e
 and prints its result without writing the file.
 
 Bun and esbuild hold no half in rotation 0. Their part (the page's snippets, the variants and the
-rows) is in [`bench-kit/parts/`](./bench-kit/parts), with the config a half of each carries, and a
-test holds the snippets in that config.
+rows) and their template (the config, the entry, the scripts, the devDependencies at the pins, `measure.ts`,
+README and `.gitignore` of a half of each) are in [`bench-kit/parts/`](./bench-kit/parts); the contract
+test installs each into a scratch of an Etsy half and builds it.
 
 ```bash
 bun run rotate 1
 ```
 
-moves each half to the bundler rotation 1 assigns it: the half takes the config, `measure.ts`, scripts
-and devDependencies of a half of its layer that holds that bundler now, keeps its name, dev flow and
-sources, and gets a lockfile of its own from `bun install`. A bundler no half holds yet (Bun and
-esbuild in rotation 0) has no donor, and the rotation stops naming it before it writes anything.
+moves each half to the bundler rotation 1 assigns it. The half takes the config, `measure.ts`, scripts and
+bundler devDependencies of a half of its layer that holds that bundler now, or, for Bun and esbuild, of the
+template in `bench-kit/parts/`; it keeps its name, dev flow, sources and the packages every bundler shares, and
+gets a lockfile of its own from `bun install`.
 
 ## Measuring one
 

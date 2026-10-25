@@ -113,7 +113,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "sideEffects is false in /home/juan/Dravensoft/arena-web-benches/angular-calendly/node_modules/@dravensoft/arena-angular/package.json"
+          "detail": "sideEffects is false in angular-calendly/node_modules/@dravensoft/arena-angular/package.json"
         }
       ],
       "figures": {

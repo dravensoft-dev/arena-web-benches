@@ -56,7 +56,7 @@ export async function run(t: Table, root = '.', only?: string): Promise<Results>
   const all = halves(t.products).filter((one) => only === undefined || one.dir === only);
   const first = t.products[0]!.react;
   const arena = installedVersion('@dravensoft/arena-react', join(root, first));
-  if (!arena) throw new Error(`@dravensoft/arena-react is not installed under ${first}`);
+  if (!arena) throw new Error(`@dravensoft/arena-react is not installed under ${first}: install the halves first, which \`bun run build\` does (\`bun install --frozen-lockfile\` in each half), or \`bun install\` in each`);
   const problems = pinProblems(t, root);
   if (problems.length > 0) throw new Error(`the installed trees are not the pinned ones, nothing is measured:\n  ${problems.join('\n  ')}`);
 

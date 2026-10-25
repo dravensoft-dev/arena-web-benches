@@ -236,7 +236,7 @@ export function oneStylesFile(ctx: Context): Verdict {
 export function sideEffectsFalse(ctx: Context): Verdict {
   const path = join(ctx.dir, 'node_modules', '@dravensoft', `arena-${ctx.layer}`, 'package.json');
   const value = (JSON.parse(readFileSync(path, 'utf8')) as { sideEffects?: unknown }).sideEffects;
-  return pass(value === false, `sideEffects is ${JSON.stringify(value)} in ${path}`);
+  return pass(value === false, `sideEffects is ${JSON.stringify(value)} in ${join(basename(ctx.dir), 'node_modules', '@dravensoft', `arena-${ctx.layer}`, 'package.json')}`);
 }
 
 export function outdirKept(ctx: Context): Verdict {
