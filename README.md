@@ -73,7 +73,7 @@ entry's bundler, except the mixed pair, whose React half builds with Next.js and
 `application` builder. The draw is a function of its seed: `--seed <n>` reproduces it, and a run told no seed draws
 one. The halves commit the assignment (config, devDependencies, bundler part and lockfile move together), and
 [`bundlers-results.json`](./bundlers-results.json) records the seed, the assignment, the entries the draw left out,
-and one entry per measured half with the seconds its measuring took, so the next run starts the slowest halves first. The two entries a run leaves out have their halves in `carried`, as the previous run measured them with that run's date, commit and seed, so every bundler a page names has an entry in the file and keeps the date of the run that measured it.
+and one entry per measured half with the seconds its measuring took, so the next run starts the slowest halves first. The two entries a run leaves out have their halves in `carried`, as the previous run measured them with that run's date, commit and seed, so every bundler a page names has an entry in the file and keeps the date of the run that measured it. A `carried` entry is a half the run left out, and a null `carried.seed` means the earlier run recorded no seed.
 
 ```bash
 bun run build                  # installs each half's lockfile first
@@ -91,7 +91,7 @@ observation rows. For each half, the runs its bundler's claims need (the page's 
 app's sheet changed, one Arena module patched, and each probe) are built at a scratch copy of the half, every claim is
 checked against what the bundler wrote, and the outputs are weighed. No bundler builds with a persistent cache shared by
 the runs of one half: webpack's does not see a patch applied to a file below `node_modules`, so a patched Arena build
-would not differ from the unpatched one, and Rspack's React builds take under a second. A scratch holds the half's install as links, except where the bundler cannot
+would not differ from the unpatched one. A scratch holds the half's install as links, except where the bundler cannot
 resolve through one: Parcel matches its globs against paths below its project root, so the Parcel halves ask for
 Arena's package as a real directory (`arenaCopy`), and Turbopack refuses a link that points out of its root, so the
 Next.js half asks for the whole install as hardlinks (`hardlinkModules`). `bun run bundlers` exits 1 after printing
