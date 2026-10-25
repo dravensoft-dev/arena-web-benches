@@ -1,5 +1,6 @@
 {
   "stylePlugins": ["./design/clickup"],
+  "runtimePalettes": true,
   "palettes": [
     {
       "name": "light",

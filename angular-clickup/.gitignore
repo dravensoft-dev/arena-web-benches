@@ -6,3 +6,4 @@ src/arena.icons.generated.ts
 src/icons-*.svg
 .ngc
 bundlers-result.json
+src/arena.runtime.generated.json

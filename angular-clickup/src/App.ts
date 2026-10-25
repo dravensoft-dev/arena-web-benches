@@ -18,6 +18,7 @@ import type { Screen } from './Chrome';
 import { ListView } from './screens/ListView';
 import { BoardView } from './screens/BoardView';
 import { Dashboard } from './screens/Dashboard';
+import { PaletteStudio } from './screens/PaletteStudio';
 import { PEOPLE } from './data/Space';
 
 const COMMANDS: ArenaCommand[] = [
@@ -27,6 +28,7 @@ const COMMANDS: ArenaCommand[] = [
   { id: 'task', label: 'Create task', icon: 'ph-bold ph-plus', group: 'Create', shortcut: 'T' },
   { id: 'doc', label: 'Create doc', icon: 'ph-bold ph-file-text', group: 'Create' },
   { id: 'sprint', label: 'Start a sprint', icon: 'ph-bold ph-flag-banner', group: 'Create' },
+  { id: 'palette', label: 'Palette studio', icon: 'ph-bold ph-palette', group: 'Views' },
   { id: 'theme', label: 'Switch appearance', icon: 'ph-bold ph-moon', group: 'Settings' },
 ];
 
@@ -34,6 +36,7 @@ const TABS: { id: Screen; label: string; icon: string }[] = [
   { id: 'list', label: 'List', icon: 'ph-bold ph-list-bullets' },
   { id: 'board', label: 'Board', icon: 'ph-bold ph-kanban' },
   { id: 'dashboard', label: 'Dashboard', icon: 'ph-bold ph-chart-bar' },
+  { id: 'palette', label: 'Palette', icon: 'ph-bold ph-palette' },
 ];
 
 const CRUMBS: ArenaCrumb[] = [
@@ -48,7 +51,7 @@ const CRUMBS: ArenaCrumb[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ArenaAvatar, ArenaBreadcrumbs, ArenaButton, ArenaCommandPalette, ArenaIcon, ArenaIconButton,
-    ArenaToast, ArenaToastHost, BoardView, Dashboard, ListView, Sidebar,
+    ArenaToast, ArenaToastHost, BoardView, Dashboard, ListView, PaletteStudio, Sidebar,
   ],
   host: {
     class: 'app',
@@ -107,6 +110,7 @@ const CRUMBS: ArenaCrumb[] = [
         @if (screen() === 'list') { <app-list-view /> }
         @if (screen() === 'board') { <app-board-view /> }
         @if (screen() === 'dashboard') { <app-dashboard /> }
+        @if (screen() === 'palette') { <app-palette-studio /> }
       </div>
     </main>
 
@@ -132,7 +136,7 @@ export class App {
   protected readonly toasts = inject(ArenaToastQueue);
 
   protected readonly screen = signal<Screen>(
-    this.asked === 'board' || this.asked === 'dashboard' ? this.asked : 'list',
+    this.asked === 'board' || this.asked === 'dashboard' || this.asked === 'palette' ? this.asked : 'list',
   );
   protected readonly palette = signal(false);
 
@@ -159,7 +163,7 @@ export class App {
   protected run(command: ArenaCommand): void {
     this.palette.set(false);
     if (command.id === 'theme') this.toggleTheme();
-    if (command.id === 'list' || command.id === 'board' || command.id === 'dashboard') {
+    if (command.id === 'list' || command.id === 'board' || command.id === 'dashboard' || command.id === 'palette') {
       this.screen.set(command.id);
     }
     if (command.id === 'task') this.toasts.raise({ title: 'Task created', tone: 'success' });

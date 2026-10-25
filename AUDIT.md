@@ -42,7 +42,7 @@ claim the paired mock exists to test.
 | Product | Components drawn | Parts the plugin paints |
 |---|---|---|
 | Calendly | 21 | 5 |
-| ClickUp | 37 | 14 |
+| ClickUp | 40 | 14 |
 | Duolingo | 10 | 4 |
 | Etsy | 27 | 2 |
 | Grafana | 29 | 0 |

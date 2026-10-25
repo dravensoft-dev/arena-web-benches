@@ -7,3 +7,4 @@ src/arena.icons.generated.js
 src/arena.icons.generated.d.ts
 src/icons-*.svg
 bundlers-result.json
+src/arena.runtime.generated.json

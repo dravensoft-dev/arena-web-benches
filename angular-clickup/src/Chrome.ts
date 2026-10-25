@@ -15,7 +15,7 @@ import {
 import { PEOPLE, PRIORITY_SLOT, STATUS_SLOT } from './data/Space';
 import type { Priority, Status } from './data/Space';
 
-export type Screen = 'list' | 'board' | 'dashboard';
+export type Screen = 'list' | 'board' | 'dashboard' | 'palette';
 
 @Component({
   selector: 'app-status-dot',

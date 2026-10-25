@@ -27,6 +27,7 @@ import type { Screen } from './Chrome';
 import { ListView } from './screens/ListView';
 import { BoardView } from './screens/BoardView';
 import { Dashboard } from './screens/Dashboard';
+import { PaletteStudio } from './screens/PaletteStudio';
 import { PEOPLE } from './data/Space';
 
 initArenaTheme({
@@ -44,6 +45,7 @@ const COMMANDS: ArenaCommand[] = [
   { id: 'task', label: 'Create task', icon: 'ph-bold ph-plus', group: 'Create', shortcut: 'T' },
   { id: 'doc', label: 'Create doc', icon: 'ph-bold ph-file-text', group: 'Create' },
   { id: 'sprint', label: 'Start a sprint', icon: 'ph-bold ph-flag-banner', group: 'Create' },
+  { id: 'palette', label: 'Palette studio', icon: 'ph-bold ph-palette', group: 'Views' },
   { id: 'theme', label: 'Switch appearance', icon: 'ph-bold ph-moon', group: 'Settings' },
 ];
 
@@ -51,12 +53,13 @@ const TABS: { id: Screen; label: string; icon: string }[] = [
   { id: 'list', label: 'List', icon: 'ph-bold ph-list-bullets' },
   { id: 'board', label: 'Board', icon: 'ph-bold ph-kanban' },
   { id: 'dashboard', label: 'Dashboard', icon: 'ph-bold ph-chart-bar' },
+  { id: 'palette', label: 'Palette', icon: 'ph-bold ph-palette' },
 ];
 
 function App() {
   const asked = new URLSearchParams(window.location.search).get('screen');
   const [screen, setScreen] = useState<Screen>(
-    asked === 'board' || asked === 'dashboard' ? asked : 'list',
+    asked === 'board' || asked === 'dashboard' || asked === 'palette' ? asked : 'list',
   );
   const [palette, setPalette] = useState(false);
   const [theme, setTheme] = useArenaTheme();
@@ -76,7 +79,7 @@ function App() {
   const run = (command: ArenaCommand) => {
     setPalette(false);
     if (command.id === 'theme') setTheme(theme === 'dark' ? 'light' : 'dark');
-    if (command.id === 'list' || command.id === 'board' || command.id === 'dashboard') {
+    if (command.id === 'list' || command.id === 'board' || command.id === 'dashboard' || command.id === 'palette') {
       setScreen(command.id as Screen);
     }
     if (command.id === 'task') raise({ title: 'Task created', tone: 'success' });
@@ -144,6 +147,7 @@ function App() {
           {screen === 'list' && <ListView />}
           {screen === 'board' && <BoardView />}
           {screen === 'dashboard' && <Dashboard />}
+          {screen === 'palette' && <PaletteStudio />}
         </div>
       </main>
 

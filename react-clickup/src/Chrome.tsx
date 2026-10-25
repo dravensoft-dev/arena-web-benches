@@ -15,7 +15,7 @@ import {
 import { PEOPLE, PRIORITY_SLOT, STATUS_SLOT } from './data/Space';
 import type { Priority, Status } from './data/Space';
 
-export type Screen = 'list' | 'board' | 'dashboard';
+export type Screen = 'list' | 'board' | 'dashboard' | 'palette';
 
 export function StatusDot({ status }: { status: Status }) {
   return <span className="dot" style={{ background: arenaCatColor(STATUS_SLOT[status]) }} />;
