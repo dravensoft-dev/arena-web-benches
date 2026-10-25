@@ -2,7 +2,7 @@
  * `rspack.config.mjs`, and the claims the webpack page makes about rspack. `bun run measure` builds each variant at a
  * scratch copy of this half and writes `bundlers-result.json`. */
 
-import { JS_CLAIM, SHEET_APART, fails, jsRow, measureMain, recordSheetAlone, removeSnippet, replaceSnippet, row, sheetRow } from '@benches/kit';
+import { JS_CLAIM, SHEET_APART, fails, jsRow, measureMain, recordSheetAlone, removeSnippet, replaceSnippet, row, sheetRow, spriteAtRoot_ } from '@benches/kit';
 import type { Part } from '@benches/kit';
 
 /** The snippets of the webpack page, verbatim: each is in the config exactly once. */
@@ -43,6 +43,7 @@ export const part: Part = {
   },
   observations: [
     jsRow('rspack', 'the webpack recipe keeps Arena\'s JS apart, unchanged'),
+    spriteAtRoot_('rspack', 'after the recipe the root of the output holds `icons-*.svg`, copied by the config'),
     sheetRow('rspack', `${SHEET_APART}, with the \`css/auto\` rule and, on Angular, the sheet as its own \`styles\` entry`),
     row({ id: 'rspack.needs-css-auto', bundler: 'rspack', layers: ['react'], claim: 'on React, without the `css/auto` rule the build stops on the package sheet\'s `@layer properties;`', needs: ['no-css-auto'], check: fails('no-css-auto', '@layer properties') }),
     row({ id: 'rspack.css-auto-angular', bundler: 'rspack', layers: ['angular'], claim: 'on Angular through @nx/angular-rspack the `styles` entry places the sheet without `css/auto`', expect: 'record', needs: ['no-css-auto'], check: recordSheetAlone('no-css-auto') }),

@@ -2,7 +2,7 @@ import { afterAll, expect, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { jsRow, noSprite_ } from '../../bench-kit/src/observations.ts';
+import { jsRow, noSprite_, spriteAtRoot_ } from '../../bench-kit/src/observations.ts';
 import { ownHalves, partFromHistory, partOf } from '../halves/halves.ts';
 import type { BundlerId, Layer } from './types.ts';
 import { judge } from '../../bench-kit/src/observations.ts';
@@ -20,8 +20,8 @@ const ROWS = [
   'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied', 'rolldown.linked-sheets',
   'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem',
   'rollup.js-apart', 'rollup.no-css', 'rollup.sprite-not-copied', 'rollup.linked-sheets',
-  'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type', 'webpack.extension-alias',
-  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular', 'rspack.extension-alias',
+  'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type', 'webpack.sprite-at-root', 'webpack.extension-alias',
+  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular', 'rspack.sprite-at-root', 'rspack.extension-alias',
   'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
   'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
@@ -136,6 +136,13 @@ test('the sprite-not-copied check fails when the recipe output holds a sprite', 
   const o = noSprite_('rollup', 'x');
   expect(judge(o, ctx({ recipe: output({ 'index.js': APP }) })).holds).toBe(true);
   expect(judge(o, ctx({ recipe: output({ 'index.js': APP, 'icons-abc123.svg': '<svg/>' }) })).holds).toBe(false);
+});
+
+test('the sprite-at-root check holds when the root of the recipe output holds a sprite and fails for one in a folder or none', () => {
+  const o = spriteAtRoot_('webpack', 'x');
+  expect(judge(o, ctx({ recipe: output({ 'icons-abc123.svg': '<svg/>' }) })).holds).toBe(true);
+  expect(judge(o, ctx({ recipe: output({ 'img/icons-abc123.svg': '<svg/>' }) })).holds).toBe(false);
+  expect(judge(o, ctx({ recipe: output({ 'index.js': APP }) })).holds).toBe(false);
 });
 
 test('a record row never contradicts and says its outcome', () => {

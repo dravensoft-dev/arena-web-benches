@@ -179,8 +179,8 @@ describe('the halves of one bundler', () => {
     vite8: ['vite8.js-apart', 'vite8.sheet-apart', 'vite8.sheet-by-name'],
     rolldown: ['rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied', 'rolldown.linked-sheets'],
     parcel: ['parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem'],
-    webpack: ['webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type', 'webpack.extension-alias'],
-    rspack: ['rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular', 'rspack.extension-alias'],
+    webpack: ['webpack.js-apart', 'webpack.sprite-at-root', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type', 'webpack.extension-alias'],
+    rspack: ['rspack.js-apart', 'rspack.sprite-at-root', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular', 'rspack.extension-alias'],
   };
 
   /** Next.js builds the React layer only, the Angular builder the Angular layer only (the mixed product). */

@@ -175,6 +175,11 @@ export function noSprite(ctx: Context): Verdict {
   return pass(sprites.length === 0, `icons-*.svg in 'recipe': ${list(sprites)}`);
 }
 
+export function spriteAtRoot(ctx: Context): Verdict {
+  const sprites = everyFile(built(ctx, 'recipe').out).filter((f) => /^icons-[^/]*\.svg$/.test(f));
+  return pass(sprites.length > 0, `icons-*.svg at the root of 'recipe': ${list(sprites)}`);
+}
+
 export function oneCss(key: RunKey): (ctx: Context) => Verdict {
   return (ctx) => {
     const css = loaded(built(ctx, key).out, '.css');
@@ -303,6 +308,8 @@ export const sheetRow = (bundler: BundlerId, claim: string): Observation =>
 export const noSprite_ = (bundler: BundlerId, claim: string): Observation =>
   row({ id: `${bundler}.sprite-not-copied`, bundler, claim, needs: ['recipe'], check: noSprite });
 
+export const spriteAtRoot_ = (bundler: BundlerId, claim: string): Observation =>
+  row({ id: `${bundler}.sprite-at-root`, bundler, claim, needs: ['recipe'], check: spriteAtRoot });
 
 export type Judgement = { id: string; claim: string; expect: Observation['expect']; outcome: boolean; holds: boolean; detail: string };
 
