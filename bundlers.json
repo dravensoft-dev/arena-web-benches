@@ -1,21 +1,17 @@
 {
-  "rotation": 0,
   "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 40c82585b",
-  "order": [
-    "vite7",
-    "vite8",
-    "rollup",
-    "rolldown",
-    "webpack",
-    "rspack",
-    "parcel",
-    "bun",
-    "esbuild"
+  "entries": [
+    {"name": "vite7", "react": "vite7", "angular": "vite7"},
+    {"name": "vite8", "react": "vite8", "angular": "vite8"},
+    {"name": "rollup", "react": "rollup", "angular": "rollup"},
+    {"name": "rolldown", "react": "rolldown", "angular": "rolldown"},
+    {"name": "webpack", "react": "webpack", "angular": "webpack"},
+    {"name": "rspack", "react": "rspack", "angular": "rspack"},
+    {"name": "parcel", "react": "parcel", "angular": "parcel"},
+    {"name": "bun", "react": "bun", "angular": "bun"},
+    {"name": "esbuild", "react": "esbuild", "angular": "esbuild"},
+    {"name": "next+angular", "react": "next", "angular": "angular"}
   ],
-  "mixed": {
-    "react": "next",
-    "angular": "angular"
-  },
   "products": [
     {"product": "calendly", "label": "Calendly", "skin": "calendly", "react": "react-calendly", "angular": "angular-calendly"},
     {"product": "clickup", "label": "ClickUp", "skin": "clickup", "react": "react-clickup", "angular": "angular-clickup"},

@@ -1,41 +1,52 @@
-/* The Parcel part of this half's measuring: the page's recipe as verbatim snippets, the variants as rewrites of
- * `package.json` (where Parcel reads its options), and the claims the Parcel page makes. `bun run measure` builds each
- * variant at a scratch copy of this half and writes `bundlers-result.json`. */
+/* The rspack part of this half's measuring: the page's recipe as verbatim snippets, the variants as rewrites of
+ * `rspack.config.mjs`, and the claims the webpack page makes about rspack. `bun run measure` builds each variant at a
+ * scratch copy of this half and writes `bundlers-result.json`. */
 
-import { SHEET_APART, builds, fails, jsRow, measureMain, reactWithApp, removeSnippet, row, sharedStem, sheetRow } from '@benches/kit';
+import { JS_CLAIM, SHEET_APART, fails, jsRow, measureMain, recordSheetAlone, removeSnippet, replaceSnippet, row, sheetRow } from '@benches/kit';
 import type { Part } from '@benches/kit';
 
-/** The snippets of the Parcel page, verbatim: each is in `package.json` exactly once. */
+/** The snippets of the webpack page, verbatim: each is in the config exactly once. */
 export const SNIPPETS = {
-  // parcel.md, "How do I keep Arena's JS in a bundle of its own?": the shared bundles, Arena's JS and the package sheet.
-  manual: `"@parcel/bundler-default": {
-  "manualSharedBundles": [
-    { "name": "arena", "root": "src/index.html", "assets": ["**/node_modules/@dravensoft/arena-react/**"] },
-    { "name": "arenapkg", "root": "src/index.html", "types": ["css"], "assets": ["**/src/arena.package.generated.css"] }
-  ]
-},`,
-  // The same section: the resolver reads Arena's `exports` field only when told to.
-  'package-exports': '"@parcel/resolver-default": { "packageExports": true },',
+  // webpack.md, "How do I keep Arena's JS in a chunk of its own?": the file names.
+  files: String.raw`output: { filename: '[name]-[contenthash:8].js', chunkFilename: '[name]-[contenthash:8].js' },`,
+  // The same page, "How do I keep the package sheet in a file of its own?".
+  sheet: String.raw`experiments: { css: true },
+output: { cssFilename: '[name]-[contenthash:8].css', cssChunkFilename: '[name]-[contenthash:8].css' },
+optimization: { splitChunks: { chunks: 'all', cacheGroups: {
+  default: false,
+  defaultVendors: false,
+  react: { test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/, name: 'react', enforce: true, priority: 20 },
+  arena: { test: /node_modules[\\/]@dravensoft[\\/]arena-/, name: 'arena', enforce: true, priority: 10, type: /^javascript/ },
+  arenaSheet: { test: /node_modules[\\/]@dravensoft[\\/]arena-|arena\.package\.generated\.css/, name: 'arena-sheet', enforce: true, priority: 10, type: /^css/ },
+} } },`,
+  // rspack's one added rule.
+  'css-auto': String.raw`module: { rules: [{ test: /\.css$/, type: 'css/auto' }] },`,
 };
 
+/** The page's JS-only config (`js-recipe`), whose `arena` group names its `type` (D13). */
+const JS_APART = String.raw`    ${SNIPPETS.files}
+    optimization: { splitChunks: { chunks: 'all', cacheGroups: {
+      arena: { test: /node_modules[\\/]@dravensoft[\\/]arena-/, name: 'arena', enforce: true, type: /^javascript/ },
+    } } },
+`;
+
 export const part: Part = {
-  bundler: 'parcel',
-  pin: 'parcel',
-  arenaCopy: true,
-  config: 'package.json',
+  bundler: 'rspack',
+  pin: '@rspack/core',
+  config: 'rspack.config.mjs',
   snippets: SNIPPETS,
   variants: {
-    // The defaults with only what Arena's first import needs to resolve at all.
-    plain: (config) => removeSnippet(config, 'manual', SNIPPETS.manual),
-    'no-package-exports': (config) => removeSnippet(config, 'package-exports', SNIPPETS['package-exports']),
+    // The rule stays in every variant but `no-css-auto`: rspack takes no CSS without it.
+    plain: (config) => removeSnippet(removeSnippet(config, 'sheet', SNIPPETS.sheet), 'files', SNIPPETS.files),
+    'js-recipe': (config) => replaceSnippet(config, 'sheet', SNIPPETS.sheet, JS_APART),
+    'no-css-auto': (config) => replaceSnippet(config, 'css-auto', SNIPPETS['css-auto'], '  module: { rules: [] },\n'),
   },
   observations: [
-    row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'Angular\'s `@angular/common/http` does not resolve without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports', "Failed to resolve '@angular/common/http'") }),
-    row({ id: 'parcel.first-import-resolves', bundler: 'parcel', layers: ['react'], claim: 'the first Arena import resolves through the package\'s `module` field without `packageExports`', needs: ['no-package-exports'], check: builds('no-package-exports') }),
-    jsRow('parcel', '`manualSharedBundles` keeps Arena\'s JS apart once `packageExports` is on', false),
-    sheetRow('parcel', SHEET_APART),
-    row({ id: 'parcel.react-with-app', bundler: 'parcel', layers: ['react'], claim: 'React stays with the app', needs: ['recipe'], check: reactWithApp }),
-    row({ id: 'parcel.shared-stem', bundler: 'parcel', claim: 'its two shared bundles share one name stem', needs: ['recipe'], check: sharedStem }),
+    jsRow('rspack', 'the webpack recipe keeps Arena\'s JS apart, unchanged'),
+    sheetRow('rspack', `${SHEET_APART}, with the \`css/auto\` rule and, on Angular, the sheet as its own \`styles\` entry`),
+    row({ id: 'rspack.needs-css-auto', bundler: 'rspack', layers: ['react'], claim: 'on React, without the `css/auto` rule the build stops on the package sheet\'s `@layer properties;`', needs: ['no-css-auto'], check: fails('no-css-auto', '@layer properties') }),
+    row({ id: 'rspack.css-auto-angular', bundler: 'rspack', layers: ['angular'], claim: 'on Angular through @nx/angular-rspack the `styles` entry places the sheet without `css/auto`', expect: 'record', needs: ['no-css-auto'], check: recordSheetAlone('no-css-auto') }),
+    row({ id: 'rspack.extension-alias', bundler: 'rspack', layers: ['angular'], claim: 'without `resolve.extensionAlias`, the build cannot resolve `main.ts`\'s import of `./arena.icons.generated.js`', needs: ['no-extension-alias'], check: fails('no-extension-alias', "Can't resolve './arena.icons.generated.js'") }),
   ],
 };
 

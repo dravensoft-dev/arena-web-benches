@@ -4,13 +4,13 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
-    "predev": "arena build --src src --src design && arena audit --src src --src design",
-    "dev": "bun --hot ./Server.ts",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "bundle": "rolldown -c",
+    "bundle": "next build",
     "finish": "node finish.mjs",
     "build": "bun run bundle && bun run finish",
     "measure": "bun run prebuild && bun measure.ts",
+    "predev": "arena build --src src --src design && arena audit --src src --src design",
+    "dev": "bun --hot ./Server.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
@@ -20,6 +20,10 @@
   },
   "devDependencies": {
     "@benches/kit": "file:../bench-kit/src",
-    "rolldown": "1.2.15"
+    "@types/node": "26.6.5",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "next": "16.4.3",
+    "typescript": "6.0.3"
   }
 }

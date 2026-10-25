@@ -1,9 +1,5 @@
 node_modules/
 dist/
-.next/
-out/
-next-env.d.ts
-tsconfig.tsbuildinfo
 src/arena.generated.css
 src/plugin.generated.css
 src/arena.package.generated.css

@@ -1,5 +1,5 @@
-/* The Bun part of a half's measuring, and the template of a Bun half, for the rotation that gives a half to `bun build`. No
- * half carries it in rotation 0: `bun run rotate` installs `template()` (config, entry, scripts, devDependencies,
+/* The Bun part of a half's measuring, and the template of a Bun half, for the draw that gives a half to `bun build`.
+ * `bun run rotate` installs `template()` (config, entry, scripts, devDependencies,
  * `measure.ts`, README, `.gitignore`) into the half it assigns. The page's
  * recipe is the one command (bun-esbuild.md): `bun build ./src/index.html --outdir dist --minify`, no option that keeps
  * Arena apart, so `recipe` is that build and `plain` equals it. `bun build` does not empty its output directory: `bundle`

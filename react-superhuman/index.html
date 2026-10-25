@@ -1,29 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="arena-compact">
   <head>
     <base href="./" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ClickUp</title>
+    <title>Relay</title>
     <script>
       (function () {
-        var DEFAULT = 'light';
-        var PREFERS_DARK = 'dark';
+        var DEFAULT = 'dark';
         try {
           var asked = new URLSearchParams(location.search).get('theme');
           if (asked) localStorage.setItem('arena-theme', asked);
           var name = localStorage.getItem('arena-theme');
-          if (!name && window.matchMedia('(prefers-color-scheme: dark)').matches) name = PREFERS_DARK;
+          if (!name && window.matchMedia('(prefers-color-scheme: light)').matches) name = 'light';
           if (name && name !== DEFAULT && /^[a-z][a-z0-9-]*$/.test(name)) {
             document.documentElement.classList.add('arena-' + name);
           }
         } catch (e) {}
       })();
     </script>
-    <link rel="stylesheet" href="/src/styles.css">
   </head>
   <body>
-    <app-root></app-root>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="root"></div>
   </body>
 </html>

@@ -1,34 +1,26 @@
-/* The rolldown part of this half's measuring: the page's recipe as verbatim snippets, the variants as rewrites of
- * `rolldown.config.mjs`, and the claims the rollup page makes about rolldown. `bun run measure` builds each variant at a
- * scratch copy of this half and writes `bundlers-result.json`. */
+/* The Next.js part of this half's measuring. The Next.js page gives no recipe, so `recipe` is this build and `plain`
+ * equals it; the rows record what Next.js does with Arena's JS, the package sheet and the sprite. `bun run measure`
+ * builds each variant at a scratch copy of this half and writes `bundlers-result.json`. */
 
-import { JS_CLAIM, fails, jsRow, linkedSheets, measureMain, noSprite_, removeSnippet, row } from '@benches/kit';
+import { measureMain, recordJsApart, recordSheetApart, recordSprite, row } from '@benches/kit';
 import type { Part } from '@benches/kit';
 
-/** The snippets of the rollup page for rolldown, verbatim: each is in the config exactly once. */
-export const SNIPPETS = {
-  // rollup.md, "How do I keep Arena's JS in a chunk of its own?": `output.codeSplitting.groups`.
-  output: String.raw`codeSplitting: { groups: [
-  { name: 'arena', test: /node_modules[\\/]@dravensoft[\\/]arena-/, priority: 10 },
-] },`,
-  // The empty module every `.css` import resolves to.
-  'empty-css': 'emptyCss(),',
-};
+/** The Next.js page prints no config, so no snippet of it is in the half's. */
+export const SNIPPETS = {};
 
 export const part: Part = {
-  bundler: 'rolldown',
-  pin: 'rolldown',
-  config: 'rolldown.config.mjs',
+  bundler: 'next',
+  pin: 'next',
+  hardlinkModules: true,
+  config: 'next.config.mjs',
   snippets: SNIPPETS,
   variants: {
-    plain: (config) => removeSnippet(config, 'output', SNIPPETS.output),
-    'css-import': (config) => removeSnippet(config, 'empty-css', SNIPPETS['empty-css']),
+    plain: (config) => config,
   },
   observations: [
-    jsRow('rolldown', JS_CLAIM('`codeSplitting.groups`')),
-    row({ id: 'rolldown.css-refused', bundler: 'rolldown', claim: 'the build stops on a CSS import with "Bundling CSS is no longer supported (experimental support has been removed)"', needs: ['css-import'], check: fails('css-import', 'Bundling CSS is no longer supported (experimental support has been removed)') }),
-    noSprite_('rolldown', 'rolldown moves no file it does not import'),
-    row({ id: 'rolldown.linked-sheets', bundler: 'rolldown', claim: 'the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written', expect: 'record', needs: [], check: linkedSheets }),
+    row({ id: 'next.js-apart', bundler: 'next', layers: ['react'], claim: 'Next.js picks its chunks itself', expect: 'record', needs: ['recipe'], check: recordJsApart }),
+    row({ id: 'next.sheet-apart', bundler: 'next', layers: ['react'], claim: 'a CSS file holds the package sheet alone', expect: 'record', needs: ['recipe'], check: recordSheetApart }),
+    row({ id: 'next.sprite-public', bundler: 'next', layers: ['react'], claim: 'a sprite copied into `public/` is served at the root under its own name', expect: 'record', needs: ['recipe'], check: recordSprite }),
   ],
 };
 

@@ -13,7 +13,7 @@ import { hasScript } from '../../bench-kit/src/runner.ts';
 import { layerOf, scratch } from '../../bench-kit/src/scratch.ts';
 import { firstSelectors, sheetOrder } from '../../bench-kit/src/static.ts';
 import { ownHalves, partOf } from './halves.ts';
-import { table } from '../bundlers/rotation.ts';
+import { held, table } from '../bundlers/rotation.ts';
 import { swap, templateSource } from '../rotate.ts';
 import { bunPart } from '../../bench-kit/parts/bun.ts';
 import { esbuildPart } from '../../bench-kit/parts/esbuild.ts';
@@ -86,7 +86,7 @@ describe.each(ownHalves())('%s', (dir) => {
   }
 });
 
-// The two bundlers no half holds in rotation 0: each template is installed into a scratch of an Etsy half (the
+// The two bundlers whose files come from a template: each template is installed into a scratch of an Etsy half (the
 // Etsy halves hold rollup, so everything of rollup goes) and built, and holds the same contract.
 describe.each(['bun', 'esbuild'] as const)('the %s template', (id) => {
   describe.each(['react', 'angular'] as const)('installed into a scratch of the %s Etsy half', (layer) => {
@@ -96,7 +96,7 @@ describe.each(['bun', 'esbuild'] as const)('the %s template', (id) => {
       const path = scratch(base, `part-${id}`, 'none', '.');
       made.push(path);
       const t = table();
-      swap('.', { dir: path, product: 'etsy', layer, from: 'rollup', to: id, donor: null }, 'Etsy', templateSource(id, layer, t.pins));
+      swap('.', { dir: path, product: 'etsy', layer, from: held('.', base)!, to: id, donor: null }, 'Etsy', templateSource(id, layer, t.pins));
       // The scratch's links are Etsy's install, which holds rollup and not what the template declares: a real install of the
       // template's own package.json makes a devDependency it forgot a failure here, not something Etsy's tree answers.
       rmSync(join(path, 'node_modules'), { recursive: true, force: true });

@@ -91,7 +91,7 @@ function Vantage() {
         </div>
         <ArenaSideNav ariaLabel="Dashboards" active={board} onNav={setBoard}>
           {DASHBOARDS.map((one) => (
-            <ArenaSideNavItem key={one.id} id={one.id} label={one.label} icon={one.icon} badge={one.badge} />
+            <ArenaSideNavItem key={one.id} id={one.id} label={one.label} icon={one.icon} badge={one.badge === undefined ? undefined : Number(one.badge)} />
           ))}
         </ArenaSideNav>
       </aside>

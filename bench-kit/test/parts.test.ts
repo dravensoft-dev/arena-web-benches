@@ -7,7 +7,7 @@ import { REFERENCE as BUN, SNIPPETS as BUN_SNIPPETS, bunPart, template as bunTem
 import { REFERENCE as ESBUILD, SNIPPETS as ESBUILD_SNIPPETS, esbuildPart, template as esbuildTemplate } from '../parts/esbuild.ts';
 import { readFileSync } from 'node:fs';
 
-/** The parts of the bundlers no half carries in rotation 0: a rotation installs one into the half it assigns, with its reference config. */
+/** The parts of the bundlers that have a template: a draw installs one into the half it assigns, with its reference config. */
 const PARTS = [
   { name: 'bun', make: bunPart, reference: BUN, snippets: BUN_SNIPPETS, template: bunTemplate },
   { name: 'esbuild', make: esbuildPart, reference: ESBUILD, snippets: ESBUILD_SNIPPETS, template: esbuildTemplate },

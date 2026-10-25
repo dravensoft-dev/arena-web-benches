@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { halves } from '../build.ts';
-import { assignment } from './rotation.ts';
+import { held } from './rotation.ts';
 import type { Table } from './types.ts';
 
 /** The version `node_modules/<pkg>` holds under `root`, following the links; `bun` is the running binary. */
@@ -22,12 +22,11 @@ export const pinFor = (t: Table, bundler: string, name: string): string | undefi
 export function pinProblems(t: Table, root = '.'): string[] {
   const problems: string[] = [];
   if (t.pins['bun'] !== undefined && installedVersion('bun') !== t.pins['bun']) problems.push(`bun: pinned ${t.pins['bun']}, installed ${installedVersion('bun')}`);
-  const bundlers = assignment(t);
-  for (const { product, layer, dir } of halves(t.products)) {
+  for (const { dir } of halves(t.products)) {
     const manifest = join(root, dir, 'package.json');
     if (!existsSync(manifest)) continue;
     const { dependencies, devDependencies } = JSON.parse(readFileSync(manifest, 'utf8')) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
-    const bundler = bundlers.get(product)![layer];
+    const bundler = held(root, dir) ?? '';
     for (const name of Object.keys({ ...dependencies, ...devDependencies })) {
       const pinned = pinFor(t, bundler, name);
       if (pinned === undefined) continue;

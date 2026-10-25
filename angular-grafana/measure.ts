@@ -1,35 +1,25 @@
-/* The rolldown part of this half's measuring: the page's recipe as verbatim snippets, the variants as rewrites of
- * `rolldown.config.mjs`, and the claims the rollup page makes about rolldown. `bun run measure` builds each variant at a
- * scratch copy of this half and writes `bundlers-result.json`. */
+/* The Angular builder part of this half's measuring. The Angular page gives no config of its own, so `recipe` is
+ * `ng build --base-href ./` and `plain` equals it; the rows are the claims the page makes about the builder. `bun run
+ * measure` builds each variant at a scratch copy of this half and writes `bundlers-result.json`. */
 
-import { JS_CLAIM, fails, jsRow, linkedSheets, measureMain, noSprite_, removeSnippet, row } from '@benches/kit';
+import { arenaInMain, measureMain, oneStylesFile, row, sideEffectsFalse } from '@benches/kit';
 import type { Part } from '@benches/kit';
 
-/** The snippets of the rollup page for rolldown, verbatim: each is in the config exactly once. */
-export const SNIPPETS = {
-  // rollup.md, "How do I keep Arena's JS in a chunk of its own?": `output.codeSplitting.groups`.
-  output: String.raw`codeSplitting: { groups: [
-  { name: 'arena', test: /node_modules[\\/]@dravensoft[\\/]arena-/, priority: 10 },
-] },`,
-  // The empty module every `.css` import resolves to.
-  'empty-css': 'emptyCss(),',
-};
+/** The Angular page prints no config, so no snippet of it is in the half's. */
+export const SNIPPETS = {};
 
 export const part: Part = {
-  bundler: 'rolldown',
-  compile: true,
-  pin: 'rolldown',
-  config: 'rolldown.config.mjs',
+  bundler: 'angular',
+  pin: '@angular/build',
+  config: 'angular.json',
   snippets: SNIPPETS,
   variants: {
-    plain: (config) => removeSnippet(config, 'output', SNIPPETS.output),
-    'css-import': (config) => removeSnippet(config, 'empty-css', SNIPPETS['empty-css']),
+    plain: (config) => config,
   },
   observations: [
-    jsRow('rolldown', JS_CLAIM('`codeSplitting.groups`')),
-    row({ id: 'rolldown.css-refused', bundler: 'rolldown', claim: 'the build stops on a CSS import with "Bundling CSS is no longer supported (experimental support has been removed)"', needs: ['css-import'], check: fails('css-import', 'Bundling CSS is no longer supported (experimental support has been removed)') }),
-    noSprite_('rolldown', 'rolldown moves no file it does not import'),
-    row({ id: 'rolldown.linked-sheets', bundler: 'rolldown', claim: 'the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written', expect: 'record', needs: [], check: linkedSheets }),
+    row({ id: 'angular.arena-in-main', bundler: 'angular', layers: ['angular'], claim: 'Arena lands in `main`', needs: ['recipe'], check: arenaInMain }),
+    row({ id: 'angular.one-styles-file', bundler: 'angular', layers: ['angular'], claim: 'the `styles` option emits one file', needs: ['recipe'], check: oneStylesFile }),
+    row({ id: 'angular.side-effects-false', bundler: 'angular', layers: ['angular'], claim: 'the Angular package declares `"sideEffects": false`', needs: [], check: sideEffectsFalse }),
   ],
 };
 

@@ -3,17 +3,17 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { halves } from './build.ts';
-import { assigned, assignment, table } from './bundlers/rotation.ts';
+import { assigned, assignment, current, draw, leftOutOf, previousResults, table } from './bundlers/rotation.ts';
 import { pinFor } from './bundlers/pins.ts';
 import { ownHalves, partOf } from './halves/halves.ts';
 import { cpSync } from 'node:fs';
-import { bundlerFiles, donorSource, installMoved, plan, rotate, swap, templateSource } from './rotate.ts';
+import { bundlerFiles, donorSource, transplantPage, historyDonor, installMoved, plan, rotate, swap, templateSource } from './rotate.ts';
 
 const t = table();
 const made: string[] = [];
 afterAll(() => made.forEach((path) => rmSync(path, { recursive: true, force: true })));
 
-describe('every half agrees with the table\'s rotation', () => {
+describe('every half agrees with the committed assignment', () => {
   test.each(ownHalves())('%s holds the bundler `assigned()` gives it: its part, its pin, and the config file of its part', async (dir) => {
     const part = await partOf(dir);
     expect(part.bundler).toBe(assigned(t, dir).bundler);
@@ -31,69 +31,72 @@ describe('every half agrees with the table\'s rotation', () => {
 });
 
 describe('plan', () => {
-  test('the table\'s own rotation moves nothing', () => {
-    expect(plan(t, t.rotation)).toEqual([]);
+  test('the assignment the halves hold moves nothing', () => {
+    expect(plan(t, current(t), current(t))).toEqual([]);
   });
 
-  test('rotation 1 moves every half but the mixed pair of the old rotation, each to the bundler of the F4 column, with a donor where a half holds it now', () => {
-    const moves = plan(t, 1);
-    const next = assignment(t, 1);
-    expect(moves.length).toBe(16);
+  test('every move goes to the bundler of the next assignment from the bundler the half holds, with a donor where a half of the layer holds it now', () => {
+    const now = current(t);
+    const next = assignment(t, draw(t, 5, leftOutOf(t, previousResults())));
+    const moves = plan(t, now, next);
     for (const move of moves) {
       expect(move.to).toBe(next.get(move.product)![move.layer]);
-      expect(move.from).toBe(assigned(t, move.dir).bundler);
-      const needs = ['bun', 'esbuild'].includes(move.to);
-      expect(move.donor === null, `${move.dir} -> ${move.to}`).toBe(needs);
-      if (move.donor) expect(assigned(t, move.donor).bundler).toBe(move.to);
+      expect(move.from).toBe(now.get(move.product)![move.layer]);
+      const held = [...now.values()].some((layers) => layers[move.layer] === move.to);
+      expect(move.donor === null, `${move.dir} -> ${move.to}`).toBe(!held);
+      if (move.donor) expect(now.get(t.products.find((one) => one.react === move.donor || one.angular === move.donor)!.product)![move.layer]).toBe(move.to);
     }
-    expect(moves.filter((move) => move.donor === null).map((move) => move.dir).sort()).toEqual(['angular-calendly', 'angular-duolingo', 'react-calendly', 'react-duolingo']);
   });
-
 });
 
 /** The package whose installed version is a bundler's own, as each half's part names it. */
 const PIN: Partial<Record<string, string>> = { angular: '@angular/build', rspack: '@rspack/core', vite7: 'vite', vite8: 'vite' };
 
-describe('rotation 1 on a copy of the benches', () => {
-  const root = mkdtempSync(join(tmpdir(), 'rotate-1-'));
+describe('a whole assignment on a copy of the benches', () => {
+  // What the next run would draw: the entries the committed results left out are among the eight, so a half may need a
+  // bundler no half holds now, which `rotate` reads from the history of this repository.
+  const drawn = draw(t, 11, leftOutOf(t, previousResults()));
+  const root = mkdtempSync(join(tmpdir(), 'rotate-draw-'));
   made.push(root);
   cpSync('.', root, { recursive: true, filter: (from) => !/(^|[\\/])(node_modules|dist|\.git|vendor|\.run-[^\\/]*)$/.test(from) });
-  const moves = rotate(root, 1, false);
-  const next = table(root);
+  const moves = rotate(root, drawn, false, '.');
+  const found = assignment(t, drawn);
 
-  test('moves every half, from a donor or from the template of Bun and esbuild, and records the rotation', () => {
-    expect(moves.length).toBe(16);
-    expect(next.rotation).toBe(1);
-    expect(moves.filter((move) => move.donor === null).map((move) => `${move.dir}:${move.to}`).sort()).toEqual(['angular-calendly:bun', 'angular-duolingo:esbuild', 'react-calendly:bun', 'react-duolingo:esbuild']);
+  test('moves exactly the halves whose bundler differs, and a second rotation to the same draw moves nothing', () => {
+    expect(moves.length).toBeGreaterThan(0);
+    expect(rotate(root, drawn, false, '.')).toEqual([]);
+    for (const [product, layers] of current(t, root)) expect(layers).toEqual(found.get(product)!);
   });
 
-  test.each(ownHalves())('%s agrees with assigned() of rotation 1: its part, its declared pin, its scripts and no file of another bundler', (dir) => {
-    const { bundler } = assigned(next, dir);
+  test.each(ownHalves())('%s agrees with the draw: its part, its declared pin, its scripts and no file of another bundler', (dir) => {
+    const bundler = [...found].flatMap(([product, layers]) => (['react', 'angular'] as const).filter((layer) => t.products.find((one) => one.product === product)![layer] === dir).map((layer) => layers[layer]))[0]!;
     const measure = readFileSync(join(root, dir, 'measure.ts'), 'utf8');
     expect(measure, `${dir} measure.ts`).toContain(`bundler: '${bundler}'`);
     const manifest = JSON.parse(readFileSync(join(root, dir, 'package.json'), 'utf8')) as { packageManager: string; scripts: Record<string, string>; dependencies: Record<string, string>; devDependencies: Record<string, string> };
-    if (bundler === 'bun') expect(manifest.packageManager).toBe(`bun@${next.pins['bun']}`);
+    if (bundler === 'bun') expect(manifest.packageManager).toBe(`bun@${t.pins['bun']}`);
     else {
       const pin = PIN[bundler] ?? bundler;
-      expect(manifest.devDependencies[pin], `${dir} declares ${pin}`).toBe(pinFor(next, bundler, pin));
+      expect(manifest.devDependencies[pin], `${dir} declares ${pin}`).toBe(pinFor(t, bundler, pin));
     }
     expect(manifest.scripts['bundle'], `${dir} bundle`).toBeString();
     expect(manifest.scripts['build']).toContain('bun run bundle');
     expect(manifest.dependencies[`@dravensoft/arena-${dir.startsWith('react') ? 'react' : 'angular'}`]).toMatch(/^file:\.\.\/vendor\//);
     const part = /config: ['"]([^'"]+)['"]/.exec(measure)![1]!;
     expect(existsSync(join(root, dir, part)) || part === 'package.json', `${dir} carries ${part}`).toBe(true);
-    // no config of a bundler it does not hold
     const configs = readdirSync(join(root, dir)).filter((name) => /^(vite|rollup|rolldown|webpack|rspack|esbuild|next)\.config\.mjs$/.test(name));
     expect(configs.length <= 1, `${dir}: ${configs}`).toBe(true);
     if (configs[0]) expect(configs[0].startsWith(bundler.replace(/\d$/, '')) || bundler === 'angular', `${dir}: ${configs[0]}`).toBe(true);
   });
+});
 
-  test('a half moved from a template carries the pin of the table in its package.json and the files of its layer', () => {
-    expect(JSON.parse(readFileSync(join(root, 'react-duolingo', 'package.json'), 'utf8')).devDependencies.esbuild).toBe(next.pins['esbuild']);
-    expect(existsSync(join(root, 'angular-duolingo', 'entry.js'))).toBe(true);
-    expect(existsSync(join(root, 'angular-calendly', 'bun.config.mjs'))).toBe(true);
-    expect(readFileSync(join(root, 'react-calendly', 'README.md'), 'utf8')).toContain('react-calendly');
-    expect(existsSync(join(root, 'react-calendly', 'tsconfig.json'))).toBe(false);
+describe('historyDonor', () => {
+  test('finds the half of the layer that last held a bundler in the history of this repository, and null for one no commit held', () => {
+    const into = mkdtempSync(join(tmpdir(), 'rotate-history-'));
+    made.push(into);
+    const dir = historyDonor('.', t, 'rollup', 'react', into);
+    expect(dir).toStartWith('react-');
+    expect(readFileSync(join(into, dir!, 'measure.ts'), 'utf8')).toContain("bundler: 'rollup'");
+    expect(historyDonor('.', t, 'nope' as never, 'react', into)).toBeNull();
   });
 });
 
@@ -159,5 +162,31 @@ describe('swap', () => {
     writeFileSync(join(root, 'react-a', 'angular.json'), '{}');
     expect(bundlerFiles(root, 'react-a', ['rollup', 'vite7']).sort()).toEqual(['README.md', 'old.config.mjs', 'package.json']);
     expect(bundlerFiles(root, 'react-a', ['rollup', 'angular']).sort()).toEqual(['README.md', 'angular.json', 'old.config.mjs', 'package.json']);
+  });
+});
+
+describe('transplantPage', () => {
+  const at = (path: string): string => Bun.spawnSync(['git', 'show', `HEAD:${path}`]).stdout.toString();
+  const pages = ownHalves().filter((dir) => at(`${dir}/index.html`) !== '' && at(`${dir}/src/index.html`) !== '');
+  const plain = (html: string) => html.replace(/^[ \t]*<base href="[^"]*" ?\/?>\n/gm, '').replace(/^[ \t]*<link rel="stylesheet" href="[^"]*">\n/gm, '').replace(/^[ \t]*<script type="module" src="[^"]*"><\/script>\n/gm, '');
+
+  test.each(pages)('%s: the page made from its own src/index.html is the page it has', (dir) => {
+    expect(transplantPage(at(`${dir}/index.html`), at(`${dir}/src/index.html`), at(`${dir}/src/index.html`))).toBe(at(`${dir}/index.html`));
+  });
+
+  test('a donor\'s page on another product keeps the donor\'s tags in their places and the product\'s own text', () => {
+    for (const layer of ['react-', 'angular-']) {
+      const donors = pages.filter((dir) => dir.startsWith(layer));
+      for (const donor of donors) for (const own of ['calendly', 'superhuman']) {
+        const made = transplantPage(at(`${donor}/index.html`), at(`${donor}/src/index.html`), at(`${layer}${own}/src/index.html`));
+        expect(plain(made), `${donor} -> ${layer}${own}`).toBe(plain(at(`${layer}${own}/src/index.html`)));
+        const tags = (html: string) => html.split('\n').filter((line) => /<base |<link rel="stylesheet" href="\.|type="module"/.test(line));
+        expect(tags(made), `${donor} -> ${layer}${own}`).toEqual(tags(at(`${donor}/index.html`)));
+      }
+    }
+  });
+
+  test('a page whose structure the donor\'s tags cannot find is a throw naming the line', () => {
+    expect(() => transplantPage('<head>\n<base href="./" />\n</head>\n', '<head>\n</head>\n', '<top>\n</top>\n')).toThrow('has no line `<head>` to put <base href="./" /> after');
   });
 });

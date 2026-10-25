@@ -4,22 +4,38 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
+    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
+    "bundle": "rspack build -c rspack.config.mjs",
+    "build": "bun run bundle",
+    "measure": "bun run prebuild && bun measure.ts",
     "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",
-    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "bundle": "parcel build src/index.html --dist-dir dist --public-url ./ --no-cache --no-source-maps --no-autoinstall",
-    "finish": "node finish.mjs",
-    "build": "bun run bundle && bun run finish",
-    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "@parcel/bundler-default": {
     "manualSharedBundles": [
-      { "name": "arena", "root": "src/index.html", "assets": ["**/node_modules/@dravensoft/arena-react/**"] },
-      { "name": "arenapkg", "root": "src/index.html", "types": ["css"], "assets": ["**/src/arena.package.generated.css"] }
+      {
+        "name": "arena",
+        "root": "src/index.html",
+        "assets": [
+          "**/node_modules/@dravensoft/arena-react/**"
+        ]
+      },
+      {
+        "name": "arenapkg",
+        "root": "src/index.html",
+        "types": [
+          "css"
+        ],
+        "assets": [
+          "**/src/arena.package.generated.css"
+        ]
+      }
     ]
   },
-  "@parcel/resolver-default": { "packageExports": true },
+  "@parcel/resolver-default": {
+    "packageExports": true
+  },
   "dependencies": {
     "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
     "react": "18.3.1",
@@ -27,6 +43,7 @@
   },
   "devDependencies": {
     "@benches/kit": "file:../bench-kit/src",
-    "parcel": "2.16.4"
+    "@rspack/cli": "2.2.9",
+    "@rspack/core": "2.2.9"
   }
 }

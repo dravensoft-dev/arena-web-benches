@@ -1,4 +1,4 @@
-/* The runner: every claim a bundler page makes, checked on the half the rotation assigns that bundler. Each half
+/* The runner: every claim a bundler page makes, checked on the half the run's draw gives that bundler. Each half
  * measures itself (`bun run --cwd <half> measure`, halves in parallel, each at scratch paths of its own) and this gathers
  * what each wrote into `bundlers-results.json`. It writes the file even when a claim is contradicted, prints each
  * contradiction and exits 1. */
@@ -8,21 +8,28 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { halves, RESULTS } from './build.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
-import { table } from './bundlers/rotation.ts';
-import type { Table } from './bundlers/types.ts';
+import { draw, freshSeed, held, leftOutOf, previousResults, table } from './bundlers/rotation.ts';
+import type { Assignment, BundlerId, Layer, Table } from './bundlers/types.ts';
+import { rotate } from './rotate.ts';
 import { RESULT, contradictionsOf } from '../bench-kit/src/runner.ts';
 import type { HalfResult } from '../bench-kit/src/runner.ts';
+
+/** A half's result, with the seconds its `measure` took. */
+export type TimedResult = HalfResult & { seconds?: number };
 
 export type { HalfResult };
 
 export type Results = {
   arena: string;
   arenaSource: string;
-  rotation: number;
+  /** Null on a dry run of one half, which draws nothing. */
+  seed: number | null;
+  assignment: Record<string, string> | null;
+  leftOut: string[];
   date: string;
   commit: string;
   pins: Record<string, string>;
-  halves: HalfResult[];
+  halves: TimedResult[];
 };
 
 /**
@@ -31,8 +38,8 @@ export type Results = {
  * wrote is gathered; any other non-zero exit, or no file, did not measure, and that is a throw naming the half with the tail
  * of its output.
  */
-export async function measureHalves(dirs: string[], root = '.', width = Math.max(1, Math.floor(availableParallelism() / 2))): Promise<Map<string, HalfResult>> {
-  const done = new Map<string, HalfResult>();
+export async function measureHalves(dirs: string[], root = '.', width = Math.max(1, Math.floor(availableParallelism() / 2))): Promise<Map<string, TimedResult>> {
+  const done = new Map<string, TimedResult>();
   const queue = [...dirs];
   const failed: string[] = [];
   const worker = async () => {
@@ -40,9 +47,11 @@ export async function measureHalves(dirs: string[], root = '.', width = Math.max
       const file = join(root, dir, RESULT);
       rmSync(file, { force: true });
       console.log(`bundlers: ${dir}`);
+      const started = performance.now();
       const child = Bun.spawn(['bun', 'run', '--cwd', join(root, dir), 'measure'], { stdout: 'pipe', stderr: 'pipe' });
       const [out, err] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
-      const result = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as HalfResult) : null;
+      const result = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as TimedResult) : null;
+      if (result) result.seconds = Math.round((performance.now() - started) / 100) / 10;
       if (result && (child.exitCode === 0 || contradictionsOf(result).length > 0)) done.set(dir, result);
       else failed.push(`${dir}: measure exited ${child.exitCode}${result ? ' with no contradiction in' : ' and wrote no'} ${RESULT}:\n${`${out}${err}`.trim().split('\n').slice(-12).join('\n')}`);
     }
@@ -50,6 +59,25 @@ export async function measureHalves(dirs: string[], root = '.', width = Math.max
   await Promise.all(Array.from({ length: Math.min(width, dirs.length) }, worker));
   if (failed.length > 0) throw new Error(failed.join('\n'));
   return done;
+}
+
+/** Seconds a half of this layer and bundler takes when no earlier run recorded it: the slow ones are Angular on webpack, rspack, Parcel and rolldown. */
+const DEFAULT_SECONDS: Record<Layer, Partial<Record<BundlerId, number>>> = {
+  angular: { webpack: 400, rspack: 380, parcel: 350, rolldown: 300, rollup: 250, vite7: 200, vite8: 200, esbuild: 150, bun: 150, angular: 150 },
+  react: { webpack: 120, rspack: 120, parcel: 120, next: 150 },
+};
+
+/**
+ * `dirs` slowest first, so no half runs alone at the end: by the seconds an earlier run recorded for the half's layer and
+ * bundler, else by `DEFAULT_SECONDS`.
+ */
+export function schedule(dirs: { dir: string; layer: Layer }[], root: string, previous: ReturnType<typeof previousResults> = null): string[] {
+  const estimate = ({ dir, layer }: { dir: string; layer: Layer }): number => {
+    const bundler = held(root, dir);
+    const before = previous?.halves.find((half) => half.layer === layer && half.bundler === bundler)?.seconds;
+    return before ?? (bundler ? DEFAULT_SECONDS[layer][bundler] : undefined) ?? 100;
+  };
+  return dirs.map((one) => ({ dir: one.dir, seconds: estimate(one) })).sort((a, b) => b.seconds - a.seconds).map((one) => one.dir);
 }
 
 /**
@@ -64,7 +92,7 @@ export function commitOf(root = '.'): string {
   return changed.length > 0 ? `${head}-dirty` : head;
 }
 
-export async function run(t: Table, root = '.', only?: string): Promise<Results> {
+export async function run(t: Table, root = '.', only?: string, drawn?: Assignment, previous: ReturnType<typeof previousResults> = null): Promise<Results> {
   const all = halves(t.products).filter((one) => only === undefined || one.dir === only);
   if (all.length === 0) throw new Error(`--only ${only}: no such half; the halves are ${halves(t.products).map((one) => one.dir).join(', ')}`);
   const first = t.products[0]!.react;
@@ -73,10 +101,10 @@ export async function run(t: Table, root = '.', only?: string): Promise<Results>
   const problems = pinProblems(t, root);
   if (problems.length > 0) throw new Error(`the installed trees are not the pinned ones, nothing is measured:\n  ${problems.join('\n  ')}`);
 
-  const measured = await measureHalves(all.map((one) => one.dir), root);
+  const measured = await measureHalves(schedule(all, root, previous), root);
   const commit = commitOf(root);
   return {
-    arena, arenaSource: t.arenaSource, rotation: t.rotation, date: new Date().toISOString().slice(0, 10), commit,
+    arena, arenaSource: t.arenaSource, seed: drawn?.seed ?? null, assignment: drawn?.entries ?? null, leftOut: drawn?.leftOut ?? [], date: new Date().toISOString().slice(0, 10), commit,
     pins: t.pins, halves: all.map((one) => measured.get(one.dir)!),
   };
 }
@@ -91,10 +119,20 @@ export function contradictions(r: Results): string[] {
 async function main() {
   const at = process.argv.indexOf('--only');
   const only = at < 0 ? undefined : process.argv[at + 1];
+  const seedAt = process.argv.indexOf('--seed');
   const t = table();
-  const results = await run(t, '.', only);
+  const previous = previousResults();
+  let drawn: Assignment | undefined;
+  // A full run draws and moves the halves; a run over one half is a dry check of what is installed.
+  if (only === undefined) {
+    const seed = seedAt < 0 ? freshSeed() : Number(process.argv[seedAt + 1]);
+    if (!Number.isInteger(seed) || seed < 0) throw new Error('usage: bun run bundlers [--seed <n>] [--only <half>]');
+    drawn = draw(t, seed, leftOutOf(t, previous));
+    console.log(`bundlers: seed ${seed}, left out ${drawn.leftOut.join(', ')}`);
+    for (const move of rotate('.', drawn)) console.log(`bundlers: ${move.dir}: ${move.from} -> ${move.to}`);
+  }
+  const results = await run(t, '.', only, drawn, previous);
   const text = `${JSON.stringify(results, null, 2)}\n`;
-  // A run over one half is a dry check: it prints and leaves the results file alone.
   if (only === undefined) writeFileSync(RESULTS, text);
   else console.log(text);
   const bad = contradictions(results);

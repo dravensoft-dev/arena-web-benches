@@ -1,4 +1,4 @@
-/* What a half of a bundler no half holds yet is made from: the files, scripts and devDependencies a rotation installs
+/* What a half of Bun or esbuild is made from: the files, scripts and devDependencies a draw installs
  * (`bun run rotate`), the same shape the files of a donor half make, so one code path swaps either. */
 
 import type { Layer } from '../src/index.ts';

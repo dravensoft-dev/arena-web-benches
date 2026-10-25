@@ -1,4 +1,7 @@
-// What the builder writes beside the browser output and no page deploys: its bookkeeping.
-import { rmSync } from 'node:fs';
+// What Vite does not move: the sprite and the app's own statics (`public/`).
+import { cpSync, existsSync, readdirSync } from 'node:fs';
 
-for (const name of ['prerendered-routes.json', '3rdpartylicenses.txt']) rmSync(`dist/${name}`, { force: true });
+for (const name of readdirSync('src')) {
+  if (/^icons-.*\.svg$/.test(name)) cpSync(`src/${name}`, `dist/${name}`);
+}
+if (existsSync('public')) cpSync('public', 'dist', { recursive: true });

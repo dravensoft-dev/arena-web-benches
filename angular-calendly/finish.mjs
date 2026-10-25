@@ -1,4 +1,9 @@
-// What the builder writes beside the browser output and no page deploys: its bookkeeping.
-import { rmSync } from 'node:fs';
+// What rollup does not move: the sheets the page links, the sprite, and the app's own statics (`public/`).
+import { cpSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 
-for (const name of ['prerendered-routes.json', '3rdpartylicenses.txt']) rmSync(`dist/${name}`, { force: true });
+const page = readFileSync('dist/index.html', 'utf8');
+for (const [, sheet] of page.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)) cpSync(`src/${sheet}`, `dist/${sheet}`);
+for (const name of readdirSync('src')) {
+  if (/^icons-.*\.svg$/.test(name)) cpSync(`src/${name}`, `dist/${name}`);
+}
+if (existsSync('public')) cpSync('public', 'dist', { recursive: true });

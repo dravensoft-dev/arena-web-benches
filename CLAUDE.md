@@ -82,7 +82,7 @@ measures what is published. A finding names which one it came from.
 
 **One branch exists, and it is `main`.** A bench is a mock written to exercise Arena, and what this
 repository carries beyond the mocks is plumbing: the version of Arena it reads, the answer a bench gives a
-role the kernel declares, `bench-kit/`, the rotation, each half's bundler config and `measure.ts`, and
+role the kernel declares, `bench-kit/`, the draw, each half's bundler config and `measure.ts`, and
 the scripts that build and measure them. Each of those lands as one commit that leaves the tree whole
 (its tests and `bun run build` pass), so a `develop` branch has nothing to hold and a feature branch has
 nothing to isolate. **Commit to `main`, and open no second branch**, whatever a habit or a harness default

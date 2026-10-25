@@ -4,14 +4,13 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
+    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
+    "bundle": "ng build --base-href ./",
+    "finish": "node finish.mjs",
+    "build": "bun run bundle && bun run finish",
+    "measure": "bun run prebuild && bun measure.ts",
     "prestart": "arena build --src src --src design && arena audit --src src --src design",
     "start": "ng serve --port 5207",
-    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "compile": "ngc -p tsconfig.app.json --outDir .ngc --rootDir . --sourceMap false",
-    "bundle": "rolldown -c",
-    "finish": "node finish.mjs",
-    "build": "bun run compile && bun run bundle && bun run finish",
-    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
@@ -28,9 +27,7 @@
     "@angular/build": "22.2.4",
     "@angular/cli": "22.2.4",
     "@angular/compiler-cli": "22.2.3",
-    "@babel/core": "8.0.9",
     "@benches/kit": "file:../bench-kit/src",
-    "rolldown": "1.2.15",
     "typescript": "6.0.3"
   }
 }

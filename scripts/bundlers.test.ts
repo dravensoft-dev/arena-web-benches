@@ -15,7 +15,7 @@ const row = (id: string, expectation: 'holds' | 'record', outcome: boolean) =>
   ({ id, claim: `claim of ${id}`, expect: expectation, outcome, holds: expectation === 'record' ? true : outcome, detail: `detail of ${id}` });
 
 const results = (observations: ReturnType<typeof row>[]): Results => ({
-  arena: '12.1.1', arenaSource: 's', rotation: 0, date: '2026-10-24', commit: 'abc', pins: {},
+  arena: '12.1.1', arenaSource: 's', seed: 1, assignment: {}, leftOut: [], date: '2026-10-24', commit: 'abc', pins: {},
   halves: [{ product: 'etsy', layer: 'react', dir: 'react-etsy', bundler: 'rollup', version: '4.65.0', observations, figures: FIGURES }],
 });
 

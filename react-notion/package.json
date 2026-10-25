@@ -4,12 +4,13 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
+    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
+    "bundle": "vite build",
+    "finish": "node finish.mjs",
+    "build": "bun run bundle && bun run finish",
+    "measure": "bun run prebuild && bun measure.ts",
     "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",
-    "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "bundle": "rspack build -c rspack.config.mjs",
-    "build": "bun run bundle",
-    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
@@ -19,7 +20,6 @@
   },
   "devDependencies": {
     "@benches/kit": "file:../bench-kit/src",
-    "@rspack/cli": "2.2.9",
-    "@rspack/core": "2.2.9"
+    "vite": "8.3.5"
   }
 }

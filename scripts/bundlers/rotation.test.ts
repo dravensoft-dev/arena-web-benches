@@ -1,66 +1,86 @@
 import { describe, expect, test } from 'bun:test';
-import { assigned, assignment, table } from './rotation.ts';
-import type { BundlerId } from './types.ts';
+import { assigned, assignment, current, draw, leftOutOf, table } from './rotation.ts';
+import type { Assignment } from './types.ts';
 
 const t = table();
-const rows = (m: ReturnType<typeof assignment>) => Object.fromEntries([...m].map(([k, v]) => [k, v]));
-const both = (id: BundlerId) => ({ react: id, angular: id });
-const mixed = { react: 'next', angular: 'angular' } as const;
+const names = t.entries.map((entry) => entry.name);
 
-describe('assignment', () => {
-  test('rotation 0 is the F4 column', () => {
-    expect(rows(assignment(t, 0))).toEqual({
-      calendly: mixed,
-      clickup: both('vite7'),
-      duolingo: both('vite8'),
-      etsy: both('rollup'),
-      grafana: both('rolldown'),
-      instagram: both('webpack'),
-      notion: both('rspack'),
-      superhuman: both('parcel'),
-    });
+describe('draw', () => {
+  test('the table holds ten entries for eight products: the nine shared bundlers and the mixed pair', () => {
+    expect(names).toEqual(['vite7', 'vite8', 'rollup', 'rolldown', 'webpack', 'rspack', 'parcel', 'bun', 'esbuild', 'next+angular']);
+    expect(t.products).toHaveLength(8);
+    expect(t.entries.find((entry) => entry.name === 'next+angular')).toEqual({ name: 'next+angular', react: 'next', angular: 'angular' });
   });
 
-  test('rotation 1 is the F4 column', () => {
-    expect(rows(assignment(t, 1))).toEqual({
-      calendly: both('bun'),
-      clickup: mixed,
-      duolingo: both('esbuild'),
-      etsy: both('vite7'),
-      grafana: both('vite8'),
-      instagram: both('rollup'),
-      notion: both('rolldown'),
-      superhuman: both('webpack'),
-    });
+  test('the same seed gives the same assignment, and another seed another', () => {
+    expect(draw(t, 7, ['bun', 'esbuild'])).toEqual(draw(t, 7, ['bun', 'esbuild']));
+    const seen = new Set(Array.from({ length: 20 }, (_, seed) => JSON.stringify(draw(t, seed).entries)));
+    expect(seen.size).toBeGreaterThan(15);
   });
 
-  test('the default rotation is the table rotation', () => {
-    expect(assignment(t)).toEqual(assignment(t, t.rotation));
+  test.each(Array.from({ length: 40 }, (_, seed) => seed))('seed %i: eight distinct entries on the eight products, and the two others left out', (seed) => {
+    const drawn = draw(t, seed);
+    expect(Object.keys(drawn.entries).sort()).toEqual(t.products.map((one) => one.product).sort());
+    const placed = Object.values(drawn.entries);
+    expect(new Set(placed).size).toBe(8);
+    for (const name of placed) expect(names).toContain(name);
+    expect(drawn.leftOut).toHaveLength(2);
+    expect([...placed, ...drawn.leftOut].sort()).toEqual([...names].sort());
+    expect(drawn.seed).toBe(seed);
   });
 
-  for (let r = 0; r <= 17; r += 1) {
-    test(`rotation ${r}: seven distinct shared bundlers, same on both layers`, () => {
-      const m = assignment(t, r);
-      const shared = [...m.values()].filter((v) => v.react === v.angular).map((v) => v.react);
-      expect(shared.length).toBe(7);
-      expect(new Set(shared).size).toBe(7);
-      expect([...m.values()].filter((v) => v.react !== v.angular).length).toBe(1);
-    });
+  test.each(Array.from({ length: 40 }, (_, seed) => seed))('seed %i: the entries the previous run left out are among the eight', (seed) => {
+    const previous = draw(t, seed + 1000);
+    const next = draw(t, seed, previous.leftOut);
+    for (const name of previous.leftOut) expect(Object.values(next.entries)).toContain(name);
+  });
 
-    test(`rotations ${r} and ${r + 1} build all eleven bundlers`, () => {
-      const ids = new Set<BundlerId>();
-      for (const n of [r, r + 1]) for (const v of assignment(t, n).values()) ids.add(v.react).add(v.angular);
-      expect(ids.size).toBe(11);
-    });
-  }
+  test('two consecutive runs cover all ten entries, over many seeds', () => {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const first = draw(t, seed);
+      const second = draw(t, seed + 7, first.leftOut);
+      expect(new Set([...Object.values(first.entries), ...Object.values(second.entries)]).size, `seed ${seed}`).toBe(10);
+    }
+  });
+
+  test('an entry the table does not hold is a throw naming it', () => {
+    expect(() => draw(t, 1, ['nope'])).toThrow("'nope'");
+  });
 });
 
-describe('assigned', () => {
-  test('finds the product, layer and bundler of a half', () => {
-    expect(assigned(t, 'angular-etsy')).toEqual({ product: 'etsy', layer: 'angular', bundler: 'rollup' });
+describe('assignment', () => {
+  test.each(Array.from({ length: 40 }, (_, seed) => seed))('seed %i: Next.js sits only on a React half and the Angular builder only on an Angular half', (seed) => {
+    const found = assignment(t, draw(t, seed));
+    for (const [, layers] of found) {
+      if (layers.react === 'next' || layers.angular === 'angular') expect(layers).toEqual({ react: 'next', angular: 'angular' });
+      else expect(layers.react).toBe(layers.angular);
+    }
   });
 
-  test('names a directory no product holds', () => {
+  test('an assignment naming an entry the table lacks is a throw naming it', () => {
+    const bad: Assignment = { seed: 1, entries: { ...draw(t, 1).entries, etsy: 'nope' }, leftOut: [] };
+    expect(() => assignment(t, bad)).toThrow("etsy the entry 'nope'");
+  });
+});
+
+describe('leftOutOf', () => {
+  test('is nothing before any run, the recorded entries after one, and the entries no half measured for a result that recorded none', () => {
+    expect(leftOutOf(t, null)).toEqual([]);
+    expect(leftOutOf(t, { leftOut: ['rollup', 'bun'], halves: [] })).toEqual(['rollup', 'bun']);
+    const halves = t.entries.filter((entry) => !['bun', 'esbuild', 'next+angular'].includes(entry.name)).flatMap((entry) => [{ layer: 'react' as const, bundler: entry.react }, { layer: 'angular' as const, bundler: entry.angular }])
+      .concat([{ layer: 'react', bundler: 'next' }, { layer: 'angular', bundler: 'angular' }]);
+    expect(leftOutOf(t, { halves })).toEqual(['bun', 'esbuild']);
+  });
+});
+
+describe('the committed halves', () => {
+  test('hold a bundler each, and the results record the assignment they were drawn as', () => {
+    const now = current(t);
+    expect([...now.keys()].sort()).toEqual(t.products.map((one) => one.product).sort());
+    for (const one of t.products) for (const layer of ['react', 'angular'] as const) expect(assigned(t, one[layer]).bundler, one[layer]).toBe(now.get(one.product)![layer]);
+  });
+
+  test('assigned names a directory no product holds', () => {
     expect(() => assigned(t, 'react-nope')).toThrow('react-nope');
   });
 });

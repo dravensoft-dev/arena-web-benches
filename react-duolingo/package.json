@@ -4,13 +4,13 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
-    "predev": "arena build --src src --src design && arena audit --src src --src design",
-    "dev": "bun --hot ./Server.ts",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "bundle": "vite build",
+    "bundle": "bun build ./src/index.html --outdir dist --minify",
     "finish": "node finish.mjs",
     "build": "bun run bundle && bun run finish",
     "measure": "bun run prebuild && bun measure.ts",
+    "predev": "arena build --src src --src design && arena audit --src src --src design",
+    "dev": "bun --hot ./Server.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
@@ -19,7 +19,6 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@benches/kit": "file:../bench-kit/src",
-    "vite": "8.3.5"
+    "@benches/kit": "file:../bench-kit/src"
   }
 }

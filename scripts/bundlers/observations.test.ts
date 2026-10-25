@@ -3,7 +3,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { jsRow, noSprite_ } from '../../bench-kit/src/observations.ts';
-import { partOf } from '../halves/halves.ts';
+import { ownHalves, partFromHistory, partOf } from '../halves/halves.ts';
+import type { BundlerId, Layer } from './types.ts';
 import { judge } from '../../bench-kit/src/observations.ts';
 import type { Built, Context, Observation } from '../../bench-kit/src/observations.ts';
 import { bunPart } from '../../bench-kit/parts/bun.ts';
@@ -26,10 +27,17 @@ const ROWS = [
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
   'next.js-apart', 'next.sheet-apart', 'next.sprite-public',
 ];
-const HALVES = ['react-etsy', 'react-clickup', 'react-duolingo', 'react-grafana', 'react-superhuman', 'react-instagram', 'react-notion', 'react-calendly', 'angular-calendly'];
-const halves = (await Promise.all(HALVES.map((dir) => partOf(dir)))).flatMap((part) => part.observations);
+// Every half's part, and the part of each bundler no half holds now (an entry the run left out) from the history of the repository.
+const own = await Promise.all(ownHalves().map((dir) => partOf(dir)));
+const present = new Set(own.map((part) => part.bundler));
+const old: (Awaited<ReturnType<typeof partFromHistory>>)[] = [];
+for (const [id, layers] of [['vite7', ['react', 'angular']], ['vite8', ['react', 'angular']], ['rollup', ['react', 'angular']], ['rolldown', ['react', 'angular']], ['webpack', ['react', 'angular']], ['rspack', ['react', 'angular']], ['parcel', ['react', 'angular']], ['next', ['react']], ['angular', ['angular']]] as [BundlerId, Layer[]][]) {
+  if (present.has(id)) continue;
+  for (const layer of layers) old.push(await partFromHistory(id, layer));
+}
+const halves = [...own, ...old.filter((part) => part !== null)].flatMap((part) => part.observations);
 const parts = (['react', 'angular'] as const).flatMap((layer) => [...bunPart(layer).observations, ...esbuildPart(layer).observations]);
-const moved = [...halves, ...parts.filter((o, at) => parts.findIndex((p) => p.id === o.id) === at)];
+const moved = [...halves, ...parts].filter((o, at, all) => all.findIndex((p) => p.id === o.id) === at);
 
 const one = (id: string): Observation => moved.find((o) => o.id === id)!;
 

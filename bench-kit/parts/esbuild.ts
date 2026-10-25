@@ -1,5 +1,5 @@
-/* The esbuild part of a half's measuring, and the template of an esbuild half, for the rotation that gives a half to esbuild.
- * No half carries it in rotation 0: `bun run rotate` installs `template()` (config, entry, scripts, devDependencies,
+/* The esbuild part of a half's measuring, and the template of an esbuild half, for the draw that gives a half to esbuild.
+ * `bun run rotate` installs `template()` (config, entry, scripts, devDependencies,
  * `measure.ts`, README, `.gitignore`) into the half it assigns. The page's
  * recipe (bun-esbuild.md) is one entry with splitting on, "one CSS file for the entry, with splitting too", and on the
  * Angular layer `define: { ngDevMode: 'false' }`; `recipe` is that build and `plain` equals it. */

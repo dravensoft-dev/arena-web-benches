@@ -1,21 +1,27 @@
 # angular-calendly
 
-The Angular half of the Calendly bench, built with Angular's `application` builder (`@angular/build` 22.2.4). It is an adopter of the Angular CLI with an install of its own: `package.json` declares the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from `../vendor/` until the registry carries the version.
+The Angular half of the Calendly bench, built with [rollup](https://rollupjs.org) 4.65.0 after `ngc`. It is an adopter of
+rollup with an install of its own: `package.json` declares rollup, its plugins and the Angular packages at exact
+versions, `bun.lock` holds them, and the Arena packages come from `../vendor/` until the registry carries the version.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock
-bun run build          # arena build, arena audit, ng build --base-href ./, then the builder's bookkeeping out of dist/
-bun run measure        # prebuild (arena build, audit, usage) first, then every claim the Angular page makes and the figures, into bundlers-result.json
+bun run build          # arena build, arena audit, ngc, rollup, then the sheets, the sprite and public/ into dist/
+bun run measure        # prebuild (arena build, audit, usage) first, then every claim the rollup page makes and the figures, into bundlers-result.json
 bun run report         # arena build, check, audit and usage: where the figures of AUDIT.md come from
 bun run start          # ng serve on http://localhost:5208, the Angular CLI's own dev flow
 ```
 
-The Angular page prints no config, so `angular.json` is the builder's own: `styles` names `src/styles.css`, `assets` the
-sprite and `public/`, and `outputPath` writes the browser output straight into `dist/`. `ng build --base-href ./` is the
-`bundle` script. `finish.mjs` removes `prerendered-routes.json` and `3rdpartylicenses.txt`, which the builder writes beside
-the browser output.
+`compile` is `ngc -p tsconfig.app.json` (ahead of time), its output in `.ngc/`. `entry.js` imports the compiled
+`main.js` and `src/styles.css`. `rollup.config.mjs` is the page's recipe (`manualChunks` and content-hashed names) and
+what rollup needs for this app: Node resolution, CommonJS, `NODE_ENV`, the Angular linker in a `transform` hook (the
+Angular packages are partially compiled, and `ngc` does not link `node_modules`), Terser, an empty module for every
+`.css` import, and the page emitted with its script pointed at the entry chunk. `index.html` is `src/index.html` with a
+relative `<base>`, a `<link>` per sheet in the order `styles.css` imports them, and the entry script. `finish.mjs`
+copies the sheets, the sprite and `public/` into `dist/`, which rollup does not move.
 
-`measure` runs `prebuild` itself, so the files `arena build` writes under `src/` exist for the scratch copies it builds
-from. `measure.ts` is this half's Angular builder part of the measuring: the Angular page gives no recipe, so `recipe` is this build and `plain` equals it, and the rows are the claims the page makes about the builder. A snippet the config does not hold throws, naming it.
-The shared machinery is [`../bench-kit`](../bench-kit), a `file:` dependency: after changing it, `bun install` in this half
-copies it again. The scratch copies the measuring builds sit at `../.run-angular-calendly-*` and are removed when it ends.
+`measure` runs `prebuild` itself, so the files `arena build` writes under `src/` exist for the scratch copies it builds from. `measure.ts` is this half's rollup part of the measuring: the page's snippets verbatim, the variants as rewrites of
+`rollup.config.mjs` (`plain` without the recipe, `css-import` without the empty module), and the rollup rows; `ngc` runs
+once per distinct `main.ts`. A snippet the config does not hold throws, naming it. The shared machinery is
+[`../bench-kit`](../bench-kit), a `file:` dependency: after changing it, `bun install` in this half copies it again. The
+scratch copies the measuring builds sit at `../.run-angular-calendly-*` and are removed when it ends.

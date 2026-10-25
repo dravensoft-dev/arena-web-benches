@@ -22,16 +22,16 @@ answer the same markup from the same `design/` directory, so anything that diffe
 is Arena's and not the app's. Every half holds a port of its own, listed below, so the sixteen
 run side by side without colliding. A React half reads `PORT` if you want it somewhere else.
 
-| Product | React | Bundler | Angular | Bundler |
-|---|---|---|---|---|
-| Calendly | `react-calendly` on 5108, [published](https://arena.dravensoft.org/web-benches/calendly/react/) | Next.js | `angular-calendly` on 5208, [published](https://arena.dravensoft.org/web-benches/calendly/angular/) | Angular CLI |
-| ClickUp | `react-clickup` on 5102, [published](https://arena.dravensoft.org/web-benches/clickup/react/) | Vite 7 | `angular-clickup` on 5202, [published](https://arena.dravensoft.org/web-benches/clickup/angular/) | Vite 7 |
-| Duolingo | `react-duolingo` on 5104, [published](https://arena.dravensoft.org/web-benches/duolingo/react/) | Vite 8 | `angular-duolingo` on 5204, [published](https://arena.dravensoft.org/web-benches/duolingo/angular/) | Vite 8 |
-| Etsy | `react-etsy` on 5105, [published](https://arena.dravensoft.org/web-benches/etsy/react/) | Rollup | `angular-etsy` on 5205, [published](https://arena.dravensoft.org/web-benches/etsy/angular/) | Rollup |
-| Grafana | `react-grafana` on 5107, [published](https://arena.dravensoft.org/web-benches/grafana/react/) | Rolldown | `angular-grafana` on 5207, [published](https://arena.dravensoft.org/web-benches/grafana/angular/) | Rolldown |
-| Instagram | `react-instagram` on 5103, [published](https://arena.dravensoft.org/web-benches/instagram/react/) | webpack | `angular-instagram` on 5203, [published](https://arena.dravensoft.org/web-benches/instagram/angular/) | webpack |
-| Notion | `react-notion` on 5101, [published](https://arena.dravensoft.org/web-benches/notion/react/) | Rspack | `angular-notion` on 5201, [published](https://arena.dravensoft.org/web-benches/notion/angular/) | Rspack |
-| Superhuman | `react-superhuman` on 5106, [published](https://arena.dravensoft.org/web-benches/superhuman/react/) | Parcel | `angular-superhuman` on 5206, [published](https://arena.dravensoft.org/web-benches/superhuman/angular/) | Parcel |
+| Product | React | Angular |
+|---|---|---|
+| Calendly | `react-calendly` on 5108, [published](https://arena.dravensoft.org/web-benches/calendly/react/) | `angular-calendly` on 5208, [published](https://arena.dravensoft.org/web-benches/calendly/angular/) |
+| ClickUp | `react-clickup` on 5102, [published](https://arena.dravensoft.org/web-benches/clickup/react/) | `angular-clickup` on 5202, [published](https://arena.dravensoft.org/web-benches/clickup/angular/) |
+| Duolingo | `react-duolingo` on 5104, [published](https://arena.dravensoft.org/web-benches/duolingo/react/) | `angular-duolingo` on 5204, [published](https://arena.dravensoft.org/web-benches/duolingo/angular/) |
+| Etsy | `react-etsy` on 5105, [published](https://arena.dravensoft.org/web-benches/etsy/react/) | `angular-etsy` on 5205, [published](https://arena.dravensoft.org/web-benches/etsy/angular/) |
+| Grafana | `react-grafana` on 5107, [published](https://arena.dravensoft.org/web-benches/grafana/react/) | `angular-grafana` on 5207, [published](https://arena.dravensoft.org/web-benches/grafana/angular/) |
+| Instagram | `react-instagram` on 5103, [published](https://arena.dravensoft.org/web-benches/instagram/react/) | `angular-instagram` on 5203, [published](https://arena.dravensoft.org/web-benches/instagram/angular/) |
+| Notion | `react-notion` on 5101, [published](https://arena.dravensoft.org/web-benches/notion/react/) | `angular-notion` on 5201, [published](https://arena.dravensoft.org/web-benches/notion/angular/) |
+| Superhuman | `react-superhuman` on 5106, [published](https://arena.dravensoft.org/web-benches/superhuman/react/) | `angular-superhuman` on 5206, [published](https://arena.dravensoft.org/web-benches/superhuman/angular/) |
 
 Each bench is a mock written to exercise Arena. The product names say which interface a bench
 was drawn after; the marks and the artwork are its own.
@@ -63,55 +63,52 @@ published site lists the addresses and embeds none of them.
 
 Every bench is built by one of eleven bundlers: Vite 7, Vite 8, Rollup, Rolldown, webpack, Rspack,
 Parcel, Bun, esbuild, Next.js and Angular's `application` builder. [`bundlers.json`](./bundlers.json)
-holds the order of the nine that both layers share (`vite7, vite8, rollup, rolldown, webpack,
-rspack, parcel, bun, esbuild`), the rotation number `r`, and the pins.
+holds the ten entries a run draws from (the nine bundlers both layers share, and the mixed pair: Next.js on the
+React half and the `application` builder on the Angular half, which build one product), the eight products and the pins.
 
-Next.js (React) and the `application` builder (Angular) build one product, the mixed one, which is
-the product at position `r mod 8` in alphabetical order. Each of the other seven products, in
-alphabetical order as `j = 0` to `6`, builds both its halves with the bundler at position
-`(7r + j) mod 9` of the shared order. Rotation 0 is the table in `bundlers.json`. The rotation grows
-by one each time the benches move to an Arena release, and a re-run for a newer bundler keeps it, so
-two consecutive rotations build all eleven.
-
-```bash
-bun run build      # installs each half's lockfile first
-bun run bundlers
-```
-
-`bundlers` measures what is installed, so on a fresh clone `bun run build` (or `bun install` in each half) comes first; it stops with that hint when a half has no install. It runs the `measure` of each half, halves in parallel, and gathers what each wrote into
-`bundlers-results.json`. A half carries its own config, install, lockfile, README and the part of
-[`bench-kit/`](./bench-kit) its bundler needs: the page's snippets, the variants (the half's config
-with a snippet removed or swapped, in a scratch copy) and the observation rows. For each half, the
-runs its bundler's claims need (the page's recipe, the app's text changed, the app's sheet changed,
-one Arena module patched, and each probe) are built at a scratch copy of the half, every claim is
-checked against what the bundler wrote, and the outputs are weighed. A scratch holds the half's
-install as links, except where the bundler cannot resolve through one: Parcel matches its globs
-against paths below its project root, so the Parcel halves ask for Arena's package as a real
-directory (`arenaCopy`), and Turbopack refuses a link that points out of its root, so the Next.js
-half asks for the whole install as hardlinks (`hardlinkModules`). `bun run bundlers` exits 1 after
-printing each claim a build contradicts. `bun scripts/bundlers.ts --only react-etsy` runs one half
-and prints its result without writing the file.
-
-Bun and esbuild hold no half in rotation 0. Their part (the page's snippets, the variants and the
-rows) and their template (the config, the entry, the scripts, the devDependencies at the pins, `measure.ts`,
-README and `.gitignore` of a half of each) are in [`bench-kit/parts/`](./bench-kit/parts); the contract
-test installs each into a scratch of an Etsy half and builds it.
+Every run draws its assignment at random and measures eight entries, one on each product. The previous run's two
+left-out entries are among the eight and the other six are drawn from the remaining eight, so two consecutive runs
+measure every bundler. The eight are then shuffled onto the products: a product's two halves both build with its
+entry's bundler, except the mixed pair, whose React half builds with Next.js and whose Angular half with the
+`application` builder. The draw is a function of its seed: `--seed <n>` reproduces it, and a run told no seed draws
+one. The halves commit the assignment (config, devDependencies, bundler part and lockfile move together), and
+[`bundlers-results.json`](./bundlers-results.json) records the seed, the assignment, the entries the draw left out,
+and one entry per measured half with the seconds its measuring took, so the next run starts the slowest halves first.
 
 ```bash
-bun run rotate 1
+bun run build                  # installs each half's lockfile first
+bun run bundlers               # draws, moves the halves to the draw, measures them
+bun run bundlers --seed 123    # the same draw again
+bun run rotate --seed 123      # only the move: the draw's halves, no measuring
 ```
 
-moves each half to the bundler rotation 1 assigns it. The half takes the config, `measure.ts`, scripts and
-bundler devDependencies of a half of its layer that holds that bundler now, or, for Bun and esbuild, of the
-template in `bench-kit/parts/`; it keeps its name, dev flow, sources and the packages every bundler shares, and
-gets a lockfile of its own from `bun install`.
+`bundlers` moves the halves to the draw, then measures what is installed, so on a fresh clone `bun run build` (or
+`bun install` in each half) comes first; it stops with that hint when a half has no install. It runs the `measure` of
+each half, halves in parallel and slowest first, and gathers what each wrote into `bundlers-results.json`. A half
+carries its own config, install, lockfile, README and the part of [`bench-kit/`](./bench-kit) its bundler needs: the
+page's snippets, the variants (the half's config with a snippet removed or swapped, in a scratch copy) and the
+observation rows. For each half, the runs its bundler's claims need (the page's recipe, the app's text changed, the
+app's sheet changed, one Arena module patched, and each probe) are built at a scratch copy of the half, every claim is
+checked against what the bundler wrote, and the outputs are weighed. webpack builds with a persistent filesystem cache
+shared by the runs of one half, since its outputs are byte-identical with and without it (`bun run test:contract`
+checks that); Rspack builds without one. A scratch holds the half's install as links, except where the bundler cannot
+resolve through one: Parcel matches its globs against paths below its project root, so the Parcel halves ask for
+Arena's package as a real directory (`arenaCopy`), and Turbopack refuses a link that points out of its root, so the
+Next.js half asks for the whole install as hardlinks (`hardlinkModules`). `bun run bundlers` exits 1 after printing
+each claim a build contradicts. `bun scripts/bundlers.ts --only react-etsy` runs one half as it stands and prints its
+result without drawing and without writing the file.
+
+Bun and esbuild keep no half between runs: their part (the page's snippets, the variants and the rows) and their
+template (the config, the entry, the scripts, the devDependencies at the pins, `measure.ts`, README and `.gitignore`
+of a half of each) are in [`bench-kit/parts/`](./bench-kit/parts). Any other bundler an earlier run left out is read
+from the half of its layer that last held it, in the history of this repository.
 
 ## Testing the plumbing
 
 ```bash
-bun test scripts           # the build, the rotation, the runner, the rows of every half (fast, builds nothing)
+bun test scripts           # the build, the draw and the move, the runner, the rows of every half (fast, builds nothing)
 bun test bench-kit         # the shared machinery: snippets, scratch copies, weigher, runner
-bun run test:contract      # what a build of each half holds, and of a Bun and an esbuild template (slow: it builds)
+bun run test:contract      # what a build of each half holds, and of a Bun and an esbuild template, and webpack's cache (slow: it builds)
 ```
 
 `bun run test`, `bun run test:kit` and `bun run test:contract` are the same three lines. The contract test

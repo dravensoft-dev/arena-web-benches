@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "ng-grafana": {
+    "ng-calendly": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -15,7 +15,10 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": {
+              "base": "dist",
+              "browser": ""
+            },
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
@@ -49,16 +52,16 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ng-grafana:build:production"
+              "buildTarget": "ng-calendly:build:production"
             },
             "development": {
-              "buildTarget": "ng-grafana:build:development"
+              "buildTarget": "ng-calendly:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
             "host": "127.0.0.1",
-            "port": 5207
+            "port": 5208
           }
         }
       }

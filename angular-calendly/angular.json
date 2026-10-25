@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "ng-calendly": {
+    "ng-etsy": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -15,10 +15,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": {
-              "base": "dist",
-              "browser": ""
-            },
+            "outputPath": "dist",
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
@@ -52,16 +49,16 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ng-calendly:build:production"
+              "buildTarget": "ng-etsy:build:production"
             },
             "development": {
-              "buildTarget": "ng-calendly:build:development"
+              "buildTarget": "ng-etsy:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
             "host": "127.0.0.1",
-            "port": 5208
+            "port": 5205
           }
         }
       }

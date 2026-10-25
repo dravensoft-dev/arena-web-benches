@@ -1,46 +1,58 @@
 import { describe, expect, test } from 'bun:test';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { assigned, table } from '../bundlers/rotation.ts';
+import { assigned, held, table } from '../bundlers/rotation.ts';
 import { layerOf } from '../../bench-kit/src/scratch.ts';
 import { checkSnippets, configOf } from '../../bench-kit/src/runner.ts';
 import { sheetOrder } from '../../bench-kit/src/static.ts';
 import { ownHalves, partOf } from './halves.ts';
+import { template as bunTemplate } from '../../bench-kit/parts/bun.ts';
+import { template as esbuildTemplate } from '../../bench-kit/parts/esbuild.ts';
+import type { BundlerId } from '../bundlers/types.ts';
 
 const COMMON = ['.gitignore', 'arena.config.json', 'bun.lock', 'measure.ts', 'package.json', 'README.md'];
 const REACT = [...COMMON, 'Server.ts'];
 const ANGULAR = [...COMMON, 'angular.json', 'tsconfig.json'];
 
-/** The halves whose bundler writes everything itself, or whose bundler copies the sprite in its config: they have no `finish`. */
-const NO_FINISH = ['react-instagram', 'angular-instagram', 'react-notion'];
+/** The (layer, bundler) pairs whose bundler writes everything itself, or copies the sprite in its config: they have no `finish`. */
+const NO_FINISH = ['react:webpack', 'angular:webpack', 'react:rspack'];
 
-/** The files each half commits at its root, besides `design/`, `src/` and `public/`: a half carries nothing else. */
-const FILES: Record<string, string[]> = {
-  'react-etsy': [...REACT, 'index.html', 'rollup.config.mjs'],
-  'angular-etsy': [...ANGULAR, 'entry.js', 'index.html', 'rollup.config.mjs', 'tsconfig.app.json'],
-  'react-clickup': [...REACT, 'vite.config.mjs'],
-  'angular-clickup': [...ANGULAR, 'index.html', 'vite.config.mjs'],
-  'react-duolingo': [...REACT, 'vite.config.mjs'],
-  'angular-duolingo': [...ANGULAR, 'index.html', 'vite.config.mjs'],
-  'react-grafana': [...REACT, 'index.html', 'rolldown.config.mjs'],
-  'angular-grafana': [...ANGULAR, 'entry.js', 'index.html', 'rolldown.config.mjs', 'tsconfig.app.json'],
-  'react-superhuman': [...REACT],
-  'react-instagram': [...REACT, 'index.html', 'webpack.config.mjs'],
-  'angular-instagram': [...ANGULAR, 'index.html', 'linker-loader.mjs', 'webpack.config.mjs'],
-  'react-notion': [...REACT, 'index.html', 'rspack.config.mjs'],
-  'angular-notion': [...ANGULAR, 'rspack.config.mjs'],
-  'react-calendly': [...REACT, 'next.config.mjs', 'tsconfig.json'],
-  'angular-calendly': [...ANGULAR, 'tsconfig.app.json'],
-  'angular-superhuman': [...ANGULAR, '.parcelrc', 'index.html', 'parcel-transformer-angular-linker.cjs', 'tsconfig.app.json'],
+/** The files a half of each bundler commits at its root, besides `design/`, `src/` and `public/`, `COMMON` and what its layer adds: a half carries nothing else. */
+const FILES: Record<'react' | 'angular', Partial<Record<BundlerId, string[]>>> = {
+  react: {
+    rollup: ['index.html', 'rollup.config.mjs'],
+    vite7: ['vite.config.mjs'],
+    vite8: ['vite.config.mjs'],
+    rolldown: ['index.html', 'rolldown.config.mjs'],
+    parcel: [],
+    webpack: ['index.html', 'webpack.config.mjs'],
+    rspack: ['index.html', 'rspack.config.mjs'],
+    next: ['next.config.mjs', 'tsconfig.json'],
+  },
+  angular: {
+    rollup: ['entry.js', 'index.html', 'rollup.config.mjs', 'tsconfig.app.json'],
+    vite7: ['index.html', 'vite.config.mjs'],
+    vite8: ['index.html', 'vite.config.mjs'],
+    rolldown: ['entry.js', 'index.html', 'rolldown.config.mjs', 'tsconfig.app.json'],
+    parcel: ['.parcelrc', 'index.html', 'parcel-transformer-angular-linker.cjs', 'tsconfig.app.json'],
+    webpack: ['index.html', 'linker-loader.mjs', 'webpack.config.mjs'],
+    rspack: ['rspack.config.mjs'],
+    angular: ['tsconfig.app.json'],
+  },
 };
 
-for (const dir of Object.keys(FILES)) if (!NO_FINISH.includes(dir)) FILES[dir]!.push('finish.mjs');
+/** The files a half of `layer` holding `bundler` commits at its root: Bun and esbuild halves carry their template's. */
+function filesOf(bundler: BundlerId, layer: 'react' | 'angular'): string[] {
+  const template = bundler === 'bun' ? bunTemplate(layer, t.pins) : bundler === 'esbuild' ? esbuildTemplate(layer, t.pins) : null;
+  const own = template ? Object.keys(template.files) : [...FILES[layer][bundler]!, ...(NO_FINISH.includes(`${layer}:${bundler}`) ? [] : ['finish.mjs'])];
+  return [...new Set([...(layer === 'react' ? REACT : ANGULAR), ...own])].sort();
+}
 
 /** The bundlers whose page links the four sheets (they bundle no CSS); the rest take the sheets through the entry. */
 const LINKS_SHEETS = ['rollup', 'rolldown'];
 
-/** The bundlers that run `ngc` on the Angular layer (`compile`); Vite compiles it through Analog. */
-const COMPILES = ['rollup', 'rolldown', 'parcel'];
+/** The bundlers that run `ngc` on the Angular layer (`compile`); Vite compiles it through Analog, webpack and Rspack through their loaders. */
+const COMPILES = ['rollup', 'rolldown', 'parcel', 'bun', 'esbuild'];
 
 const DIRECTORIES = ['app', 'design', 'public', 'src'];
 
@@ -51,18 +63,16 @@ const own = ownHalves();
 /** The top-level names of the half's tracked and untracked-but-not-ignored files. */
 function committed(dir: string): string[] {
   const listed = Bun.spawnSync(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '--', dir]).stdout.toString().trim().split('\n');
-  return [...new Set(listed.map((path) => path.slice(dir.length + 1).split('/')[0]!))].filter((name) => !DIRECTORIES.includes(name)).sort();
+  return [...new Set(listed.filter((path) => existsSync(path)).map((path) => path.slice(dir.length + 1).split('/')[0]!))].filter((name) => !DIRECTORIES.includes(name)).sort();
 }
-
-test('the converted halves are the ones this test lists', () => {
-  expect(own.sort()).toEqual(Object.keys(FILES).sort());
-});
 
 describe.each(own)('%s', (dir) => {
   const layer = layerOf(dir);
+  const bundler = held('.', dir)!;
+  const noFinish = NO_FINISH.includes(`${layer}:${bundler}`) && bundler !== 'bun' && bundler !== 'esbuild';
 
   test('carries the files its list names and no other at its root', () => {
-    expect(committed(dir)).toEqual([...FILES[dir]!].sort());
+    expect(committed(dir)).toEqual(filesOf(bundler, layer));
   });
 
   test('declares its bundler at the pin, every package of the table at its pin, every package its files import, and an install that holds them', async () => {
@@ -77,7 +87,7 @@ describe.each(own)('%s', (dir) => {
       if (pinOf(name) !== undefined) expect(`${name}@${version}`).toBe(`${name}@${pinOf(name)}`);
     }
     expect(declared['@benches/kit']).toBe('file:../bench-kit/src');
-    const files = [part.config, 'measure.ts', ...FILES[dir]!.filter((name) => /\.(cjs|mjs)$/.test(name) && name !== part.config && name !== 'finish.mjs')];
+    const files = [part.config, 'measure.ts', ...filesOf(bundler, layer).filter((name) => /\.(cjs|mjs)$/.test(name) && name !== part.config && name !== 'finish.mjs')];
     const imported = files.flatMap((file) => [...readFileSync(join(dir, file), 'utf8').matchAll(/(?:\b(?:from|import)\s+|\brequire\()'([^'.][^']*)'/g)].map((match) => match[1]!))
       .filter((specifier) => !specifier.startsWith('node:'))
       .map((specifier) => specifier.split('/').slice(0, specifier.startsWith('@') ? 2 : 1).join('/'));
@@ -95,9 +105,9 @@ describe.each(own)('%s', (dir) => {
     const { scripts } = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as { scripts: Record<string, string> };
     expect(scripts['prebuild']).toContain('arena build');
     expect(scripts['measure']).toBe('bun run prebuild && bun measure.ts');
-    const steps = [...(part.compile ? ['compile'] : []), 'bundle', ...(NO_FINISH.includes(dir) ? [] : ['finish'])];
+    const steps = [...(part.compile ? ['compile'] : []), 'bundle', ...(noFinish ? [] : ['finish'])];
     expect(scripts['build']).toBe(steps.map((step) => `bun run ${step}`).join(' && '));
-    expect(scripts['finish'] !== undefined).toBe(!NO_FINISH.includes(dir));
+    expect(scripts['finish'] !== undefined).toBe(!noFinish);
     if (part.compile) expect(scripts['compile']).toContain('ngc -p tsconfig.app.json');
     else expect(scripts['compile']).toBeUndefined();
   });
@@ -114,9 +124,9 @@ describe.each(own)('%s', (dir) => {
     const part = await partOf(dir);
     const config = readFileSync(join(dir, part.config), 'utf8');
     checkSnippets(part, config);
-    // A bundler whose page prints no config has nothing to remove: `plain` is `recipe` (Next.js, the Angular builder).
+    // A bundler whose page prints no config, or whose recipe is one command, has nothing to remove: `plain` is `recipe` (Next.js, the Angular builder, Bun, esbuild; esbuild's only rewrite is `no-define`).
     for (const variant of Object.keys(part.variants) as (keyof typeof part.variants)[]) {
-      if (Object.keys(part.snippets).length > 0) expect(configOf(part, variant, config)).not.toBe(config);
+      if (Object.keys(part.snippets).length > 0 && !((part.bundler === 'bun' || part.bundler === 'esbuild') && variant !== 'no-define')) expect(configOf(part, variant, config)).not.toBe(config);
       else expect(configOf(part, variant, config)).toBe(config);
     }
     expect(part.compile === true).toBe(layer === 'angular' && COMPILES.includes(part.bundler));
@@ -146,11 +156,14 @@ describe.each(own)('%s', (dir) => {
   }
 });
 
-test('the Next.js half carries the layout and the page of its app, as TypeScript, and a complete tsconfig.json', () => {
-  expect(Bun.spawnSync(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '--', 'react-calendly/app']).stdout.toString().trim().split('\n').sort()).toEqual(['react-calendly/app/layout.tsx', 'react-calendly/app/page.tsx']);
-  const manifest = JSON.parse(readFileSync('react-calendly/package.json', 'utf8')) as { devDependencies: Record<string, string> };
+// The mixed pair is on a product each run: its React half is wherever Next.js was drawn.
+const nextDir = own.find((dir) => held('.', dir) === 'next');
+test.skipIf(nextDir === undefined)('the Next.js half carries the layout and the page of its app, as TypeScript, and a complete tsconfig.json', () => {
+  const dir = nextDir!;
+  expect(Bun.spawnSync(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '--', `${dir}/app`]).stdout.toString().trim().split('\n').sort()).toEqual([`${dir}/app/layout.tsx`, `${dir}/app/page.tsx`]);
+  const manifest = JSON.parse(readFileSync(`${dir}/package.json`, 'utf8')) as { devDependencies: Record<string, string> };
   for (const name of ['typescript', '@types/react', '@types/react-dom', '@types/node', 'next']) expect(manifest.devDependencies[name], name).toMatch(/^\d+\.\d+\.\d+$/);
-  const tsconfig = JSON.parse(readFileSync('react-calendly/tsconfig.json', 'utf8')) as { compilerOptions: { strict: boolean; jsx: string; plugins: { name: string }[] }; include: string[] };
+  const tsconfig = JSON.parse(readFileSync(`${dir}/tsconfig.json`, 'utf8')) as { compilerOptions: { strict: boolean; jsx: string; plugins: { name: string }[] }; include: string[] };
   expect(tsconfig.compilerOptions.strict).toBe(true);
   expect(tsconfig.compilerOptions.jsx).toBe('react-jsx');
   expect(tsconfig.compilerOptions.plugins).toEqual([{ name: 'next' }]);
@@ -176,16 +189,18 @@ describe('the halves of one bundler', () => {
 
   test('both carry the rows of the bundler\'s page, as one part', async () => {
     for (const [bundler, ids] of Object.entries(rows)) {
-      const halves = own.filter((dir) => assigned(t, dir).bundler === bundler);
-      expect(halves, bundler).toHaveLength(2);
+      const halves = own.filter((dir) => held('.', dir) === bundler);
+      // eight of the ten entries are on the products, so a bundler is on both its halves or on neither (its entry was left out)
+      expect([0, 2], bundler).toContain(halves.length);
       for (const dir of halves) expect((await partOf(dir)).observations.map((o) => o.id), dir).toEqual(ids);
     }
   });
 
-  test('the mixed product carries the rows of its page on the one layer each builds', async () => {
+  test('the mixed pair is on one product or none, and carries the rows of its page on the one layer each builds', async () => {
     for (const [bundler, ids] of Object.entries(single)) {
-      const halves = own.filter((dir) => assigned(t, dir).bundler === bundler);
-      expect(halves, bundler).toHaveLength(1);
+      const halves = own.filter((dir) => held('.', dir) === bundler);
+      expect([0, 1], bundler).toContain(halves.length);
+      if (halves.length === 0) continue;
       expect(halves[0]!.startsWith(bundler === 'next' ? 'react-' : 'angular-')).toBe(true);
       expect((await partOf(halves[0]!)).observations.map((o) => o.id)).toEqual(ids);
     }
@@ -193,7 +208,8 @@ describe('the halves of one bundler', () => {
 
   test('both carry the same variants and the same snippet names', async () => {
     for (const bundler of Object.keys(rows)) {
-      const dirs = own.filter((dir) => assigned(t, dir).bundler === bundler);
+      const dirs = own.filter((dir) => held('.', dir) === bundler);
+      if (dirs.length === 0) continue;
       const [react, angular] = await Promise.all(['react-', 'angular-'].map((prefix) => partOf(dirs.find((dir) => dir.startsWith(prefix))!)));
       // `extensionAlias` and rspack's `styles` option are what only an Angular half's config carries (`main.ts` imports the icon list `arena build` writes, as `.js`).
       const alias = ['webpack', 'rspack'].includes(bundler);

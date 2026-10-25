@@ -4,13 +4,13 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
-    "predev": "arena build --src src --src design && arena audit --src src --src design",
-    "dev": "bun --hot ./Server.ts",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "bundle": "rollup -c",
+    "bundle": "vite build",
     "finish": "node finish.mjs",
     "build": "bun run bundle && bun run finish",
     "measure": "bun run prebuild && bun measure.ts",
+    "predev": "arena build --src src --src design && arena audit --src src --src design",
+    "dev": "bun --hot ./Server.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
@@ -20,11 +20,6 @@
   },
   "devDependencies": {
     "@benches/kit": "file:../bench-kit/src",
-    "@rollup/plugin-commonjs": "29.0.3",
-    "@rollup/plugin-node-resolve": "16.0.3",
-    "@rollup/plugin-replace": "6.0.3",
-    "@rollup/plugin-terser": "1.0.2",
-    "esbuild": "0.28.2",
-    "rollup": "4.65.0"
+    "vite": "7.3.7"
   }
 }
