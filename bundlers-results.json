@@ -3,7 +3,7 @@
   "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 40c82585b",
   "rotation": 0,
   "date": "2026-10-25",
-  "commit": "d5ac1ac",
+  "commit": "86f451c",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -376,7 +376,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
+          "detail": "the package sheet as written holds no @import of a package specifier"
         }
       ],
       "figures": {
@@ -435,7 +435,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
+          "detail": "the package sheet as written holds no @import of a package specifier"
         }
       ],
       "figures": {
@@ -490,11 +490,11 @@
         },
         {
           "id": "rolldown.linked-sheets",
-          "claim": "as above",
+          "claim": "the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written",
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
+          "detail": "the package sheet as written holds no @import of a package specifier"
         }
       ],
       "figures": {
@@ -549,11 +549,11 @@
         },
         {
           "id": "rolldown.linked-sheets",
-          "claim": "as above",
+          "claim": "the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written",
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
+          "detail": "the package sheet as written holds no @import of a package specifier"
         }
       ],
       "figures": {
@@ -819,12 +819,12 @@
           "detail": "bundler.parcel.4db08801.js holds Arena's modules and keeps its name and bytes in 'app-text'"
         },
         {
-          "id": "parcel.sheet-stops",
-          "claim": "the build stops on the package sheet's first `@import`",
-          "expect": "record",
-          "outcome": false,
+          "id": "parcel.sheet-apart",
+          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+          "expect": "holds",
+          "outcome": true,
           "holds": true,
-          "detail": "'css-import' built"
+          "detail": "bundler.parcel.72db1997.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "parcel.react-with-app",
@@ -841,14 +841,6 @@
           "outcome": true,
           "holds": true,
           "detail": "bundler.parcel.4db08801.js, bundler.parcel.8aef47dc.js share the stem 'bundler.parcel'"
-        },
-        {
-          "id": "parcel.linked-sheets",
-          "claim": "as above",
-          "expect": "record",
-          "outcome": true,
-          "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -864,7 +856,7 @@
         "dictionary": 58.39,
         "total": {
           "js": 58.34,
-          "css": 29.47,
+          "css": 14.86,
           "sprite": 3.98,
           "fonts": 0
         }
@@ -894,12 +886,12 @@
           "detail": "bundler.parcel.3ae94693.js holds Arena's modules and keeps its name and bytes in 'app-text'"
         },
         {
-          "id": "parcel.sheet-stops",
-          "claim": "the build stops on the package sheet's first `@import`",
-          "expect": "record",
-          "outcome": false,
+          "id": "parcel.sheet-apart",
+          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+          "expect": "holds",
+          "outcome": true,
           "holds": true,
-          "detail": "'css-import' built"
+          "detail": "bundler.parcel.69b56922.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "parcel.shared-stem",
@@ -908,14 +900,6 @@
           "outcome": true,
           "holds": true,
           "detail": "bundler.parcel.3ae94693.js, bundler.parcel.b377cb19.js share the stem 'bundler.parcel'"
-        },
-        {
-          "id": "parcel.linked-sheets",
-          "claim": "as above",
-          "expect": "record",
-          "outcome": true,
-          "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -931,7 +915,7 @@
         "dictionary": 283.26,
         "total": {
           "js": 283.02,
-          "css": 30.64,
+          "css": 15.23,
           "sprite": 3.98,
           "fonts": 0
         }
