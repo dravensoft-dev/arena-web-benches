@@ -82,7 +82,9 @@ describe.each(own)('%s', (dir) => {
     const declared = { ...manifest.dependencies, ...manifest.devDependencies };
     // The Vite 7 half declares `vite` itself, at the pin the table keeps under `vite7`.
     const pinOf = (name: string): string | undefined => (name === 'vite' && part.bundler === 'vite7' ? t.pins['vite7'] : t.pins[name]);
-    expect(declared[part.pin]).toBe(pinOf(part.pin)!);
+    // Bun is the running binary: a Bun half declares it by `packageManager`.
+    if (part.bundler === 'bun') expect((JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as { packageManager: string }).packageManager).toBe(`bun@${t.pins['bun']}`);
+    else expect(declared[part.pin]).toBe(pinOf(part.pin)!);
     for (const [name, version] of Object.entries(declared)) {
       if (pinOf(name) !== undefined) expect(`${name}@${version}`).toBe(`${name}@${pinOf(name)}`);
     }

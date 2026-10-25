@@ -19,7 +19,7 @@ describe('every half agrees with the committed assignment', () => {
     expect(part.bundler).toBe(assigned(t, dir).bundler);
     const manifest = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as { packageManager: string; dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
     const declared = { ...manifest.dependencies, ...manifest.devDependencies };
-    expect(declared[part.pin], `${dir} declares ${part.pin}`).toBe(pinFor(t, part.bundler, part.pin));
+    if (part.bundler !== 'bun') expect(declared[part.pin], `${dir} declares ${part.pin}`).toBe(pinFor(t, part.bundler, part.pin));
     expect(existsSync(join(dir, part.config)), `${dir} carries ${part.config}`).toBe(true);
     expect(manifest.packageManager).toBe(`bun@${t.pins['bun']}`);
   });

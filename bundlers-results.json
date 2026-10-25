@@ -1,9 +1,23 @@
 {
   "arena": "12.1.1",
   "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 40c82585b",
-  "rotation": 0,
+  "seed": 4153660040,
+  "assignment": {
+    "calendly": "rollup",
+    "clickup": "esbuild",
+    "duolingo": "bun",
+    "etsy": "vite7",
+    "grafana": "next+angular",
+    "instagram": "webpack",
+    "notion": "vite8",
+    "superhuman": "rspack"
+  },
+  "leftOut": [
+    "rolldown",
+    "parcel"
+  ],
   "date": "2026-10-25",
-  "commit": "a9e459e",
+  "commit": "29817da",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -36,6 +50,446 @@
       "product": "calendly",
       "layer": "react",
       "dir": "react-calendly",
+      "bundler": "rollup",
+      "version": "4.65.0",
+      "observations": [
+        {
+          "id": "rollup.js-apart",
+          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "arena-BCfPRhFe.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+        },
+        {
+          "id": "rollup.no-css",
+          "claim": "rollup imports no CSS by itself",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "'css-import' exits non-zero with \"you need plugins to import files that are not JavaScript\""
+        },
+        {
+          "id": "rollup.sprite-not-copied",
+          "claim": "rollup moves no file it does not import",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg in 'recipe': none"
+        },
+        {
+          "id": "rollup.linked-sheets",
+          "claim": "link the sheets `arena build` writes from your page",
+          "expect": "record",
+          "outcome": true,
+          "holds": true,
+          "detail": "the package sheet as written holds no @import of a package specifier"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 57.85,
+          "recipe": 59
+        },
+        "appRelease": {
+          "plain": 57.94,
+          "recipe": 39.79
+        },
+        "patch": 58.96,
+        "dictionary": 0.36,
+        "total": {
+          "js": 59,
+          "css": 30.34,
+          "sprite": 1.69,
+          "fonts": 0
+        }
+      },
+      "seconds": 66.6
+    },
+    {
+      "product": "calendly",
+      "layer": "angular",
+      "dir": "angular-calendly",
+      "bundler": "rollup",
+      "version": "4.65.0",
+      "observations": [
+        {
+          "id": "rollup.js-apart",
+          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "arena-BX8pJnxn.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+        },
+        {
+          "id": "rollup.no-css",
+          "claim": "rollup imports no CSS by itself",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "'css-import' exits non-zero with \"you need plugins to import files that are not JavaScript\""
+        },
+        {
+          "id": "rollup.sprite-not-copied",
+          "claim": "rollup moves no file it does not import",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg in 'recipe': none"
+        },
+        {
+          "id": "rollup.linked-sheets",
+          "claim": "link the sheets `arena build` writes from your page",
+          "expect": "record",
+          "outcome": true,
+          "holds": true,
+          "detail": "the package sheet as written holds no @import of a package specifier"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 257.45,
+          "recipe": 258.69
+        },
+        "appRelease": {
+          "plain": 257.47,
+          "recipe": 6.45
+        },
+        "patch": 258.56,
+        "dictionary": 0.08,
+        "total": {
+          "js": 258.69,
+          "css": 31.54,
+          "sprite": 1.69,
+          "fonts": 0
+        }
+      },
+      "seconds": 324
+    },
+    {
+      "product": "clickup",
+      "layer": "react",
+      "dir": "react-clickup",
+      "bundler": "esbuild",
+      "version": "0.28.2",
+      "observations": [
+        {
+          "id": "esbuild.no-js-apart",
+          "claim": "splitting cannot pin a module to a chunk",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "main-CAHB6EVT.js holds Arena's modules and the app's code"
+        },
+        {
+          "id": "esbuild.one-css",
+          "claim": "one CSS file for the entry, with splitting too",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": ".css in 'recipe': main-FQRGLTJC.css"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 75.24,
+          "recipe": 75.24
+        },
+        "appRelease": {
+          "plain": 75.26,
+          "recipe": 75.26
+        },
+        "patch": 75.22,
+        "dictionary": 0.05,
+        "total": {
+          "js": 75.24,
+          "css": 18,
+          "sprite": 9.01,
+          "fonts": 0
+        }
+      },
+      "seconds": 13.7
+    },
+    {
+      "product": "clickup",
+      "layer": "angular",
+      "dir": "angular-clickup",
+      "bundler": "esbuild",
+      "version": "0.28.2",
+      "observations": [
+        {
+          "id": "esbuild.no-js-apart",
+          "claim": "splitting cannot pin a module to a chunk",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "main-QC23KH3J.js holds Arena's modules and the app's code"
+        },
+        {
+          "id": "esbuild.one-css",
+          "claim": "one CSS file for the entry, with splitting too",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": ".css in 'recipe': main-ZKBM2GFI.css"
+        },
+        {
+          "id": "esbuild.ng-dev-mode",
+          "claim": "an Angular bundle defines `ngDevMode` itself",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "main .js: 1480847 bytes in 'no-define', 959421 bytes in 'recipe'"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 199.84,
+          "recipe": 199.84
+        },
+        "appRelease": {
+          "plain": 199.8,
+          "recipe": 199.8
+        },
+        "patch": 199.75,
+        "dictionary": 0.05,
+        "total": {
+          "js": 199.84,
+          "css": 18.39,
+          "sprite": 9.01,
+          "fonts": 0
+        }
+      },
+      "seconds": 112.8
+    },
+    {
+      "product": "duolingo",
+      "layer": "react",
+      "dir": "react-duolingo",
+      "bundler": "bun",
+      "version": "1.4.0",
+      "observations": [
+        {
+          "id": "bun.no-js-apart",
+          "claim": "no option keeps Arena in a file of its own",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "index-np7qqjbj.js holds Arena's modules and the app's code"
+        },
+        {
+          "id": "bun.one-css",
+          "claim": "one CSS file for the entry",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": ".css in 'recipe': index-g4jh9bp5.css"
+        },
+        {
+          "id": "bun.outdir-kept",
+          "claim": "`bun build` does not empty its output directory",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "entry .js files after 'recipe' then 'app-text' into one outdir: index-8pbtx899.js, index-np7qqjbj.js"
+        },
+        {
+          "id": "bun.sprite-not-copied",
+          "claim": "no file the entry does not import reaches the output",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg in 'recipe': none"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 93.46,
+          "recipe": 93.46
+        },
+        "appRelease": {
+          "plain": 93.53,
+          "recipe": 93.53
+        },
+        "patch": 93.55,
+        "dictionary": 1.35,
+        "total": {
+          "js": 93.46,
+          "css": 13.34,
+          "sprite": 3.78,
+          "fonts": 0
+        }
+      },
+      "seconds": 17
+    },
+    {
+      "product": "duolingo",
+      "layer": "angular",
+      "dir": "angular-duolingo",
+      "bundler": "bun",
+      "version": "1.4.0",
+      "observations": [
+        {
+          "id": "bun.no-js-apart",
+          "claim": "no option keeps Arena in a file of its own",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "entry-zq13km2y.js holds Arena's modules and the app's code"
+        },
+        {
+          "id": "bun.one-css",
+          "claim": "one CSS file for the entry",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": ".css in 'recipe': entry-1w133xm5.css"
+        },
+        {
+          "id": "bun.outdir-kept",
+          "claim": "`bun build` does not empty its output directory",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "entry .js files after 'recipe' then 'app-text' into one outdir: entry-pm8dgv87.js, entry-zq13km2y.js"
+        },
+        {
+          "id": "bun.sprite-not-copied",
+          "claim": "no file the entry does not import reaches the output",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg in 'recipe': none"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 274.14,
+          "recipe": 274.14
+        },
+        "appRelease": {
+          "plain": 274.11,
+          "recipe": 274.11
+        },
+        "patch": 274,
+        "dictionary": 0.05,
+        "total": {
+          "js": 274.14,
+          "css": 13.69,
+          "sprite": 3.78,
+          "fonts": 0
+        }
+      },
+      "seconds": 148.4
+    },
+    {
+      "product": "etsy",
+      "layer": "react",
+      "dir": "react-etsy",
+      "bundler": "vite7",
+      "version": "7.3.7",
+      "observations": [
+        {
+          "id": "vite7.js-apart",
+          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-CZZPScJn.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "vite7.sheet-apart",
+          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena--gZcTiIQ.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+        },
+        {
+          "id": "vite7.sheet-by-name",
+          "claim": "a test matching only `node_modules` leaves the sheet with the app's CSS",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "'js-only-test': .css holding the package sheet alone: none"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 59.62,
+          "recipe": 60.01
+        },
+        "appRelease": {
+          "plain": 59.53,
+          "recipe": 5.14
+        },
+        "patch": 21.23,
+        "dictionary": 0.09,
+        "total": {
+          "js": 60.01,
+          "css": 16.99,
+          "sprite": 2.67,
+          "fonts": 0
+        }
+      },
+      "seconds": 45.5
+    },
+    {
+      "product": "etsy",
+      "layer": "angular",
+      "dir": "angular-etsy",
+      "bundler": "vite7",
+      "version": "7.3.7",
+      "observations": [
+        {
+          "id": "vite7.js-apart",
+          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-P_qJFIDQ.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "vite7.sheet-apart",
+          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-rYWUahxL.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+        },
+        {
+          "id": "vite7.sheet-by-name",
+          "claim": "a test matching only `node_modules` leaves the sheet with the app's CSS",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "'js-only-test': .css holding the package sheet alone: none"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 116.89,
+          "recipe": 119.08
+        },
+        "appRelease": {
+          "plain": 116.89,
+          "recipe": 9.51
+        },
+        "patch": 119.04,
+        "dictionary": 0.09,
+        "total": {
+          "js": 119.08,
+          "css": 16.93,
+          "sprite": 2.67,
+          "fonts": 0
+        }
+      },
+      "seconds": 180.4
+    },
+    {
+      "product": "grafana",
+      "layer": "react",
+      "dir": "react-grafana",
       "bundler": "next",
       "version": "16.4.3",
       "observations": [
@@ -53,7 +507,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "yes: _next/static/chunks/350a26zc5o_iw.css"
+          "detail": "yes: _next/static/chunks/1qfc_p3n2u7gd.css"
         },
         {
           "id": "next.sprite-public",
@@ -66,27 +520,28 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 167.9,
-          "recipe": 167.9
+          "plain": 180.06,
+          "recipe": 180.06
         },
         "appRelease": {
-          "plain": 20.4,
-          "recipe": 20.4
+          "plain": 32.52,
+          "recipe": 32.52
         },
-        "patch": 20.38,
-        "dictionary": 20.38,
+        "patch": 32.51,
+        "dictionary": 32.51,
         "total": {
-          "js": 167.9,
-          "css": 15.88,
-          "sprite": 1.69,
+          "js": 180.06,
+          "css": 15.97,
+          "sprite": 4.56,
           "fonts": 0
         }
-      }
+      },
+      "seconds": 158
     },
     {
-      "product": "calendly",
+      "product": "grafana",
       "layer": "angular",
-      "dir": "angular-calendly",
+      "dir": "angular-grafana",
       "bundler": "angular",
       "version": "22.2.4",
       "observations": [
@@ -96,7 +551,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "main-*.js holding Arena's modules: main-O2GSNG4P.js; .js holding them alone: none"
+          "detail": "main-*.js holding Arena's modules: main-6JE52IDA.js; .js holding them alone: none"
         },
         {
           "id": "angular.one-styles-file",
@@ -104,7 +559,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": ".css in 'recipe': styles-IWYIUBQT.css; holding the package sheet's rules: 1"
+          "detail": ".css in 'recipe': styles-DUUBEHXB.css; holding the package sheet's rules: 1"
         },
         {
           "id": "angular.side-effects-false",
@@ -112,467 +567,28 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "sideEffects is false in angular-calendly/node_modules/@dravensoft/arena-angular/package.json"
+          "detail": "sideEffects is false in angular-grafana/node_modules/@dravensoft/arena-angular/package.json"
         }
       ],
       "figures": {
         "firstVisit": {
-          "plain": 68.75,
-          "recipe": 68.75
+          "plain": 98.5,
+          "recipe": 98.5
         },
         "appRelease": {
-          "plain": 68.73,
-          "recipe": 68.73
+          "plain": 98.39,
+          "recipe": 98.39
         },
-        "patch": 68.82,
-        "dictionary": 0.06,
+        "patch": 98.47,
+        "dictionary": 0.05,
         "total": {
-          "js": 68.75,
-          "css": 16.08,
-          "sprite": 1.69,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "clickup",
-      "layer": "react",
-      "dir": "react-clickup",
-      "bundler": "vite7",
-      "version": "7.3.7",
-      "observations": [
-        {
-          "id": "vite7.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-CZ9jrtIK.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
-        },
-        {
-          "id": "vite7.sheet-apart",
-          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-D_HA4Mfo.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
-        },
-        {
-          "id": "vite7.sheet-by-name",
-          "claim": "a test matching only `node_modules` leaves the sheet with the app's CSS",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'js-only-test': .css holding the package sheet alone: none"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 74.56,
-          "recipe": 74.94
-        },
-        "appRelease": {
-          "plain": 74.45,
-          "recipe": 5.74
-        },
-        "patch": 36.2,
-        "dictionary": 0.38,
-        "total": {
-          "js": 74.94,
-          "css": 19.57,
-          "sprite": 9.01,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "clickup",
-      "layer": "angular",
-      "dir": "angular-clickup",
-      "bundler": "vite7",
-      "version": "7.3.7",
-      "observations": [
-        {
-          "id": "vite7.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-BcVhBSF3.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
-        },
-        {
-          "id": "vite7.sheet-apart",
-          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-ej_X2ZlR.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
-        },
-        {
-          "id": "vite7.sheet-by-name",
-          "claim": "a test matching only `node_modules` leaves the sheet with the app's CSS",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'js-only-test': .css holding the package sheet alone: none"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 144.3,
-          "recipe": 146.57
-        },
-        "appRelease": {
-          "plain": 144.3,
-          "recipe": 10.62
-        },
-        "patch": 146.62,
-        "dictionary": 0.09,
-        "total": {
-          "js": 146.57,
-          "css": 19.31,
-          "sprite": 9.01,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "duolingo",
-      "layer": "react",
-      "dir": "react-duolingo",
-      "bundler": "vite8",
-      "version": "8.3.5",
-      "observations": [
-        {
-          "id": "vite8.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-DMeLvvup.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
-        },
-        {
-          "id": "vite8.sheet-apart",
-          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-D56DWHSM.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
-        },
-        {
-          "id": "vite8.sheet-by-name",
-          "claim": "as `vite7.sheet-by-name`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'js-only-test': .css holding the package sheet alone: none"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 49.97,
-          "recipe": 50.75
-        },
-        "appRelease": {
-          "plain": 49.97,
-          "recipe": 4.25
-        },
-        "patch": 12.26,
-        "dictionary": 0.1,
-        "total": {
-          "js": 50.75,
-          "css": 14.01,
-          "sprite": 3.78,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "duolingo",
-      "layer": "angular",
-      "dir": "angular-duolingo",
-      "bundler": "vite8",
-      "version": "8.3.5",
-      "observations": [
-        {
-          "id": "vite8.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-DZ3hpCYq.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
-        },
-        {
-          "id": "vite8.sheet-apart",
-          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "assets/arena-BStHRbK1.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
-        },
-        {
-          "id": "vite8.sheet-by-name",
-          "claim": "as `vite7.sheet-by-name`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'js-only-test': .css holding the package sheet alone: none"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 56.08,
-          "recipe": 57.55
-        },
-        "appRelease": {
-          "plain": 56.1,
-          "recipe": 9.47
-        },
-        "patch": 57.51,
-        "dictionary": 0.08,
-        "total": {
-          "js": 57.55,
-          "css": 14.41,
-          "sprite": 3.78,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "etsy",
-      "layer": "react",
-      "dir": "react-etsy",
-      "bundler": "rollup",
-      "version": "4.65.0",
-      "observations": [
-        {
-          "id": "rollup.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "arena-ijxQ1CFq.js holds Arena's modules and keeps its name and bytes in 'app-text'"
-        },
-        {
-          "id": "rollup.no-css",
-          "claim": "rollup imports no CSS by itself",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'css-import' exits non-zero with \"you need plugins to import files that are not JavaScript\""
-        },
-        {
-          "id": "rollup.sprite-not-copied",
-          "claim": "rollup moves no file it does not import",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "icons-*.svg in 'recipe': none"
-        },
-        {
-          "id": "rollup.linked-sheets",
-          "claim": "link the sheets `arena build` writes from your page",
-          "expect": "record",
-          "outcome": true,
-          "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 58.15,
-          "recipe": 59.37
-        },
-        "appRelease": {
-          "plain": 58.17,
-          "recipe": 41.58
-        },
-        "patch": 59.39,
-        "dictionary": 0.2,
-        "total": {
-          "js": 59.37,
-          "css": 31.68,
-          "sprite": 2.67,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "etsy",
-      "layer": "angular",
-      "dir": "angular-etsy",
-      "bundler": "rollup",
-      "version": "4.65.0",
-      "observations": [
-        {
-          "id": "rollup.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `manualChunks`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "arena-CJW1660B.js holds Arena's modules and keeps its name and bytes in 'app-text'"
-        },
-        {
-          "id": "rollup.no-css",
-          "claim": "rollup imports no CSS by itself",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'css-import' exits non-zero with \"you need plugins to import files that are not JavaScript\""
-        },
-        {
-          "id": "rollup.sprite-not-copied",
-          "claim": "rollup moves no file it does not import",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "icons-*.svg in 'recipe': none"
-        },
-        {
-          "id": "rollup.linked-sheets",
-          "claim": "link the sheets `arena build` writes from your page",
-          "expect": "record",
-          "outcome": true,
-          "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 260.89,
-          "recipe": 262.31
-        },
-        "appRelease": {
-          "plain": 260.92,
-          "recipe": 10.13
-        },
-        "patch": 262.36,
-        "dictionary": 0.08,
-        "total": {
-          "js": 262.31,
-          "css": 32.84,
-          "sprite": 2.67,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "grafana",
-      "layer": "react",
-      "dir": "react-grafana",
-      "bundler": "rolldown",
-      "version": "1.2.15",
-      "observations": [
-        {
-          "id": "rolldown.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "arena-CNCe2w8p.js holds Arena's modules and keeps its name and bytes in 'app-text'"
-        },
-        {
-          "id": "rolldown.css-refused",
-          "claim": "the build stops on a CSS import with \"Bundling CSS is no longer supported (experimental support has been removed)\"",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'css-import' exits non-zero with \"Bundling CSS is no longer supported (experimental support has been removed)\""
-        },
-        {
-          "id": "rolldown.sprite-not-copied",
-          "claim": "rolldown moves no file it does not import",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "icons-*.svg in 'recipe': none"
-        },
-        {
-          "id": "rolldown.linked-sheets",
-          "claim": "the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written",
-          "expect": "record",
-          "outcome": true,
-          "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 70.42,
-          "recipe": 71.99
-        },
-        "appRelease": {
-          "plain": 70.34,
-          "recipe": 40
-        },
-        "patch": 71.66,
-        "dictionary": 0.09,
-        "total": {
-          "js": 71.99,
-          "css": 30.39,
+          "js": 98.5,
+          "css": 16.31,
           "sprite": 4.56,
           "fonts": 0
         }
-      }
-    },
-    {
-      "product": "grafana",
-      "layer": "angular",
-      "dir": "angular-grafana",
-      "bundler": "rolldown",
-      "version": "1.2.15",
-      "observations": [
-        {
-          "id": "rolldown.js-apart",
-          "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "arena-C9qm_wK-.js holds Arena's modules and keeps its name and bytes in 'app-text'"
-        },
-        {
-          "id": "rolldown.css-refused",
-          "claim": "the build stops on a CSS import with \"Bundling CSS is no longer supported (experimental support has been removed)\"",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'css-import' exits non-zero with \"Bundling CSS is no longer supported (experimental support has been removed)\""
-        },
-        {
-          "id": "rolldown.sprite-not-copied",
-          "claim": "rolldown moves no file it does not import",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "icons-*.svg in 'recipe': none"
-        },
-        {
-          "id": "rolldown.linked-sheets",
-          "claim": "the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written",
-          "expect": "record",
-          "outcome": true,
-          "holds": true,
-          "detail": "the package sheet as written holds no @import of a package specifier"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 255.95,
-          "recipe": 257.9
-        },
-        "appRelease": {
-          "plain": 255.76,
-          "recipe": 10.87
-        },
-        "patch": 257.95,
-        "dictionary": 0.09,
-        "total": {
-          "js": 257.9,
-          "css": 31.59,
-          "sprite": 4.56,
-          "fonts": 0
-        }
-      }
+      },
+      "seconds": 118.3
     },
     {
       "product": "instagram",
@@ -623,15 +639,16 @@
           "plain": 57.86,
           "recipe": 5.56
         },
-        "patch": 21.31,
-        "dictionary": 0.49,
+        "patch": 0,
+        "dictionary": 0,
         "total": {
           "js": 59.49,
           "css": 16.06,
           "sprite": 4.99,
           "fonts": 0
         }
-      }
+      },
+      "seconds": 79.3
     },
     {
       "product": "instagram",
@@ -698,12 +715,117 @@
           "sprite": 4.99,
           "fonts": 0
         }
-      }
+      },
+      "seconds": 475.7
     },
     {
       "product": "notion",
       "layer": "react",
       "dir": "react-notion",
+      "bundler": "vite8",
+      "version": "8.3.5",
+      "observations": [
+        {
+          "id": "vite8.js-apart",
+          "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-CPcwPSO7.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "vite8.sheet-apart",
+          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-Bzd13YpV.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+        },
+        {
+          "id": "vite8.sheet-by-name",
+          "claim": "as `vite7.sheet-by-name`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "'js-only-test': .css holding the package sheet alone: none"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 63.46,
+          "recipe": 64.54
+        },
+        "appRelease": {
+          "plain": 63.44,
+          "recipe": 5.81
+        },
+        "patch": 26.05,
+        "dictionary": 0.09,
+        "total": {
+          "js": 64.54,
+          "css": 17.16,
+          "sprite": 6.53,
+          "fonts": 0
+        }
+      },
+      "seconds": 19.1
+    },
+    {
+      "product": "notion",
+      "layer": "angular",
+      "dir": "angular-notion",
+      "bundler": "vite8",
+      "version": "8.3.5",
+      "observations": [
+        {
+          "id": "vite8.js-apart",
+          "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-DX3fUPsp.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "vite8.sheet-apart",
+          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "assets/arena-B_5j26OP.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+        },
+        {
+          "id": "vite8.sheet-by-name",
+          "claim": "as `vite7.sheet-by-name`",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "'js-only-test': .css holding the package sheet alone: none"
+        }
+      ],
+      "figures": {
+        "firstVisit": {
+          "plain": 89.12,
+          "recipe": 90.91
+        },
+        "appRelease": {
+          "plain": 89.13,
+          "recipe": 11.64
+        },
+        "patch": 90.92,
+        "dictionary": 0.09,
+        "total": {
+          "js": 90.91,
+          "css": 17.65,
+          "sprite": 6.53,
+          "fonts": 0
+        }
+      },
+      "seconds": 124.5
+    },
+    {
+      "product": "superhuman",
+      "layer": "react",
+      "dir": "react-superhuman",
       "bundler": "rspack",
       "version": "2.2.9",
       "observations": [
@@ -713,7 +835,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-83653ddd.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-98b06d1b.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "rspack.sheet-apart",
@@ -721,7 +843,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-sheet-0bbd5a60.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "arena-sheet-ffa68971.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "rspack.needs-css-auto",
@@ -734,27 +856,28 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 62.92,
-          "recipe": 64.91
+          "plain": 54.93,
+          "recipe": 56.62
         },
         "appRelease": {
-          "plain": 62.81,
-          "recipe": 6.08
+          "plain": 54.86,
+          "recipe": 4.01
         },
-        "patch": 26.73,
-        "dictionary": 0.7,
+        "patch": 18.46,
+        "dictionary": 0.5,
         "total": {
-          "js": 64.91,
-          "css": 19.14,
-          "sprite": 6.53,
+          "js": 56.62,
+          "css": 17.16,
+          "sprite": 3.98,
           "fonts": 0
         }
-      }
+      },
+      "seconds": 12.4
     },
     {
-      "product": "notion",
+      "product": "superhuman",
       "layer": "angular",
-      "dir": "angular-notion",
+      "dir": "angular-superhuman",
       "bundler": "rspack",
       "version": "2.2.9",
       "observations": [
@@ -764,7 +887,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-fe71b1af.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-32ba7015.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "rspack.sheet-apart",
@@ -772,7 +895,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-sheet-151f8956.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "arena-sheet-659482d6.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "rspack.css-auto-angular",
@@ -780,7 +903,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet is alone in arena-sheet.151f8956.css"
+          "detail": "the package sheet is alone in arena-sheet.659482d6.css"
         },
         {
           "id": "rspack.extension-alias",
@@ -793,148 +916,23 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 86.94,
-          "recipe": 93.84
+          "plain": 74.24,
+          "recipe": 80.44
         },
         "appRelease": {
-          "plain": 86.68,
-          "recipe": 65.47
+          "plain": 73.87,
+          "recipe": 60.56
         },
-        "patch": 93.54,
-        "dictionary": 0.16,
+        "patch": 80.12,
+        "dictionary": 0.23,
         "total": {
-          "js": 93.84,
-          "css": 20.09,
-          "sprite": 6.53,
-          "fonts": 0
-        }
-      }
-    },
-    {
-      "product": "superhuman",
-      "layer": "react",
-      "dir": "react-superhuman",
-      "bundler": "parcel",
-      "version": "2.16.4",
-      "observations": [
-        {
-          "id": "parcel.first-import-resolves",
-          "claim": "the first Arena import resolves through the package's `module` field without `packageExports`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'no-package-exports' built"
-        },
-        {
-          "id": "parcel.js-apart",
-          "claim": "`manualSharedBundles` keeps Arena's JS apart once `packageExports` is on",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-react-superhuman-m.91793e21.js holds Arena's modules and keeps its name and bytes in 'app-text'"
-        },
-        {
-          "id": "parcel.sheet-apart",
-          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-react-superhuman-m.72db1997.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
-        },
-        {
-          "id": "parcel.react-with-app",
-          "claim": "React stays with the app",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-react-superhuman-m.d6e7f6dd.js holds React DOM's code and the app's"
-        },
-        {
-          "id": "parcel.shared-stem",
-          "claim": "its two shared bundles share one name stem",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-react-superhuman-m.91793e21.js, run-react-superhuman-m.d6e7f6dd.js share the stem 'run-react-superhuman-m'"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 55.66,
-          "recipe": 58.38
-        },
-        "appRelease": {
-          "plain": 55.64,
-          "recipe": 42.43
-        },
-        "patch": 58.39,
-        "dictionary": 58.39,
-        "total": {
-          "js": 58.38,
-          "css": 14.86,
+          "js": 80.44,
+          "css": 18.06,
           "sprite": 3.98,
           "fonts": 0
         }
-      }
-    },
-    {
-      "product": "superhuman",
-      "layer": "angular",
-      "dir": "angular-superhuman",
-      "bundler": "parcel",
-      "version": "2.16.4",
-      "observations": [
-        {
-          "id": "parcel.needs-package-exports",
-          "claim": "Angular's `@angular/common/http` does not resolve without `packageExports: true`",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "'no-package-exports' exits non-zero with \"Failed to resolve '@angular/common/http'\""
-        },
-        {
-          "id": "parcel.js-apart",
-          "claim": "`manualSharedBundles` keeps Arena's JS apart once `packageExports` is on",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-angular-superhuman-m.8650237a.js holds Arena's modules and keeps its name and bytes in 'app-text'"
-        },
-        {
-          "id": "parcel.sheet-apart",
-          "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-angular-superhuman-m.69b56922.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
-        },
-        {
-          "id": "parcel.shared-stem",
-          "claim": "its two shared bundles share one name stem",
-          "expect": "holds",
-          "outcome": true,
-          "holds": true,
-          "detail": "run-angular-superhuman-m.5f42d59b.js, run-angular-superhuman-m.8650237a.js share the stem 'run-angular-superhuman-m'"
-        }
-      ],
-      "figures": {
-        "firstVisit": {
-          "plain": 278.26,
-          "recipe": 284.98
-        },
-        "appRelease": {
-          "plain": 278.47,
-          "recipe": 174.2
-        },
-        "patch": 285.04,
-        "dictionary": 285.04,
-        "total": {
-          "js": 284.98,
-          "css": 15.23,
-          "sprite": 3.98,
-          "fonts": 0
-        }
-      }
+      },
+      "seconds": 180
     }
   ]
 }
