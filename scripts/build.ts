@@ -114,10 +114,14 @@ export function copyResults(root: string, out: string): boolean {
   return true;
 }
 
-/** The driver the half `dir` is assigned in the rotation: it names the path the half writes into. */
-async function driverOf(dir: string): Promise<Driver> {
+/** The half carries its own build and measuring: `measure.ts` at its root. It is an adopter of its bundler, with an install of its own. */
+export const own = (dir: string, root = '.'): boolean => existsSync(join(root, dir, 'measure.ts'));
+
+/** The directory `dir` writes its browser output into: `dist` for a half with its own build, else its assigned driver's. */
+async function outOf(dir: string): Promise<string> {
+  if (own(dir)) return 'dist';
   const { bundler } = assigned(table(), dir);
-  return (await import(`./bundlers/drivers/${bundler}.ts`)).default as Driver;
+  return ((await import(`./bundlers/drivers/${bundler}.ts`)).default as Driver).out;
 }
 
 function run(command: string[]) {
@@ -135,10 +139,11 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
 
   for (const { product, layer, dir } of all) {
-    const out = (await driverOf(dir)).out;
+    const out = await outOf(dir);
     console.log(`\nbuild: ${dir}`);
     rmSync(join(dir, out.split('/')[0] ?? out), { recursive: true, force: true });
-    if (!run(['bun', 'run', '--cwd', dir, 'build'])) {
+    // A half with its own build installs its own frozen lockfile first (D15): what it declares is what it builds with.
+    if ((own(dir) && !run(['bun', 'install', '--frozen-lockfile', '--cwd', dir])) || !run(['bun', 'run', '--cwd', dir, 'build'])) {
       for (const one of pairs) rmSync(join(OUT, one.product), { recursive: true, force: true });
       console.error(`\nbuild: ${dir} did not build, and a site carrying fifteen halves is never `
         + 'published, so nothing is left under ' + OUT + '/');

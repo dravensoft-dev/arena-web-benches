@@ -89,25 +89,6 @@
         "typescript": "~6.0.0",
       },
     },
-    "angular-etsy": {
-      "name": "ng-etsy-bench",
-      "dependencies": {
-        "@angular/cdk": "^22.0.5",
-        "@angular/common": "^22.0.7",
-        "@angular/compiler": "^22.0.7",
-        "@angular/core": "^22.0.7",
-        "@angular/platform-browser": "^22.0.7",
-        "@dravensoft/arena-angular": "file:../vendor/dravensoft-arena-angular-12.1.1.tgz",
-        "rxjs": "^7.8.2",
-        "tslib": "^2.8.1",
-      },
-      "devDependencies": {
-        "@angular/build": "22.2.4",
-        "@angular/cli": "22.2.4",
-        "@angular/compiler-cli": "^22.0.7",
-        "typescript": "~6.0.3",
-      },
-    },
     "angular-grafana": {
       "name": "ng-grafana-bench",
       "dependencies": {
@@ -202,14 +183,6 @@
     },
     "react-duolingo": {
       "name": "react-duolingo-bench",
-      "dependencies": {
-        "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-      },
-    },
-    "react-etsy": {
-      "name": "react-etsy-bench",
       "dependencies": {
         "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
         "react": "^18.3.1",
@@ -320,9 +293,9 @@
 
     "@discoveryjs/json-ext": ["@discoveryjs/json-ext@0.6.3", "", {}, "sha512-4B4OijXeVNOPZlYA2oEwWOTkzyltLao+xbotHQeqN++Rv27Y6s818+n2Qkp8q+Fxhn0t/5lA5X1Mxktud8eayQ=="],
 
-    "@dravensoft/arena-angular": ["@dravensoft/arena-angular@../vendor/dravensoft-arena-angular-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "tslib": "^2.8.1", "wawoff2": "^2.0.1" }, "peerDependencies": { "@angular/cdk": ">=20", "@angular/common": ">=20", "@angular/core": ">=20", "@angular/forms": ">=20", "@angular/platform-browser": ">=20", "@angular/router": ">=20" }, "optionalPeers": ["@angular/forms", "@angular/router"], "bin": { "arena": "./bin/arena.mjs" } }, "sha512-6jrMzDOkyx99TXGfNjYDTRcvorA/BN/ndiYY3bDyi/iVY4PDv5NB35W4tzRlpFtVjc8Wq0poIdrkGi2Xq5K6Lw=="],
+    "@dravensoft/arena-angular": ["@dravensoft/arena-angular@../vendor/dravensoft-arena-angular-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "tslib": "^2.8.1", "wawoff2": "^2.0.1" }, "peerDependencies": { "@angular/cdk": ">=20", "@angular/common": ">=20", "@angular/core": ">=20", "@angular/forms": ">=20", "@angular/platform-browser": ">=20", "@angular/router": ">=20" }, "optionalPeers": ["@angular/forms", "@angular/router"], "bin": { "arena": "./bin/arena.mjs" } }, "sha512-jESu5aIfH8Qj/xJjUxXXSO/OsJchpOziqOZfbYTLn7rPDcwBiqdU5NuVsYQkpFgIYjOndJdrKo3cqCGcSgM2pg=="],
 
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-RM05VdTgb4aL1SRtSN5n+sVaNWhkvEeS34vXFJ3ogbnjJhoQglGtBPpJfk/26OP3H5NRIou/L4mgp6jIIbYlYw=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-YQ5r5tJeh7Ap+YPwDTUZYUA9I9+cTBhZFsH7GaXbAUVMDg2DUIx4HzBJPgXGD/NvSG42i5WxGM8eb3a5T8Tcvw=="],
 
     "@emnapi/core": ["@emnapi/core@1.4.5", "", { "dependencies": { "@emnapi/wasi-threads": "1.0.4", "tslib": "^2.4.0" } }, "sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q=="],
 
@@ -1442,8 +1415,6 @@
 
     "ng-calendly-bench": ["ng-calendly-bench@workspace:angular-calendly"],
 
-    "ng-etsy-bench": ["ng-etsy-bench@workspace:angular-etsy"],
-
     "ng-grafana-bench": ["ng-grafana-bench@workspace:angular-grafana"],
 
     "ng-superhuman-bench": ["ng-superhuman-bench@workspace:angular-superhuman"],
@@ -1559,8 +1530,6 @@
     "react-dom": ["react-dom@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0", "scheduler": "^0.23.2" }, "peerDependencies": { "react": "^18.3.1" } }, "sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw=="],
 
     "react-duolingo-bench": ["react-duolingo-bench@workspace:react-duolingo"],
-
-    "react-etsy-bench": ["react-etsy-bench@workspace:react-etsy"],
 
     "react-grafana-bench": ["react-grafana-bench@workspace:react-grafana"],
 

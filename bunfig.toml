@@ -2,4 +2,5 @@
 # Any test under scripts/bundlers/drivers/ is skipped by `bun test scripts` (the driver tests build halves and are slow),
 # so keep helper tests out of that directory. A driver test runs with the ignore overridden:
 #   bun test --timeout 900000 --path-ignore-patterns 'nothing/**' scripts/bundlers/drivers/<id>.test.ts
-pathIgnorePatterns = ["scripts/bundlers/drivers/**"]
+# scripts/halves/contract.test.ts builds the converted halves and is skipped the same way; run it likewise.
+pathIgnorePatterns = ["scripts/bundlers/drivers/**", "scripts/halves/contract.test.ts"]

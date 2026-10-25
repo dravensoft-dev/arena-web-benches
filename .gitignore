@@ -8,3 +8,5 @@ react-*/next.config.mjs
 react-*/.next/
 react-*/out/
 angular-*/.nx/
+.ngc/
+bundlers-result.json

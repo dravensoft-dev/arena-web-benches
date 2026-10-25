@@ -4,8 +4,20 @@
   "type": "module",
   "homepage": "https://arena.dravensoft.org/web-benches/",
   "workspaces": [
-    "react-*",
-    "angular-*"
+    "react-calendly",
+    "angular-calendly",
+    "react-clickup",
+    "angular-clickup",
+    "react-duolingo",
+    "angular-duolingo",
+    "react-grafana",
+    "angular-grafana",
+    "react-instagram",
+    "angular-instagram",
+    "react-notion",
+    "angular-notion",
+    "react-superhuman",
+    "angular-superhuman"
   ],
   "scripts": {
     "build": "bun scripts/build.ts",

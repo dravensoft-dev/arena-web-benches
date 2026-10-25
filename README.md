@@ -39,14 +39,16 @@ was drawn after; the marks and the artwork are its own.
 ## Building all of them
 
 ```bash
-bun install
+bun install        # the root's workspaces; a half with its own install (see below) installs itself in `build`
 bun run build      # dist/<product>/<layer>/, and arena-adopter.json beside them
 bun run bundlers   # every bundler page's claim, checked; writes bundlers-results.json
 bun run compare    # the eight pairs, each as two frames, on http://localhost:5100
 ```
 
-`build` runs each half's build, which is the driver of the bundler its product is assigned (see
-[Measuring the bundlers](#measuring-the-bundlers)), and stops on the first that fails, so its exit code is the
+`build` runs each half's build, which is the bundler its product is assigned (see
+[Measuring the bundlers](#measuring-the-bundlers)): a half that is an adopter of its bundler runs
+`bun install --frozen-lockfile` in itself and then its own `build`, and the rest build through the
+driver of their bundler. It stops on the first that fails, so its exit code is the
 whole of the claim that a published gallery holds sixteen halves or none. It normalises the two
 output paths into one shape, asserts the `./` base every half needs to be served from a
 subdirectory, and asserts that every raster a half asks for is a raster it carries. That directory
@@ -75,7 +77,10 @@ two consecutive rotations build all eleven.
 bun run bundlers
 ```
 
-builds, for each half, the runs its bundler's claims need (the page's recipe, the app's text
+runs the `measure` of each half that is an adopter of its bundler (`react-etsy` and `angular-etsy`, which
+carry their own config, install, lockfile, README and the machinery of [`bench-kit/`](./bench-kit)), halves in
+parallel, and gathers what each wrote into `bundlers-results.json`; the other halves are built here through
+the driver of their bundler. For each half, the runs its bundler's claims need (the page's recipe, the app's text
 changed, the app's sheet changed, one Arena module patched, and each probe), checks every claim
 against what the bundler wrote, weighs the outputs, and writes `bundlers-results.json`. It exits 1
 after printing each claim a build contradicts. `bun scripts/bundlers.ts --only react-etsy` runs one
@@ -84,13 +89,13 @@ half and prints its result without writing the file.
 ## Measuring one
 
 ```bash
-cd react-etsy && bun run measure
+cd react-etsy && bun run report
 ```
 
 `arena build`, then `arena check`, `arena audit` and `arena usage`, which is where every figure
 in [`AUDIT.md`](./AUDIT.md) comes from. A `dev` builds and audits first anyway, so a bench cannot
 be served without being measured, and a `build` runs the audit under `--strict=audit`, so a half
-that reports a finding does not build and cannot be published. `measure` itself stays lenient,
+that reports a finding does not build and cannot be published. `report` itself stays lenient,
 because it is the command this file's figures are read from and one that exits on the first report
 reports less.
 

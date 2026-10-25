@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <base href="./" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Maker's Row</title>
+    <script>
+      (function () {
+        var DEFAULT = 'light';
+        try {
+          var asked = new URLSearchParams(location.search).get('theme');
+          if (asked) localStorage.setItem('arena-theme', asked);
+          var name = localStorage.getItem('arena-theme');
+          if (!name && window.matchMedia('(prefers-color-scheme: dark)').matches) name = 'dark';
+          if (name && name !== DEFAULT && /^[a-z][a-z0-9-]*$/.test(name)) {
+            document.documentElement.classList.add('arena-' + name);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="./arena.package.generated.css">
+    <link rel="stylesheet" href="./arena.generated.css">
+    <link rel="stylesheet" href="./plugin.generated.css">
+    <link rel="stylesheet" href="./app.css">
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

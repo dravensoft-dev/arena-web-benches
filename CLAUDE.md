@@ -67,11 +67,13 @@ Anything else that makes a bench build or look better is a fix, and a fix belong
 
 ## Which Arena a bench is reading
 
-The sixteen are workspaces of the root package, so one `bun install` resolves them together and
-what sits in the root `node_modules` decides what every run means. Each half keeps a
-`node_modules` of its own holding the symlinks that decide what it resolves, which is what makes a
-React half measure with `@dravensoft/arena-react`'s CLI and an Angular half with the other's; the
-two packages ship a byte-identical CLI, so a hoisted one is the same program either way.
+Fourteen halves are workspaces of the root package, so one `bun install` resolves them together and
+what sits in the root `node_modules` decides what those runs mean. The two Etsy halves are adopters
+of their bundler with an install, a lockfile and a `README.md` of their own: what sits in their own
+`node_modules` decides what they mean. Each half keeps a `node_modules` of its own holding what it
+resolves, which is what makes a React half measure with `@dravensoft/arena-react`'s CLI and an
+Angular half with the other's; the two packages ship a byte-identical CLI, so either is the same
+program.
 
 Read the installed `package.json` before reading a finding into a report: a bench pointed at a
 build assembled from an Arena working tree measures that tree, and a bench pointed at the registry
