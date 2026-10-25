@@ -2,16 +2,24 @@
   "name": "react-notion-bench",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "build": "bun ../scripts/bundlers/half.ts",
+    "bundle": "rspack build -c rspack.config.mjs",
+    "build": "bun run bundle",
+    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
     "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@benches/kit": "file:../bench-kit/src",
+    "@rspack/cli": "2.2.9",
+    "@rspack/core": "2.2.9"
   }
 }

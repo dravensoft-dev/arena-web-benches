@@ -2,17 +2,28 @@
   "name": "react-instagram-bench",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "build": "bun ../scripts/bundlers/half.ts",
-    "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design",
-    "shots": "bun run build && bun ./shot.ts"
+    "bundle": "webpack --config webpack.config.mjs",
+    "build": "bun run bundle",
+    "measure": "bun run prebuild && bun measure.ts",
+    "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
     "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@benches/kit": "file:../bench-kit/src",
+    "copy-webpack-plugin": "14.0.0",
+    "esbuild": "0.28.2",
+    "esbuild-loader": "4.5.0",
+    "html-webpack-plugin": "5.6.8",
+    "webpack": "5.112.2",
+    "webpack-cli": "7.2.3"
   }
 }

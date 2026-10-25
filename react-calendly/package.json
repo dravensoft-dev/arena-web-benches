@@ -2,16 +2,28 @@
   "name": "react-calendly-bench",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
-    "build": "bun ../scripts/bundlers/half.ts",
+    "bundle": "next build",
+    "finish": "node finish.mjs",
+    "build": "bun run bundle && bun run finish",
+    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
     "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@benches/kit": "file:../bench-kit/src",
+    "@types/node": "26.6.5",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "next": "16.4.3",
+    "typescript": "6.0.3"
   }
 }

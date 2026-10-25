@@ -25,6 +25,6 @@ is `src/index.html` with a relative `<base>`, the link to `src/styles.css` and t
 from. `measure.ts` is this half's Parcel part of the measuring: the page's snippets verbatim, the variants as rewrites of
 `package.json` (`plain` without the shared bundles, `no-package-exports` without the resolver option), and the Parcel
 rows. A snippet `package.json` does not hold throws, naming it; `ngc` runs once per distinct `main.ts`. Parcel matches the shared bundles' globs against paths
-below its project root, so the scratch copies hold Arena's package as a real directory, as an npm install does. The
+below its project root, so the scratch copies hold Arena's package as a real directory, as an npm install does (`arenaCopy`). Only the Parcel halves set it: the Next.js half takes the whole install as hardlinks instead, and every other bundler resolves the package through a link, which the scratch copies keep. The
 shared machinery is [`../bench-kit`](../bench-kit), a `file:` dependency: after changing it, `bun install` in this half
 copies it again. The scratch copies the measuring builds sit at `../.run-angular-superhuman-*` and are removed when it ends.

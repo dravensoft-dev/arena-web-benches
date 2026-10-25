@@ -2,6 +2,7 @@
   "name": "react-duolingo-bench",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "predev": "arena build --src src --src design && arena audit --src src --src design",
     "dev": "bun --hot ./Server.ts",

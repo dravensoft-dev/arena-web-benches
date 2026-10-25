@@ -1,0 +1,6 @@
+// What Next does not move: the sprite, which `public/` would serve only if it were copied there.
+import { cpSync, readdirSync } from 'node:fs';
+
+for (const name of readdirSync('src')) {
+  if (/^icons-.*\.svg$/.test(name)) cpSync(`src/${name}`, `dist/${name}`);
+}

@@ -2,7 +2,7 @@
   "name": "ng-superhuman-bench",
   "private": true,
   "type": "module",
-  "packageManager": "bun@1.3.14",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "prestart": "arena build --src src --src design && arena audit --src src --src design",
     "start": "ng serve --port 5206",

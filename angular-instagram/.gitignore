@@ -1,8 +1,7 @@
-node_modules/
-dist/
-.angular/
-src/arena.generated.css
-src/plugin.generated.css
-src/arena.package.generated.css
+node_modules
+dist
+.angular
+src/*.generated.css
 src/arena.icons.generated.ts
 src/icons-*.svg
+bundlers-result.json
