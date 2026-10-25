@@ -268,7 +268,7 @@
     ]
   },
   "date": "2026-10-25",
-  "commit": "290d244",
+  "commit": "3b8c11a",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -355,7 +355,7 @@
           "fonts": 0
         }
       },
-      "seconds": 71.3
+      "seconds": 68.9
     },
     {
       "product": "calendly",
@@ -415,7 +415,7 @@
           "fonts": 0
         }
       },
-      "seconds": 322
+      "seconds": 296.4
     },
     {
       "product": "clickup",
@@ -459,7 +459,7 @@
           "fonts": 0
         }
       },
-      "seconds": 14.2
+      "seconds": 13.9
     },
     {
       "product": "clickup",
@@ -511,7 +511,7 @@
           "fonts": 0
         }
       },
-      "seconds": 117.2
+      "seconds": 112.5
     },
     {
       "product": "duolingo",
@@ -631,7 +631,7 @@
           "fonts": 0
         }
       },
-      "seconds": 142.8
+      "seconds": 138.4
     },
     {
       "product": "etsy",
@@ -683,7 +683,7 @@
           "fonts": 0
         }
       },
-      "seconds": 49.5
+      "seconds": 47.6
     },
     {
       "product": "etsy",
@@ -735,7 +735,7 @@
           "fonts": 0
         }
       },
-      "seconds": 167.8
+      "seconds": 144.8
     },
     {
       "product": "grafana",
@@ -787,7 +787,7 @@
           "fonts": 0
         }
       },
-      "seconds": 153.6
+      "seconds": 148.1
     },
     {
       "product": "grafana",
@@ -839,7 +839,7 @@
           "fonts": 0
         }
       },
-      "seconds": 107.9
+      "seconds": 103.6
     },
     {
       "product": "instagram",
@@ -899,7 +899,7 @@
           "fonts": 0
         }
       },
-      "seconds": 82.1
+      "seconds": 78.3
     },
     {
       "product": "instagram",
@@ -967,7 +967,7 @@
           "fonts": 0
         }
       },
-      "seconds": 475.6
+      "seconds": 442.9
     },
     {
       "product": "notion",
@@ -1019,7 +1019,7 @@
           "fonts": 0
         }
       },
-      "seconds": 19.5
+      "seconds": 18.4
     },
     {
       "product": "notion",
@@ -1071,7 +1071,7 @@
           "fonts": 0
         }
       },
-      "seconds": 126
+      "seconds": 120.2
     },
     {
       "product": "superhuman",
@@ -1123,7 +1123,7 @@
           "fonts": 0
         }
       },
-      "seconds": 9.4
+      "seconds": 10.2
     },
     {
       "product": "superhuman",
@@ -1183,7 +1183,7 @@
           "fonts": 0
         }
       },
-      "seconds": 169
+      "seconds": 145.9
     }
   ]
 }
