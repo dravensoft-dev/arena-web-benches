@@ -14,7 +14,7 @@ import type { Built, RunKey } from './bundlers/observations.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
 import { assigned, table } from './bundlers/rotation.ts';
 import { entryOf, hold, rebase, scratch, scratchPath } from '../bench-kit/src/scratch.ts';
-import { finish, linkSheets } from './bundlers/static.ts';
+import { finish } from './bundlers/static.ts';
 import { firstSelectors } from '../bench-kit/src/static.ts';
 import type { BundlerId, Driver, Layer, Probe, Table } from './bundlers/types.ts';
 import { FIGURE_RUNS, PLAIN_TEXT, RESULT, contradictionsOf, figures, spec } from '../bench-kit/src/runner.ts';
@@ -90,7 +90,6 @@ async function runHalf(t: Table, root: string, half: { product: string; layer: L
     for (const key of FIGURE_RUNS.concat(PLAIN_TEXT)) {
       const built = runs[key]!;
       if (!built.ok) throw new Error(`${dir}: run '${key}' did not build, so no figure is measured:\n${built.log.trim().split('\n').slice(-5).join('\n')}`);
-      if (driver.linksSheets) linkSheets(roots[key]!, layer, built.out);
       finish(roots[key]!, layer, built.out);
       out[key] = built.out;
     }

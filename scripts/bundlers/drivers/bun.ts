@@ -38,7 +38,6 @@ const driver: Driver = {
   layers: ['react', 'angular'],
   out: 'dist',
   probes: ['twice'],
-  linksSheets: false,
   bundle(dir: string, layer: Layer, variant) {
     const out = join(dir, 'dist');
     if (variant !== 'twice') rmSync(out, { recursive: true, force: true });

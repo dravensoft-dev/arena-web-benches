@@ -6,18 +6,10 @@
   "workspaces": [
     "react-calendly",
     "angular-calendly",
-    "react-clickup",
-    "angular-clickup",
-    "react-duolingo",
-    "angular-duolingo",
-    "react-grafana",
-    "angular-grafana",
     "react-instagram",
     "angular-instagram",
     "react-notion",
-    "angular-notion",
-    "react-superhuman",
-    "angular-superhuman"
+    "angular-notion"
   ],
   "scripts": {
     "build": "bun scripts/build.ts",

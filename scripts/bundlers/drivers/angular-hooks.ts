@@ -8,18 +8,6 @@ export const HOOKS_URL = pathToFileURL(import.meta.filename).href;
 /** Where a file the linker may touch lives: any package of `node_modules`, and only `.js`/`.mjs`/`.cjs` of it. */
 const LINKED = /[\\/]node_modules[\\/].*\.[cm]?js$/;
 
-/** A rollup-family plugin (rolldown reads it): its `transform` hook links each partially compiled module, `from` is the half. */
-export function rollupLinker(from: string) {
-  return {
-    name: 'bench-angular-linker',
-    transform(code: string, id: string) {
-      if (!LINKED.test(id.split('?')[0]!)) return null;
-      const linked = linkPartial(code, id, from);
-      return linked === null ? null : { code: linked, map: null };
-    },
-  };
-}
-
 /** An esbuild or `Bun.build` plugin: its `onLoad` returns a linked module, and nothing for a file that carries no declaration. */
 export function buildLinker(from: string) {
   return {

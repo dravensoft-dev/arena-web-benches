@@ -3,26 +3,33 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { jsRow, noSprite_ } from '../../bench-kit/src/observations.ts';
+import { partOf } from '../halves/halves.ts';
 import { judge, OBSERVATIONS, type Built, type Context, type Observation } from './observations.ts';
 
 const roots: string[] = [];
 afterAll(() => roots.forEach((path) => rmSync(path, { recursive: true, force: true })));
 
-const F6 = [
+/** The rows of the bundlers whose halves measure themselves, besides rollup's: Vite 7, Vite 8, rolldown and Parcel. */
+const MOVED = [
   'vite7.js-apart', 'vite7.sheet-apart', 'vite7.sheet-by-name',
   'vite8.js-apart', 'vite8.sheet-apart', 'vite8.sheet-by-name',
-  'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied',
+  'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied', 'rolldown.linked-sheets',
+  'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem',
+];
+
+const F6 = [
   'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type',
   'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular',
-  'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem',
   'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
   'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
   'next.js-apart', 'next.sheet-apart', 'next.sprite-public',
 ];
-const F6B = ['rolldown.linked-sheets'];
+/** The rows the converted halves hold (`measure.ts`), read from one half of each bundler. */
+const HALVES = ['react-clickup', 'react-duolingo', 'react-grafana', 'react-superhuman'];
+const moved = (await Promise.all(HALVES.map((dir) => partOf(dir)))).flatMap((part) => part.observations);
 
-const one = (id: string): Observation => OBSERVATIONS.find((o) => o.id === id)!;
+const one = (id: string): Observation => [...OBSERVATIONS, ...moved].find((o) => o.id === id)!;
 
 /** The rollup rows are the etsy halves' (`measure.ts`); the factories they are made with are the kit's. */
 const rollupJs = jsRow('rollup', 'x');
@@ -45,11 +52,12 @@ const APP = "globalThis.__appMarker='a';";
 const PKG = '.arena-pkg{color:red}';
 const APPCSS = '.app-own{color:blue}';
 
-test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot', () => {
-  expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual([...F6, ...F6B].sort());
-  for (const o of OBSERVATIONS) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
-  expect(OBSERVATIONS.filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
-    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', 'rspack.css-auto-angular', ...F6B].sort(),
+test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot: the catalogue holds the bundlers no half measures itself, the halves the rest', () => {
+  expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual(F6.sort());
+  expect(moved.map((o) => o.id).sort()).toEqual(MOVED.sort());
+  for (const o of [...OBSERVATIONS, ...moved]) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
+  expect([...OBSERVATIONS, ...moved].filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
+    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', 'rspack.css-auto-angular', 'rolldown.linked-sheets'].sort(),
   );
 });
 

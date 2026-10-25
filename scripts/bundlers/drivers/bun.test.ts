@@ -5,8 +5,7 @@ import { scratch } from '../../../bench-kit/src/scratch.ts';
 import { driverContract, halfOf } from './contract.ts';
 import driver from './bun.ts';
 
-// `bun build` takes the CSS imports itself and links the one `.css` from the page it writes: `linkSheets` has nothing to do.
-driverContract(driver, false);
+driverContract(driver);
 
 const made: string[] = [];
 afterAll(() => made.forEach((path) => rmSync(path, { recursive: true, force: true })));

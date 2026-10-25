@@ -4,3 +4,5 @@ dist
 src/*.generated.css
 src/arena.icons.generated.ts
 src/icons-*.svg
+.ngc
+bundlers-result.json

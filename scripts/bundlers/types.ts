@@ -19,7 +19,5 @@ export type Driver = {
   /** The output directory relative to the half, e.g. `dist`. */
   out: string;
   probes: Probe[];
-  /** True when the driver maps CSS away (the page links no sheet), so the caller runs `linkSheets` over its output. */
-  linksSheets: boolean;
   bundle(dir: string, layer: Layer, variant: 'plain' | 'recipe' | Probe): { ok: boolean; out: string; log: string };
 };

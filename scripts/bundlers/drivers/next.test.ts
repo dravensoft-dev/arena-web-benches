@@ -6,8 +6,7 @@ import { scratch } from '../../../bench-kit/src/scratch.ts';
 import { driverContract, halfOf } from './contract.ts';
 import driver from './next.ts';
 
-// Next takes the CSS imports itself and links its own sheets from the page: `linkSheets` has nothing to do.
-driverContract(driver, false, (_layer, built) => {
+driverContract(driver, (_layer, built) => {
   const page = readFileSync(join(built.out, 'index.html'), 'utf8');
   // Review Focus 1: `assetPrefix: './'` keeps every chunk relative; a rooted `/_next/` loads nothing below the half's route.
   expect(page).not.toContain('"/_next/');

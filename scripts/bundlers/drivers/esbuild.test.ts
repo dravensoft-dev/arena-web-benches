@@ -8,8 +8,7 @@ import driver from './esbuild.ts';
 const made: string[] = [];
 afterAll(() => made.forEach((path) => rmSync(path, { recursive: true, force: true })));
 
-// esbuild takes the CSS imports itself: one `.css` for the entry, linked by the driver, so `linkSheets` has nothing to do.
-driverContract(driver, false);
+driverContract(driver);
 
 test('esbuild without the ngDevMode define emits a larger main chunk than the recipe', () => {
   const sizeOf = (variant: 'recipe' | 'no-define') => {

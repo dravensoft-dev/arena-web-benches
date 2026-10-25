@@ -67,10 +67,10 @@ Anything else that makes a bench build or look better is a fix, and a fix belong
 
 ## Which Arena a bench is reading
 
-Fourteen halves are workspaces of the root package, so one `bun install` resolves them together and
-what sits in the root `node_modules` decides what those runs mean. The two Etsy halves are adopters
-of their bundler with an install, a lockfile and a `README.md` of their own: what sits in their own
-`node_modules` decides what they mean. Each half keeps a `node_modules` of its own holding what it
+Six halves are workspaces of the root package, so one `bun install` resolves them together and
+what sits in the root `node_modules` decides what those runs mean. The other ten (Etsy, ClickUp,
+Duolingo, Grafana and Superhuman) are adopters of their bundler with an install, a lockfile and a
+`README.md` of their own: what sits in their own `node_modules` decides what they mean. Each half keeps a `node_modules` of its own holding what it
 resolves, which is what makes a React half measure with `@dravensoft/arena-react`'s CLI and an
 Angular half with the other's; the two packages ship a byte-identical CLI, so either is the same
 program.

@@ -3,8 +3,8 @@ import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { scratch } from '../../../bench-kit/src/scratch.ts';
 import { assignment, table } from '../rotation.ts';
-import { finish, linkSheets } from '../static.ts';
-import { firstSelectors, sheetOrder } from '../../../bench-kit/src/static.ts';
+import { finish } from '../static.ts';
+import { firstSelectors } from '../../../bench-kit/src/static.ts';
 import type { Driver, Layer } from '../types.ts';
 
 const made: string[] = [];
@@ -32,11 +32,10 @@ export function halfOf(driver: Driver, layer: Layer): string {
 
 /**
  * The test every driver passes (brief, tasks 6-10): on a scratch of the half rotation 0 assigns it, for each layer,
- * `recipe` is ok and, once `finish` (and `linkSheets` for a bundler that takes no CSS) has run, the output holds the
+ * `recipe` is ok and, once `finish` has run, the output holds the
  * page with its base, the sprite and the package sheet and the app sheet; every probe returns without throwing.
- * `links` is true for a driver that leaves the sheets to `linkSheets`.
  */
-export function driverContract(driver: Driver, links: boolean, extra?: (layer: Layer, built: { log: string }) => void): void {
+export function driverContract(driver: Driver, extra?: (layer: Layer, built: { log: string }) => void): void {
   for (const layer of driver.layers) {
     test(`${driver.id} builds the ${layer} half with its recipe, keeps the base, the sprite and both sheets`, () => {
       const dir = halfOf(driver, layer);
@@ -53,7 +52,6 @@ export function driverContract(driver: Driver, links: boolean, extra?: (layer: L
       const { packageSelector, appSelector } = firstSelectors(path, layer);
 
       finish(path, layer, built.out);
-      if (links) linkSheets(path, layer, built.out);
 
       const page = readFileSync(join(built.out, 'index.html'), 'utf8');
       expect(page).toContain('<base href="./"');
@@ -63,11 +61,6 @@ export function driverContract(driver: Driver, links: boolean, extra?: (layer: L
       const css = filesText(built.out, '.css').join('\n').replace(/\s+/g, '');
       expect(css).toMatch(startsRule(packageSelector));
       expect(css).toMatch(startsRule(appSelector));
-
-      if (links) {
-        const linked = [...page.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)].map((match) => match[1]);
-        expect(linked).toEqual(sheetOrder(path, layer));
-      }
     });
 
     test(`${driver.id} returns from every probe on the ${layer} half`, () => {

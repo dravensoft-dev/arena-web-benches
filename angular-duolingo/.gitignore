@@ -6,3 +6,4 @@ src/plugin.generated.css
 src/arena.package.generated.css
 src/arena.icons.generated.ts
 src/icons-*.svg
+bundlers-result.json

@@ -77,8 +77,9 @@ two consecutive rotations build all eleven.
 bun run bundlers
 ```
 
-runs the `measure` of each half that is an adopter of its bundler (`react-etsy` and `angular-etsy`, which
-carry their own config, install, lockfile, README and the machinery of [`bench-kit/`](./bench-kit)), halves in
+runs the `measure` of each half that is an adopter of its bundler (the Etsy, ClickUp, Duolingo, Grafana and
+Superhuman halves, which carry their own config, install, lockfile, README and the machinery of
+[`bench-kit/`](./bench-kit)), halves in
 parallel, and gathers what each wrote into `bundlers-results.json`; the other halves are built here through
 the driver of their bundler. For each half, the runs its bundler's claims need (the page's recipe, the app's text
 changed, the app's sheet changed, one Arena module patched, and each probe), checks every claim

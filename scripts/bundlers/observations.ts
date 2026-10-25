@@ -3,26 +3,14 @@
  * The row factories and the checks come from the kit. */
 
 import {
-  arenaInMain, arenaWithApp, builds, fails, jsRow, linkedSheets, ngDevMode, noSheetAlone, noSprite_, oneCss, oneStylesFile, outdirKept,
-  reactWithApp, recordJsApart, recordSheetAlone, recordSheetApart, recordSprite, row, sharedStem, sheetRow, sideEffectsFalse, JS_CLAIM, SHEET_APART,
+  arenaInMain, arenaWithApp, fails, jsRow, ngDevMode, noSprite_, oneCss, oneStylesFile, outdirKept,
+  recordJsApart, recordSheetAlone, recordSheetApart, recordSprite, row, sheetRow, sideEffectsFalse, JS_CLAIM, SHEET_APART,
 } from '../../bench-kit/src/observations.ts';
 export { judge } from '../../bench-kit/src/observations.ts';
 export type { Built, Context, Judgement, Observation, RunKey, Verdict } from '../../bench-kit/src/observations.ts';
 import type { Observation } from '../../bench-kit/src/observations.ts';
 
 export const OBSERVATIONS: Observation[] = [
-
-  jsRow('vite7', JS_CLAIM('`manualChunks`')),
-  sheetRow('vite7', SHEET_APART),
-  row({ id: 'vite7.sheet-by-name', bundler: 'vite7', claim: 'a test matching only `node_modules` leaves the sheet with the app\'s CSS', needs: ['js-only-test'], check: noSheetAlone('js-only-test') }),
-
-  jsRow('vite8', JS_CLAIM('`codeSplitting.groups`')),
-  sheetRow('vite8', SHEET_APART),
-  row({ id: 'vite8.sheet-by-name', bundler: 'vite8', claim: 'as `vite7.sheet-by-name`', needs: ['js-only-test'], check: noSheetAlone('js-only-test') }),
-
-  jsRow('rolldown', JS_CLAIM('`codeSplitting.groups`')),
-  row({ id: 'rolldown.css-refused', bundler: 'rolldown', claim: 'the build stops on a CSS import with "Bundling CSS is no longer supported (experimental support has been removed)"', needs: ['css-import'], check: fails('css-import', 'Bundling CSS is no longer supported (experimental support has been removed)') }),
-  noSprite_('rolldown', 'rolldown moves no file it does not import'),
 
   jsRow('webpack', JS_CLAIM('`splitChunks.cacheGroups`')),
   sheetRow('webpack', SHEET_APART),
@@ -33,13 +21,6 @@ export const OBSERVATIONS: Observation[] = [
   sheetRow('rspack', `${SHEET_APART}, with the \`css/auto\` rule and, on Angular, the sheet as its own \`styles\` entry`),
   row({ id: 'rspack.needs-css-auto', bundler: 'rspack', layers: ['react'], claim: 'on React, without the `css/auto` rule the build stops on the package sheet\'s `@layer properties;`', needs: ['no-css-auto'], check: fails('no-css-auto', '@layer properties') }),
   row({ id: 'rspack.css-auto-angular', bundler: 'rspack', layers: ['angular'], claim: 'on Angular through @nx/angular-rspack the `styles` entry places the sheet without `css/auto`', expect: 'record', needs: ['no-css-auto'], check: recordSheetAlone('no-css-auto') }),
-
-  row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'an import of an Arena subpath, or Angular\'s `@angular/common/http`, fails without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports') }),
-  row({ id: 'parcel.first-import-resolves', bundler: 'parcel', layers: ['react'], claim: 'the first Arena import resolves through the package\'s `module` field without `packageExports`', needs: ['no-package-exports'], check: builds('no-package-exports') }),
-  jsRow('parcel', '`manualSharedBundles` keeps Arena\'s JS apart once `packageExports` is on', false),
-  sheetRow('parcel', SHEET_APART),
-  row({ id: 'parcel.react-with-app', bundler: 'parcel', layers: ['react'], claim: 'React stays with the app', needs: ['recipe'], check: reactWithApp }),
-  row({ id: 'parcel.shared-stem', bundler: 'parcel', claim: 'its two shared bundles share one name stem', needs: ['recipe'], check: sharedStem }),
 
   row({ id: 'angular.arena-in-main', bundler: 'angular', layers: ['angular'], claim: 'Arena lands in `main`', needs: ['recipe'], check: arenaInMain }),
   row({ id: 'angular.one-styles-file', bundler: 'angular', layers: ['angular'], claim: 'the `styles` option emits one file', needs: ['recipe'], check: oneStylesFile }),
@@ -57,7 +38,5 @@ export const OBSERVATIONS: Observation[] = [
   row({ id: 'next.js-apart', bundler: 'next', layers: ['react'], claim: 'Next.js picks its chunks itself', expect: 'record', needs: ['recipe'], check: recordJsApart }),
   row({ id: 'next.sheet-apart', bundler: 'next', layers: ['react'], claim: 'not exercised', expect: 'record', needs: ['recipe'], check: recordSheetApart }),
   row({ id: 'next.sprite-public', bundler: 'next', layers: ['react'], claim: 'a sprite copied into `public/` is served at the root under its own name', expect: 'record', needs: ['recipe'], check: recordSprite }),
-
-  row({ id: 'rolldown.linked-sheets', bundler: 'rolldown', claim: 'the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written', expect: 'record', needs: [], check: linkedSheets }),
 ];
 
