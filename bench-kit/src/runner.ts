@@ -25,7 +25,9 @@ export type HalfResult = {
   bundler: BundlerId;
   version: string;
   observations: ReturnType<typeof judge>[];
-  figures: Figures;
+  /** Null when a run the figures read did not build; `figuresError` says which. */
+  figures: Figures | null;
+  figuresError?: string;
 };
 
 /** A half's bundler part. */
@@ -103,7 +105,7 @@ export function figures(out: Record<string, string>): Figures {
 }
 
 /** The version the half declares for `pkg`, which must be exact, and the one its install holds. */
-function pinProblem(half: string, pkg: string): string | null {
+export function pinProblem(half: string, pkg: string): string | null {
   const declared = (JSON.parse(readFileSync(join(half, 'package.json'), 'utf8')) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> });
   const wanted = declared.devDependencies?.[pkg] ?? declared.dependencies?.[pkg];
   const file = join(half, 'node_modules', pkg, 'package.json');
@@ -132,8 +134,9 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
   const layer = layerOf(dir);
   const out = part.out ?? 'dist';
 
+  // A snippet the config lacks is not checked here: the run that rewrites it fails by name (`attempt`), the rows that
+  // read that run are contradicted with the message, and the half still writes its result. `checkSnippets` is a test.
   const config = readFileSync(join(abs, part.config), 'utf8');
-  checkSnippets(part, config);
   const problem = pinProblem(abs, part.pin);
   if (problem) throw new Error(`${dir}: the installed tree is not the declared one, nothing is built: ${problem}`);
 
@@ -204,16 +207,23 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
 
     // Only now: the half's own `finish` (the sheets its page links, the sprite, its statics) over the runs the figures read.
     const outs: Record<string, string> = {};
+    let figuresError: string | undefined;
     for (const key of FIGURE_RUNS.concat(PLAIN_TEXT)) {
       const built = runs[key]!;
-      if (!built.ok) throw new Error(`${dir}: run '${key}' did not build, so no figure is measured:\n${built.log.trim().split('\n').slice(-5).join('\n')}`);
+      if (!built.ok) {
+        figuresError = `run '${key}' did not build, so no figure is measured: ${built.log.trim().split('\n').slice(-5).join(' | ')}`;
+        break;
+      }
       const done = script(roots[key]!, 'finish');
-      if (!done.ok) throw new Error(`${dir}: run '${key}' built and its finish did not:\n${done.log.trim().split('\n').slice(-5).join('\n')}`);
+      if (!done.ok) {
+        figuresError = `run '${key}' built and its finish did not: ${done.log.trim().split('\n').slice(-5).join(' | ')}`;
+        break;
+      }
       outs[key] = built.out;
     }
 
     const version = (JSON.parse(readFileSync(join(abs, 'node_modules', part.pin, 'package.json'), 'utf8')) as { version: string }).version;
-    const result: HalfResult = { product: dir.replace(/^(react|angular)-/, ''), layer, dir, bundler: part.bundler, version, observations, figures: figures(outs) };
+    const result: HalfResult = { product: dir.replace(/^(react|angular)-/, ''), layer, dir, bundler: part.bundler, version, observations, figures: figuresError ? null : figures(outs), ...(figuresError ? { figuresError } : {}) };
     writeFileSync(join(abs, RESULT), `${JSON.stringify(result, null, 2)}\n`);
     return result;
   } finally {
@@ -231,6 +241,7 @@ export async function measureMain(half: string, part: Part): Promise<void> {
   const result = await runMeasure(half, part);
   const bad = contradictionsOf(result);
   for (const line of bad) console.error(line);
+  if (result.figuresError) console.error(`${result.dir}: ${result.figuresError}`);
   console.log(`${result.dir}: ${result.observations.length} observation(s), ${bad.length} contradiction(s), ${RESULT} written`);
-  if (bad.length > 0) process.exit(1);
+  if (bad.length > 0 || result.figuresError) process.exit(1);
 }

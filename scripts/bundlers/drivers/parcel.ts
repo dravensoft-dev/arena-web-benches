@@ -10,26 +10,17 @@ const STAGE = '.bundler.parcel';
 const LINKER = resolve(import.meta.dirname, '..', 'parcel-transformer-angular-linker', 'index.cjs');
 
 /**
- * parcel.md's two options ("How do I keep Arena's JS in a bundle of its own?"), as the page gives them: both sit
- * in `package.json`, and the page gives no JS-only config apart from them, so there is no `js-recipe` (R7-1 does not
- * apply). `<your entry>` is the page `src/index.html`.
+ * parcel.md's options (D24), as the page gives them: all sit in `package.json`. Parcel bundles the CSS itself, so the
+ * recipe has two `manualSharedBundles` entries, Arena's JS and the package sheet; the page gives no JS-only config apart
+ * from them, so there is no `js-recipe` (R7-1 does not apply). `src/index.html` is the page.
  */
 const manual = (layer: Layer): string => `"@parcel/bundler-default": {
     "manualSharedBundles": [
-      { "name": "arena", "root": "src/index.html", "assets": ["**/node_modules/@dravensoft/arena-${layer}/**"] }
+      { "name": "arena", "root": "src/index.html", "assets": ["**/node_modules/@dravensoft/arena-${layer}/**"] },
+      { "name": "arenapkg", "root": "src/index.html", "types": ["css"], "assets": ["**/src/arena.package.generated.css"] }
     ]
   }`;
 const PACKAGE_EXPORTS = `"@parcel/resolver-default": { "packageExports": true }`;
-
-/** Parcel takes no CSS through its recipe (it stops on the package sheet's first `@import`): every `.css` is an empty asset. */
-const EMPTY_CSS = `const { Transformer } = require('@parcel/plugin');
-module.exports = new Transformer({
-  async transform({ asset }) {
-    asset.setCode('');
-    return [asset];
-  },
-});
-`;
 
 /**
  * Parcel finds its options in the `package.json` of the project root and matches `assets` globs against paths below
@@ -63,24 +54,20 @@ function stage(dir: string, layer: Layer, variant: 'plain' | 'recipe' | Probe): 
   // The default config is read from the Parcel package's own store directory, a path `extends` takes only as a file.
   const defaults = join(dirname(realpathSync(join(rootOf(dir), 'node_modules', 'parcel'))), '@parcel', 'config-default', 'index.json');
   const transformers: Record<string, string[]> = {};
-  if (variant !== 'css-import') {
-    writeFileSync(join(root, 'empty-css.cjs'), EMPTY_CSS);
-    transformers['*.css'] = ['./empty-css.cjs'];
-  }
   // The linker runs on every JS asset (a local transformer, `@parcel/plugin`); `...` keeps Parcel's own.
   if (layer === 'angular') transformers['*.{js,mjs}'] = [relative(root, LINKER), '...'];
   writeFileSync(join(root, '.parcelrc'), JSON.stringify({ extends: relative(root, defaults), transformers }));
   return root;
 }
 
-type Probe = 'css-import' | 'no-package-exports';
+type Probe = 'no-package-exports';
 
 const driver: Driver = {
   id: 'parcel',
   layers: ['react', 'angular'],
   out: 'dist',
-  probes: ['no-package-exports', 'css-import'],
-  linksSheets: true,
+  probes: ['no-package-exports'],
+  linksSheets: false,
   bundle(dir: string, layer: Layer, variant) {
     const out = join(dir, 'dist');
     rmSync(out, { recursive: true, force: true });
@@ -95,11 +82,13 @@ const driver: Driver = {
     // Workers load a local plugin by a path they cannot resolve ("options.packageManager.resolve is not a function"), so one process builds.
     const built = run(root, 'node', [parcel, 'build', 'src/index.html', '--dist-dir', resolve(out), '--public-url', './', '--no-cache', '--no-source-maps', '--no-autoinstall'], { PARCEL_WORKERS: '0', NODE_ENV: 'production' });
     if (!built.ok) return { ok: false, out, log: compiled + built.log };
-    // Parcel minifies the page and drops its `</head>` and the quotes of the base; the half's own page takes the module scripts Parcel wrote.
+    // Parcel minifies the page and drops its `</head>` and the quotes of the base; the half's own page takes the module scripts and the sheets Parcel wrote.
     const page = join(out, 'index.html');
-    const scripts = [...readFileSync(page, 'utf8').matchAll(/<script type=module src=([^ >]+)><\/script>/g)].map((match) => match[1]!);
+    const written = readFileSync(page, 'utf8');
+    const scripts = [...written.matchAll(/<script type=module src=([^ >]+)><\/script>/g)].map((match) => match[1]!);
     if (scripts.length === 0) return { ok: false, out, log: `${compiled}${built.log}\nno module script in ${page}` };
-    writeFileSync(page, layer === 'angular' ? angularPage(dir, scripts) : pointedPage(dir, scripts));
+    const sheets = [...written.matchAll(/<link rel=stylesheet href=([^ >]+)>/g)].map((match) => match[1]!.replace(/^\.\//, ''));
+    writeFileSync(page, layer === 'angular' ? angularPage(dir, scripts, sheets) : pointedPage(dir, scripts, sheets));
     return { ok: true, out, log: compiled + built.log };
   },
 };

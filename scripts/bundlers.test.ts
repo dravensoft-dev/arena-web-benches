@@ -2,8 +2,9 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { contradictions, converted, measureHalves, run } from './bundlers.ts';
+import { contradictions, measureHalves, run } from './bundlers.ts';
 import type { Results } from './bundlers.ts';
+import { own } from './build.ts';
 import { table } from './bundlers/rotation.ts';
 
 const made: string[] = [];
@@ -52,11 +53,11 @@ describe('measureHalves', () => {
   test('gathers the result each half wrote, also from a half that exits 1 on a contradiction', async () => {
     const root = mkdtempSync(join(tmpdir(), 'bundlers-own-'));
     made.push(root);
-    half(root, 'react-a', `echo '{"dir":"react-a"}' > bundlers-result.json`);
-    half(root, 'react-b', `echo '{"dir":"react-b"}' > bundlers-result.json; exit 1`);
+    half(root, 'react-a', `echo '{"dir":"react-a","observations":[]}' > bundlers-result.json`);
+    half(root, 'react-b', `echo '{"dir":"react-b","observations":[{"id":"x","claim":"c","detail":"d","holds":false}]}' > bundlers-result.json; exit 1`);
     const found = await measureHalves(['react-a', 'react-b'], root, 2);
     expect([...found.keys()].sort()).toEqual(['react-a', 'react-b']);
-    expect(found.get('react-b')).toEqual({ dir: 'react-b' } as never);
+    expect(found.get('react-b')?.dir).toBe('react-b');
   });
 
   test('a half that wrote no result did not measure: a throw naming it, with what it printed', async () => {
@@ -66,9 +67,16 @@ describe('measureHalves', () => {
     await expect(measureHalves(['react-a'], root, 1)).rejects.toThrow(/react-a: measure exited 3 and wrote no bundlers-result\.json:\n.*nothing built/);
   });
 
+  test('a half that exits non-zero with a result holding no contradiction did not measure: a throw naming it', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'bundlers-own-'));
+    made.push(root);
+    half(root, 'react-a', `echo '{"dir":"react-a","observations":[{"holds":true}]}' > bundlers-result.json; exit 1`);
+    await expect(measureHalves(['react-a'], root, 1)).rejects.toThrow(/react-a: measure exited 1 with no contradiction in bundlers-result\.json/);
+  });
+
   test('a half carries its own measuring when it has a measure.ts', () => {
-    expect(converted('react-etsy')).toBe(true);
-    expect(converted('react-calendly')).toBe(false);
+    expect(own('react-etsy')).toBe(true);
+    expect(own('react-calendly')).toBe(false);
   });
 });
 

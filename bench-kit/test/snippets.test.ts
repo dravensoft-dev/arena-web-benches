@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { occurrences, removeSnippet, replaceSnippet, requireSnippet } from './snippets.ts';
+import { occurrences, removeSnippet, replaceSnippet, requireSnippet } from '../src/snippets.ts';
 
 const CONFIG = `export default {
   plugins: [

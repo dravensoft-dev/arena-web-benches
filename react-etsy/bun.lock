@@ -6,11 +6,11 @@
       "name": "react-etsy-bench",
       "dependencies": {
         "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
       },
       "devDependencies": {
-        "@benches/kit": "file:../bench-kit",
+        "@benches/kit": "file:../bench-kit/src",
         "@rollup/plugin-commonjs": "29.0.3",
         "@rollup/plugin-node-resolve": "16.0.3",
         "@rollup/plugin-replace": "6.0.3",
@@ -49,7 +49,7 @@
 
     "@babel/types": ["@babel/types@8.0.8", "", { "dependencies": { "@babel/helper-string-parser": "^8.0.8", "@babel/helper-validator-identifier": "^8.0.6" } }, "sha512-iXSSZAKQWmaeAwGtFw10v9fg5hUiUs0L+w+Z2K11kym3pDNK+SF0VcAQPsEFvWcTSZ7LMgClMXDBvTbH0IlICg=="],
 
-    "@benches/kit": ["@benches/kit@file:../bench-kit", { "dependencies": { "@babel/core": "8.0.9" } }],
+    "@benches/kit": ["@benches/kit@file:../bench-kit/src", { "dependencies": { "@babel/core": "8.0.9" } }],
 
     "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-YQ5r5tJeh7Ap+YPwDTUZYUA9I9+cTBhZFsH7GaXbAUVMDg2DUIx4HzBJPgXGD/NvSG42i5WxGM8eb3a5T8Tcvw=="],
 

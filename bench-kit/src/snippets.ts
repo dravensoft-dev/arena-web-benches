@@ -17,7 +17,7 @@ export const occurrences = (text: string, snippet: string): number => [...text.m
 /** A throw naming `name` unless the snippet is in `text` exactly once. */
 export function requireSnippet(text: string, name: string, snippet: string, where = 'the config'): void {
   const found = occurrences(text, snippet);
-  if (found !== 1) throw new Error(`snippet '${name}' is in ${where} ${found} times, not once:\n${snippet}`);
+  if (found !== 1) throw new Error(`snippet '${name}' is in ${where} ${found} times, not once: ${JSON.stringify(snippet)}`);
 }
 
 /** `text` without the snippet's lines. */

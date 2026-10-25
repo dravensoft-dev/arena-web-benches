@@ -9,16 +9,16 @@
     "bundle": "rollup -c",
     "finish": "node finish.mjs",
     "build": "bun run bundle && bun run finish",
-    "measure": "bun measure.ts",
+    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
     "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@benches/kit": "file:../bench-kit",
+    "@benches/kit": "file:../bench-kit/src",
     "@rollup/plugin-commonjs": "29.0.3",
     "@rollup/plugin-node-resolve": "16.0.3",
     "@rollup/plugin-replace": "6.0.3",

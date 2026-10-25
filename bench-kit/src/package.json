@@ -1,0 +1,12 @@
+{
+  "name": "@benches/kit",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "@babel/core": "8.0.9"
+  }
+}

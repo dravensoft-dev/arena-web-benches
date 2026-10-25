@@ -35,7 +35,7 @@ describe.each(own)('%s', (dir) => {
     expect(committed(dir)).toEqual([...FILES[dir]!].sort());
   });
 
-  test('declares its bundler at the pin, every plugin of the table at its pin, and an install that holds them', async () => {
+  test('declares its bundler at the pin, every package of the table at its pin, every package its config and part import, and an install that holds them', async () => {
     const part = await partOf(dir);
     expect(part.bundler).toBe(assigned(t, dir).bundler);
     const manifest = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
@@ -44,7 +44,11 @@ describe.each(own)('%s', (dir) => {
     for (const [name, version] of Object.entries(declared)) {
       if (name in t.pins) expect(`${name}@${version}`).toBe(`${name}@${t.pins[name]}`);
     }
-    expect(declared['@benches/kit']).toBe('file:../bench-kit');
+    expect(declared['@benches/kit']).toBe('file:../bench-kit/src');
+    const imported = [part.config, 'measure.ts'].flatMap((file) => [...readFileSync(join(dir, file), 'utf8').matchAll(/(?:from|import)\s+'([^'.][^']*)'/g)].map((match) => match[1]!))
+      .filter((specifier) => !specifier.startsWith('node:'))
+      .map((specifier) => specifier.split('/').slice(0, specifier.startsWith('@') ? 2 : 1).join('/'));
+    for (const name of new Set(imported)) expect(declared[name], `${dir} imports ${name} and does not declare it`).toBeDefined();
     expect(declared[`@dravensoft/arena-${layer}`]).toMatch(/^file:\.\.\/vendor\/dravensoft-arena-/);
     for (const name of Object.keys(declared).filter((one) => one in t.pins)) {
       const installed = JSON.parse(readFileSync(join(dir, 'node_modules', name, 'package.json'), 'utf8')) as { version: string };
@@ -56,9 +60,14 @@ describe.each(own)('%s', (dir) => {
   test('runs build as prebuild, then the bundler, then finish, and measure as its own script', () => {
     const { scripts } = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as { scripts: Record<string, string> };
     expect(scripts['prebuild']).toContain('arena build');
-    expect(scripts['measure']).toBe('bun measure.ts');
+    expect(scripts['measure']).toBe('bun run prebuild && bun measure.ts');
     expect(scripts['build']).toBe(layer === 'angular' ? 'bun run compile && bun run bundle && bun run finish' : 'bun run bundle && bun run finish');
     if (layer === 'angular') expect(scripts['compile']).toContain('ngc -p tsconfig.app.json');
+  });
+
+  test('ignores what its scripts write: its install, outputs, result and, on Angular, the ngc output', () => {
+    const ignored = readFileSync(join(dir, '.gitignore'), 'utf8').split('\n').map((line) => line.replace(/\/$/, ''));
+    for (const name of ['node_modules', 'dist', 'bundlers-result.json', ...(layer === 'angular' ? ['.ngc', '.angular'] : [])]) expect(ignored).toContain(name);
   });
 
   test('holds every snippet of its part exactly once, and each variant rewrites its config', async () => {

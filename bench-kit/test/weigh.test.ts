@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { brotliKB, changedKB, loaded, stem } from './weigh.ts';
+import { brotliKB, changedKB, loaded, stem } from '../src/weigh.ts';
 
 const made: string[] = [];
 const dir = (files: Record<string, string>) => {

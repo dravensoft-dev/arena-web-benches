@@ -14,13 +14,13 @@ const F6 = [
   'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied',
   'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type',
   'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular',
-  'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-stops', 'parcel.react-with-app', 'parcel.shared-stem',
+  'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem',
   'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
   'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
   'next.js-apart', 'next.sheet-apart', 'next.sprite-public',
 ];
-const F6B = ['rolldown.linked-sheets', 'parcel.linked-sheets'];
+const F6B = ['rolldown.linked-sheets'];
 
 const one = (id: string): Observation => OBSERVATIONS.find((o) => o.id === id)!;
 
@@ -49,7 +49,7 @@ test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot
   expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual([...F6, ...F6B].sort());
   for (const o of OBSERVATIONS) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
   expect(OBSERVATIONS.filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
-    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'parcel.sheet-stops', 'webpack.group-needs-type', 'rspack.css-auto-angular', ...F6B].sort(),
+    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', 'rspack.css-auto-angular', ...F6B].sort(),
   );
 });
 
@@ -135,11 +135,11 @@ test('the linked-sheets rows record whether the package sheet is flat, with no @
   roots.push(dir);
   mkdirSync(join(dir, 'src'));
   writeFileSync(join(dir, 'src', 'arena.package.generated.css'), "/* GENERATED */\n@import '@dravensoft/arena-react/css/reset.css';\n");
-  const result = judge(one('parcel.linked-sheets'), ctx({}, dir));
+  const result = judge(one('rolldown.linked-sheets'), ctx({}, dir));
   expect(result.outcome).toBe(false);
   expect(result.holds).toBe(true);
   writeFileSync(join(dir, 'src', 'arena.package.generated.css'), "@import './reset.css';\n");
-  expect(judge(one('parcel.linked-sheets'), ctx({}, dir)).outcome).toBe(true);
+  expect(judge(one('rolldown.linked-sheets'), ctx({}, dir)).outcome).toBe(true);
 });
 
 test('a missing run, an unreadable output and a throwing check are failed outcomes with the message, never a crash', () => {
@@ -203,8 +203,8 @@ test('the parcel probe reads Angular as a failure to build and React as a build 
   expect(judge(first, ctx({ 'no-package-exports': output({}, false, 'Failed to resolve') })).holds).toBe(false);
 });
 
-test('the four sheet-apart rows say the sheet is apart on both layers', () => {
-  for (const id of ['vite7', 'vite8', 'webpack', 'rspack']) {
+test('the five sheet-apart rows say the sheet is apart on both layers', () => {
+  for (const id of ['vite7', 'vite8', 'webpack', 'rspack', 'parcel']) {
     expect(one(`${id}.sheet-apart`).claim).toContain('the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes');
   }
   expect(one('rspack.sheet-apart').claim).toContain('with the `css/auto` rule and, on Angular, the sheet as its own `styles` entry');

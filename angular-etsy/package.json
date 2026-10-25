@@ -11,7 +11,7 @@
     "bundle": "rollup -c",
     "finish": "node finish.mjs",
     "build": "bun run compile && bun run bundle && bun run finish",
-    "measure": "bun measure.ts",
+    "measure": "bun run prebuild && bun measure.ts",
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
@@ -29,7 +29,7 @@
     "@angular/cli": "22.2.4",
     "@angular/compiler-cli": "22.1.4",
     "@babel/core": "8.0.9",
-    "@benches/kit": "file:../bench-kit",
+    "@benches/kit": "file:../bench-kit/src",
     "@rollup/plugin-commonjs": "29.0.3",
     "@rollup/plugin-node-resolve": "16.0.3",
     "@rollup/plugin-replace": "6.0.3",

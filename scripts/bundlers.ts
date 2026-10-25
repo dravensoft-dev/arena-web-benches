@@ -8,7 +8,7 @@
 import { availableParallelism } from 'node:os';
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { halves, RESULTS } from './build.ts';
+import { halves, own, RESULTS } from './build.ts';
 import { OBSERVATIONS, judge } from './bundlers/observations.ts';
 import type { Built, RunKey } from './bundlers/observations.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
@@ -17,7 +17,7 @@ import { entryOf, hold, rebase, scratch, scratchPath } from '../bench-kit/src/sc
 import { finish, linkSheets } from './bundlers/static.ts';
 import { firstSelectors } from '../bench-kit/src/static.ts';
 import type { BundlerId, Driver, Layer, Probe, Table } from './bundlers/types.ts';
-import { FIGURE_RUNS, PLAIN_TEXT, RESULT, figures, spec } from '../bench-kit/src/runner.ts';
+import { FIGURE_RUNS, PLAIN_TEXT, RESULT, contradictionsOf, figures, spec } from '../bench-kit/src/runner.ts';
 import type { HalfResult, Key } from '../bench-kit/src/runner.ts';
 
 export type { HalfResult };
@@ -103,13 +103,11 @@ async function runHalf(t: Table, root: string, half: { product: string; layer: L
   }
 }
 
-/** The half carries its own measuring: `measure.ts` at its root. */
-export const converted = (dir: string, root = '.'): boolean => existsSync(join(root, dir, 'measure.ts'));
-
 /**
  * `bun run --cwd <half> measure` of each half, at most `width` at once, each at the scratch paths of its own (D16). A
- * half that exits 1 with a result file has contradicted a claim, and what it wrote is gathered; a half that exits 1
- * without one did not measure, and that is a throw naming it with the tail of its output.
+ * half that exits non-zero is accepted only when the result file it wrote holds at least one contradiction, and what it
+ * wrote is gathered; any other non-zero exit, or no file, did not measure, and that is a throw naming the half with the tail
+ * of its output.
  */
 export async function measureHalves(dirs: string[], root = '.', width = Math.max(1, Math.floor(availableParallelism() / 2))): Promise<Map<string, HalfResult>> {
   const done = new Map<string, HalfResult>();
@@ -122,8 +120,9 @@ export async function measureHalves(dirs: string[], root = '.', width = Math.max
       console.log(`bundlers: ${dir}`);
       const child = Bun.spawn(['bun', 'run', '--cwd', join(root, dir), 'measure'], { stdout: 'pipe', stderr: 'pipe' });
       const [out, err] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
-      if (existsSync(file)) done.set(dir, JSON.parse(readFileSync(file, 'utf8')) as HalfResult);
-      else failed.push(`${dir}: measure exited ${child.exitCode} and wrote no ${RESULT}:\n${`${out}${err}`.trim().split('\n').slice(-12).join('\n')}`);
+      const result = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as HalfResult) : null;
+      if (result && (child.exitCode === 0 || contradictionsOf(result).length > 0)) done.set(dir, result);
+      else failed.push(`${dir}: measure exited ${child.exitCode}${result ? ' with no contradiction in' : ' and wrote no'} ${RESULT}:\n${`${out}${err}`.trim().split('\n').slice(-12).join('\n')}`);
     }
   };
   await Promise.all(Array.from({ length: Math.min(width, dirs.length) }, worker));
@@ -137,12 +136,12 @@ export async function run(t: Table, root = '.', only?: string): Promise<Results>
   const arena = installedVersion('@dravensoft/arena-react', join(root, first));
   if (!arena) throw new Error(`@dravensoft/arena-react is not installed under ${first}`);
 
-  const own = await measureHalves(all.filter((one) => converted(one.dir, root)).map((one) => one.dir), root);
+  const measured = await measureHalves(all.filter((one) => own(one.dir, root)).map((one) => one.dir), root);
   const result: HalfResult[] = [];
   for (const one of all) {
-    const measured = own.get(one.dir);
-    if (measured) {
-      result.push(measured);
+    const mine = measured.get(one.dir);
+    if (mine) {
+      result.push(mine);
       continue;
     }
     console.log(`bundlers: ${one.dir}`);

@@ -210,13 +210,13 @@ export function recordSprite(ctx: Context): Verdict {
 
 const PACKAGE_IMPORT = /^@import\s+(?:'([^']+)'|"([^"]+)");/gm;
 
-/** The package sheet as `arena build` writes it holds no `@import` of a package specifier, so a page can link it as it is. */
+/** Records whether the package sheet as `arena build` writes it holds an `@import` of a package specifier, which no browser resolves from a page that links the sheet. */
 export function linkedSheets(ctx: Context): Verdict {
   const text = readFileSync(join(ctx.dir, 'src', 'arena.package.generated.css'), 'utf8');
   const specs = [...text.matchAll(PACKAGE_IMPORT)].map((m) => m[1] ?? m[2]!).filter((s) => !/^(\.{1,2}\/|\/|[a-z]+:)/i.test(s));
   return pass(specs.length === 0, specs.length === 0
-    ? 'the package sheet as written holds no @import of a package specifier, so a page links it as it is'
-    : `the package sheet as written holds ${specs.length} @import of a package specifier (first: ${specs[0]}), which no browser resolves from a page`);
+    ? 'the package sheet as written holds no @import of a package specifier'
+    : `the package sheet as written holds ${specs.length} @import of a package specifier (first: ${specs[0]}), which no browser resolves when a page links it`);
 }
 
 export function arenaInMain(ctx: Context): Verdict {
