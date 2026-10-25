@@ -6,6 +6,7 @@ import { layerOf } from '../../bench-kit/src/scratch.ts';
 import { checkSnippets, configOf } from '../../bench-kit/src/runner.ts';
 import { sheetOrder } from '../../bench-kit/src/static.ts';
 import { ownHalves, partOf } from './halves.ts';
+import { pinsDeclaredArena } from '../build.ts';
 import { template as bunTemplate } from '../../bench-kit/parts/bun.ts';
 import { template as esbuildTemplate } from '../../bench-kit/parts/esbuild.ts';
 import type { BundlerId } from '../bundlers/types.ts';
@@ -94,7 +95,7 @@ describe.each(own)('%s', (dir) => {
       .filter((specifier) => !specifier.startsWith('node:'))
       .map((specifier) => specifier.split('/').slice(0, specifier.startsWith('@') ? 2 : 1).join('/'));
     for (const name of new Set(imported)) expect(declared[name], `${dir} imports ${name} and does not declare it`).toBeDefined();
-    expect(declared[`@dravensoft/arena-${layer}`]).toMatch(/^file:\.\.\/vendor\/dravensoft-arena-/);
+    expect(pinsDeclaredArena(declared[`@dravensoft/arena-${layer}`], layer), `${dir} pins the Arena arena-adopter.json declares`).toBe(true);
     for (const name of Object.keys(declared).filter((one) => pinOf(one) !== undefined)) {
       const installed = JSON.parse(readFileSync(join(dir, 'node_modules', name, 'package.json'), 'utf8')) as { version: string };
       expect(`${name}@${installed.version}`).toBe(`${name}@${declared[name]}`);

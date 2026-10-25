@@ -1,6 +1,6 @@
 # react-instagram
 
-The React half of the Instagram bench, built with [webpack](https://webpack.js.org) 5.112.2. It is an adopter of webpack with an install of its own: `package.json` declares webpack, its CLI and its plugins at exact versions, `bun.lock` holds them, and the Arena package comes from `../vendor/` until the registry carries the version.
+The React half of the Instagram bench, built with [webpack](https://webpack.js.org) 5.112.2. It is an adopter of webpack with an install of its own: `package.json` declares webpack, its CLI and its plugins at exact versions, `bun.lock` holds them, and the Arena package comes from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

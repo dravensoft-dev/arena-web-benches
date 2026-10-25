@@ -1,6 +1,6 @@
 # react-superhuman
 
-The React half of the Superhuman bench, built with [Rspack](https://rspack.rs) 2.2.9. It is an adopter of Rspack with an install of its own: `package.json` declares `@rspack/core` and `@rspack/cli` at exact versions, `bun.lock` holds them, and the Arena package comes from `../vendor/` until the registry carries the version.
+The React half of the Superhuman bench, built with [Rspack](https://rspack.rs) 2.2.9. It is an adopter of Rspack with an install of its own: `package.json` declares `@rspack/core` and `@rspack/cli` at exact versions, `bun.lock` holds them, and the Arena package comes from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

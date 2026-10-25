@@ -14,7 +14,7 @@
     "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
-    "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
+    "@dravensoft/arena-react": "13.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },

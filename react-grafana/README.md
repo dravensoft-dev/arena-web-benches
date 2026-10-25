@@ -1,6 +1,6 @@
 # react-grafana
 
-The React half of the Grafana bench, built with [Next.js](https://nextjs.org) 16.4.3 (Turbopack). It is an adopter of Next.js with an install of its own: `package.json` declares `next`, `typescript` and the types of React and Node at exact versions, `bun.lock` holds them, and the Arena package comes from `../vendor/` until the registry carries the version.
+The React half of the Grafana bench, built with [Next.js](https://nextjs.org) 16.4.3 (Turbopack). It is an adopter of Next.js with an install of its own: `package.json` declares `next`, `typescript` and the types of React and Node at exact versions, `bun.lock` holds them, and the Arena package comes from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

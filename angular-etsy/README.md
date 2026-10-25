@@ -2,7 +2,7 @@
 
 The Angular half of the Etsy bench, built with [Vite](https://vite.dev) 7.3.7. It is an adopter of Vite 7 with an
 install of its own: `package.json` declares `vite` at an exact version, `bun.lock` holds it, and the Arena package comes
-from `../vendor/` until the registry carries the version.
+from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

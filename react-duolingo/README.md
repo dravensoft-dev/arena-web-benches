@@ -1,6 +1,6 @@
 # react-duolingo
 
-The React half of the Duolingo bench, built with [Bun](https://bun.sh) (`bun build`). It is an adopter of its bundler with an install of its own: `package.json` declares the bundler at an exact version, `bun.lock` holds it, and the Arena package comes from `../vendor/` until the registry carries the version.
+The React half of the Duolingo bench, built with [Bun](https://bun.sh) (`bun build`). It is an adopter of its bundler with an install of its own: `package.json` declares the bundler at an exact version, `bun.lock` holds it, and the Arena package comes from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

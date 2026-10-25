@@ -35,9 +35,8 @@ is in [`CLAUDE.md`](./CLAUDE.md).
 ## The measurement
 
 Every half is read with `bun run report`, which runs `arena build`, `arena check`, `arena audit`
-and `arena usage` over `src` and `design`, against Arena 12.1.1 packed from the Arena working tree
-on `develop` at `253638e91`. The two halves of every pair agree on both figures below, which is the
-claim the paired mock exists to test.
+and `arena usage` over `src` and `design`, against Arena 13.0.0 from npm. The two halves of every
+pair agree on both figures below, which is the claim the paired mock exists to test.
 
 | Product | Components drawn | Parts the plugin paints |
 |---|---|---|
@@ -93,30 +92,7 @@ rather than a sheet.
 
 ## Open findings
 
-### 1. The `develop` tree carries breaking changes under the version npm already publishes
-
-- **In Arena**: the version the release build stamps into `frameworks/react/dist/package.json` and
-  `frameworks/angular/dist/package.json`.
-- **What it does**: both packages assembled from `develop` say `12.1.1`, the version npm serves,
-  while `develop` holds 661 commits past the `v12.1.1` tag. Among them, Arena ships no icon font, so
-  a `<i class="ph-…">` that painted under the published 12.1.1 paints nothing; `ArenaTabs` and every
-  component that reports a value emit `valueChange` (`onValueChange` in React) where they emitted
-  `change`, and every component that reports an activation emits `activate` (`onActivate`) where it
-  emitted `click`; `ArenaCheckbox` requires `label`; and a plugin that answers `heat-step-1` is refused, since the role is gone.
-- **What it should do**: a release that removes the icon font and renames an output is a major
-  version, so the tree that holds them says 13.0.0, or a pre-release of it, before anything is
-  packed from it.
-- **Reproduce**: in Arena, `git log --oneline v12.1.1..HEAD` lists the commits, and
-  `jq .version frameworks/react/dist/package.json` after `bun run build:release` prints `12.1.1`.
-- **Benches**: every half, since each reads the packed tarballs. A bench half written against the
-  published 12.1.1 fails `--strict=audit` on its first raw glyph, and Angular Notion fails to
-  compile on `(change)`.
-- **Correction**: bump the version on `develop` to the next major when the first breaking change
-  lands, so a pack of the tree never carries a published number.
-- **Closed when**: a pack of `develop` names a version npm has not published, and `arena-adopter.json`
-  declares it.
-- **The bench**: draws every glyph through `ArenaIcon`, binds `activate` and `valueChange`, names
-  its row checkboxes and answers no heat step, which is how it asks for what it already draws.
+None. Every figure on this page is read from Arena 13.0.0 as npm publishes it.
 
 ## Answered
 

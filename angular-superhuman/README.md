@@ -1,6 +1,6 @@
 # angular-superhuman
 
-The Angular half of the Superhuman bench, built with [Rspack](https://rspack.rs) 2.2.9 through `@nx/angular-rspack`. It is an adopter of Rspack with an install of its own: `package.json` declares `@rspack/core`, `@rspack/cli`, `@nx/angular-rspack` and the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from `../vendor/` until the registry carries the version.
+The Angular half of the Superhuman bench, built with [Rspack](https://rspack.rs) 2.2.9 through `@nx/angular-rspack`. It is an adopter of Rspack with an install of its own: `package.json` declares `@rspack/core`, `@rspack/cli`, `@nx/angular-rspack` and the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

@@ -2,7 +2,7 @@
 
 The React half of the Calendly bench, built with [rollup](https://rollupjs.org) 4.65.0. It is an adopter of rollup with an
 install of its own: `package.json` declares rollup and its plugins at exact versions, `bun.lock` holds them, and the
-Arena packages come from `../vendor/` until the registry carries the version.
+Arena packages come from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

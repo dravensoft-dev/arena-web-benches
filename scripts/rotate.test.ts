@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { halves } from './build.ts';
+import { halves, pinsDeclaredArena } from './build.ts';
 import { assigned, assignment, current, draw, leftOutOf, previousResults, table } from './bundlers/rotation.ts';
 import { pinFor } from './bundlers/pins.ts';
 import { ownHalves, partOf } from './halves/halves.ts';
@@ -80,7 +80,8 @@ describe('a whole assignment on a copy of the benches', () => {
     }
     expect(manifest.scripts['bundle'], `${dir} bundle`).toBeString();
     expect(manifest.scripts['build']).toContain('bun run bundle');
-    expect(manifest.dependencies[`@dravensoft/arena-${dir.startsWith('react') ? 'react' : 'angular'}`]).toMatch(/^file:\.\.\/vendor\//);
+    const layer = dir.startsWith('react') ? 'react' : 'angular';
+    expect(pinsDeclaredArena(manifest.dependencies[`@dravensoft/arena-${layer}`], layer, root), `${dir} pins the Arena arena-adopter.json declares`).toBe(true);
     const part = /config: ['"]([^'"]+)['"]/.exec(measure)![1]!;
     expect(existsSync(join(root, dir, part)) || part === 'package.json', `${dir} carries ${part}`).toBe(true);
     const configs = readdirSync(join(root, dir)).filter((name) => /^(vite|rollup|rolldown|webpack|rspack|esbuild|next)\.config\.mjs$/.test(name));

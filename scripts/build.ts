@@ -111,6 +111,12 @@ export function writeAdopter(root: string, all: Product[], built: Map<string, Re
   writeFileSync(file, `${JSON.stringify(adopterManifest(all, arena, built, pins), null, 2)}\n`);
 }
 
+/** Whether a half's Arena pin names the version `arena-adopter.json` under `root` declares: the registry's, or its tarball under `vendor/` before the publish. */
+export function pinsDeclaredArena(pin: string | undefined, layer: Layer, root = '.') {
+  const { arena } = JSON.parse(readFileSync(join(root, ADOPTER), 'utf8')) as AdopterManifest;
+  return pin === arena || pin === `file:../vendor/dravensoft-arena-${layer}-${arena}.tgz`;
+}
+
 export function baseProblems(rel: string, html: string) {
   return BASE.test(html) ? [] : [`${rel} carries no <base href="./">. Every href in it then resolves `
     + 'against the domain root rather than against the directory the half is served from, so the '

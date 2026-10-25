@@ -1,6 +1,6 @@
 # angular-grafana
 
-The Angular half of the Grafana bench, built with Angular's `application` builder (`@angular/build` 22.2.4). It is an adopter of the Angular CLI with an install of its own: `package.json` declares the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from `../vendor/` until the registry carries the version.
+The Angular half of the Grafana bench, built with Angular's `application` builder (`@angular/build` 22.2.4). It is an adopter of the Angular CLI with an install of its own: `package.json` declares the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

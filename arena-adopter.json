@@ -1,5 +1,5 @@
 {
-  "arena": "12.1.1",
+  "arena": "13.0.0",
   "name": "web-benches",
   "title": "Web benches",
   "description": "Eight products, each mocked twice, once in React and once in Angular, from the same arena.config.json and the same design directory, so a difference between a pair is Arena answering the two layers differently. Each link names the bundler its half is built with, which moves with every run of the bundler measurements.",

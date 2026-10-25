@@ -1,6 +1,6 @@
 # angular-instagram
 
-The Angular half of the Instagram bench, built with [webpack](https://webpack.js.org) 5.112.2 through `@ngtools/webpack`. It is an adopter of webpack with an install of its own: `package.json` declares webpack, its CLI, its plugins and the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from `../vendor/` until the registry carries the version.
+The Angular half of the Instagram bench, built with [webpack](https://webpack.js.org) 5.112.2 through `@ngtools/webpack`. It is an adopter of webpack with an install of its own: `package.json` declares webpack, its CLI, its plugins and the Angular packages at exact versions, `bun.lock` holds them, and the Arena packages come from the registry at the version `package.json` names.
 
 ```bash
 bun install            # this half's own install, from its own bun.lock

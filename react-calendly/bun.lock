@@ -5,7 +5,7 @@
     "": {
       "name": "react-calendly-bench",
       "dependencies": {
-        "@dravensoft/arena-react": "file:../vendor/dravensoft-arena-react-12.1.1.tgz",
+        "@dravensoft/arena-react": "13.0.0",
         "react": "18.3.1",
         "react-dom": "18.3.1",
       },
@@ -23,7 +23,7 @@
   "packages": {
     "@benches/kit": ["@benches/kit@file:../bench-kit/src", {}],
 
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-lYN+FNWlSEuHjJZO7F7Z6oxgP1eGIfz1KqYl4E2g6u/oD4A1rlKVKpwGjClsZYuEUjp2Iv1b5mG9M5aFmtPJHw=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@13.0.0", "", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "bin/arena.mjs" } }, "sha512-npvi+/iNE13csWKFMtg1zj3dDAtgets00vzZf7Wa2kPsRz0GFHxyiJBm6eoPetWwfeGxMSQA92N1eAEPxA1gig=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.28.2", "", { "os": "aix", "cpu": "ppc64" }, "sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ=="],
 

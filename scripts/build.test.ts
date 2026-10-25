@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ADOPTER, RESULTS, TABLE, adopterManifest, baseProblems, builtWith, copyResults, halves, products } from './build.ts';
+import { ADOPTER, RESULTS, TABLE, adopterManifest, baseProblems, builtWith, copyResults, halves, pinsDeclaredArena, products } from './build.ts';
 import { current, table } from './bundlers/rotation.ts';
 
 const HREF = /^(?:[A-Za-z0-9._-]+\/)+$/;
@@ -50,8 +50,24 @@ describe('adopterManifest', () => {
   });
 
   test('the file on disk is what the function returns', () => {
-    expect(JSON.parse(readFileSync(ADOPTER, 'utf8'))).toEqual(adopterManifest(products(), manifest.arena, current(table()), table().pins));
+    const onDisk = JSON.parse(readFileSync(ADOPTER, 'utf8')) as { arena: string };
+    expect(onDisk).toEqual(adopterManifest(products(), onDisk.arena, current(table()), table().pins));
   });
+});
+
+test('a half pins the declared Arena from the registry or as its vendor tarball, and no other version', () => {
+  const root = mkdtempSync(join(tmpdir(), 'benches-pin-'));
+  try {
+    writeFileSync(join(root, ADOPTER), JSON.stringify({ arena: '13.0.0' }));
+    expect(pinsDeclaredArena('13.0.0', 'react', root)).toBe(true);
+    expect(pinsDeclaredArena('file:../vendor/dravensoft-arena-angular-13.0.0.tgz', 'angular', root)).toBe(true);
+    expect(pinsDeclaredArena('file:../vendor/dravensoft-arena-react-13.0.0.tgz', 'angular', root)).toBe(false);
+    expect(pinsDeclaredArena('12.1.1', 'react', root)).toBe(false);
+    expect(pinsDeclaredArena('^13.0.0', 'react', root)).toBe(false);
+    expect(pinsDeclaredArena(undefined, 'react', root)).toBe(false);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 describe('products and halves', () => {
