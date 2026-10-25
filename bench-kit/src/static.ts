@@ -10,8 +10,8 @@ export const carriesApp = (dir: string, layer: Layer): boolean => layer === 'ang
 
 /**
  * The sheets in the order the entry imports them: React `Main.tsx` imports, Angular `styles.css` `@import`s. An Angular
- * half whose `styles.css` carries the app rules after its imports has a fourth sheet, `app.css`, which `linkSheets`
- * writes from that remainder (the place `app.css` takes in the other halves).
+ * half whose `styles.css` carries the app rules after its imports has a fourth sheet, `app.css`, the place the remainder
+ * takes among the sheets of the other halves.
  */
 export function sheetOrder(dir: string, layer: Layer): string[] {
   const text = readFileSync(join(dir, layer === 'react' ? entryOf('react') : 'src/styles.css'), 'utf8');

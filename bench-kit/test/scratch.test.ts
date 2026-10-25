@@ -10,9 +10,9 @@ import type { Mutation } from '../src/types.ts';
 const made: string[] = [];
 const fixtures = { react: fixture('react'), angular: fixture('angular') };
 made.push(fixtures.react.root, fixtures.angular.root);
-const make = (layer: 'react' | 'angular', tag: string, m: Mutation) => {
+const make = (layer: 'react' | 'angular', tag: string, m: Mutation, copyArena = false) => {
   const { root, dir } = fixtures[layer];
-  const path = scratch(dir, tag, m, root);
+  const path = scratch(dir, tag, m, root, copyArena);
   made.push(path);
   return path;
 };
@@ -73,7 +73,27 @@ describe('scratch', () => {
     for (const left of ['.angular', '.ngc', 'dist']) expect(existsSync(join(path, left))).toBe(false);
   });
 
+  test('with copyArena, Arena\'s package is a real directory below the scratch (an npm install\'s layout) and the other packages stay links', () => {
+    const { root, dir } = fixtures.angular;
+    const path = make('angular', 't-copy', 'none', true);
+    const arena = join(path, 'node_modules/@dravensoft/arena-angular');
+    expect(lstatSync(arena).isSymbolicLink()).toBe(false);
+    expect(realpathSync(arena)).toBe(arena);
+    expect(existsSync(join(arena, 'package.json'))).toBe(true);
+    expect(lstatSync(join(path, 'node_modules/rollup')).isSymbolicLink()).toBe(true);
+    expect(realpathSync(join(root, dir, 'node_modules/@dravensoft/arena-angular'))).not.toBe(arena);
+  });
+
   for (const layer of LAYERS) {
+    test(`${layer} arena-patch with copyArena patches the scratch's own directory and not the half's install`, () => {
+      const { root, dir } = fixtures[layer];
+      const installed = join(root, dir, 'node_modules/@dravensoft', `arena-${layer}`);
+      const path = make(layer, 't-copy-patch', 'arena-patch', true);
+      const copy = join(path, 'node_modules/@dravensoft', `arena-${layer}`);
+      expect(readFileSync(join(copy, PATCHED[layer]), 'utf8')).toContain('__arenaPatch');
+      expect(readFileSync(join(installed, PATCHED[layer]), 'utf8')).not.toContain('__arenaPatch');
+    });
+
     test(`${layer} arena-patch: a real copy is patched, the half's install is not`, async () => {
       const { root, dir } = fixtures[layer];
       const installed = join(root, dir, 'node_modules/@dravensoft', `arena-${layer}`);

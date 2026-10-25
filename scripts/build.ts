@@ -30,7 +30,8 @@ export const LAYERS = ['react', 'angular'] as const satisfies readonly Layer[];
 
 export const LABELS: Record<Layer, string> = { react: 'React', angular: 'Angular' };
 
-export const BASE = '<base href="./"';
+/** The relative base every page carries: `<base href="./">`, or `<base href=./>` where a bundler minifies the page and drops the quotes. */
+export const BASE = /<base\s+href=(?:"\.\/"|'\.\/'|\.\/(?=[\s/>]))/;
 
 export const NOT_BROWSER_OUTPUT = ['prerendered-routes.json', '3rdpartylicenses.txt'];
 
@@ -80,7 +81,7 @@ export function adopterManifest(all: Product[], arena: string): AdopterManifest 
 }
 
 export function baseProblems(rel: string, html: string) {
-  return html.includes(BASE) ? [] : [`${rel} carries no ${BASE}>. Every href in it then resolves `
+  return BASE.test(html) ? [] : [`${rel} carries no <base href="./">. Every href in it then resolves `
     + 'against the domain root rather than against the directory the half is served from, so the '
     + 'page answers 200 and loads none of its own code'];
 }

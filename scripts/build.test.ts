@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ADOPTER, RESULTS, TABLE, adopterManifest, copyResults, halves, products } from './build.ts';
+import { ADOPTER, RESULTS, TABLE, adopterManifest, baseProblems, copyResults, halves, products } from './build.ts';
 
 const HREF = /^(?:[A-Za-z0-9._-]+\/)+$/;
 
@@ -81,6 +81,20 @@ describe('copyResults', () => {
       expect(existsSync(join(root, 'dist', RESULTS))).toBe(false);
     } finally {
       rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('baseProblems', () => {
+  test('accepts the relative base with double quotes, single quotes, or none where a bundler minifies the page', () => {
+    for (const base of ['<base href="./" />', '<base href="./">', "<base href='./'>", '<base href=./>', '<base  href=./ />']) {
+      expect(baseProblems('x/index.html', `<head>${base}</head>`)).toEqual([]);
+    }
+  });
+
+  test('names a page with no base, a base at the root and a base into a subdirectory', () => {
+    for (const head of ['', '<base href="/">', '<base href=/>', '<base href="./sub/">', '<base href=./sub/>', '<base href=.>']) {
+      expect(baseProblems('x/index.html', `<head>${head}</head>`)).toHaveLength(1);
     }
   });
 });

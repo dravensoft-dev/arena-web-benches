@@ -1,4 +1,4 @@
-import { appendFileSync, cpSync, existsSync, mkdirSync, readdirSync, realpathSync, renameSync, rmSync, symlinkSync } from 'node:fs';
+import { appendFileSync, cpSync, existsSync, lstatSync, mkdirSync, readdirSync, realpathSync, renameSync, rmSync, symlinkSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 import type { Layer, Mutation } from './types.ts';
 
@@ -39,9 +39,11 @@ function buttonModule(pkgDir: string, layer: Layer): string {
 /**
  * `to` as a directory holding a link to the real path of each package of `from`, one level below a scope (`@scope/*`),
  * and `.bin` as it is (its links are relative to `node_modules`, so they resolve through the new links). The packages
- * stay where the install put them, so a scratch resolves what the half resolves, whatever the install's layout.
+ * stay where the install put them, so a scratch resolves what the half resolves, whatever the install's layout. With
+ * `copyArena`, Arena's own packages (`@dravensoft/*`) are real directories below the scratch, as an npm install makes
+ * them: a bundler that matches paths below its project root (Parcel's `manualSharedBundles`) finds no link's target there.
  */
-function linkModules(from: string, to: string): void {
+function linkModules(from: string, to: string, copyArena: boolean): void {
   mkdirSync(to, { recursive: true });
   if (!existsSync(from)) return;
   for (const entry of readdirSync(from, { withFileTypes: true })) {
@@ -50,7 +52,11 @@ function linkModules(from: string, to: string): void {
       cpSync(source, join(to, entry.name), { recursive: true, verbatimSymlinks: true });
     } else if (entry.name.startsWith('@') && !entry.isSymbolicLink()) {
       mkdirSync(join(to, entry.name), { recursive: true });
-      for (const inner of readdirSync(source)) symlinkSync(realpathSync(join(source, inner)), join(to, entry.name, inner));
+      for (const inner of readdirSync(source)) {
+        const real = realpathSync(join(source, inner));
+        if (copyArena && entry.name === '@dravensoft') cpSync(real, join(to, entry.name, inner), { recursive: true });
+        else symlinkSync(real, join(to, entry.name, inner));
+      }
     } else {
       symlinkSync(realpathSync(source), join(to, entry.name));
     }
@@ -62,7 +68,7 @@ function linkModules(from: string, to: string): void {
  * paths resolve, with the app marker on the entry and the mutation applied. The scratch's `node_modules` holds one link
  * per package of the half's, pointing at the half's own tree (the half and its install are only read).
  */
-export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'): string {
+export function scratch(dir: string, tag: string, mutation: Mutation, root = '.', copyArena = false): string {
   const layer = layerOf(dir);
   const from = join(root, dir);
   const to = join(root, `.run-${dir}-${tag}`);
@@ -72,7 +78,7 @@ export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'
     verbatimSymlinks: true,
     filter: (src) => !(SKIPPED.has(basename(src)) && relative(from, src) === basename(src)),
   });
-  linkModules(join(from, 'node_modules'), join(to, 'node_modules'));
+  linkModules(join(from, 'node_modules'), join(to, 'node_modules'), copyArena);
 
   appendFileSync(join(to, entryOf(layer)), marker(mutation === 'app-text' ? `${dir} ·` : dir));
   if (mutation === 'app-sheet') {
@@ -82,9 +88,11 @@ export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'
   }
   if (mutation === 'arena-patch') {
     const link = join(to, 'node_modules', '@dravensoft', `arena-${layer}`);
-    const real = realpathSync(link);
-    rmSync(link, { force: true });
-    cpSync(real, link, { recursive: true });
+    if (lstatSync(link).isSymbolicLink()) {
+      const real = realpathSync(link);
+      rmSync(link, { force: true });
+      cpSync(real, link, { recursive: true });
+    }
     appendFileSync(buttonModule(link, layer), `\n${ARENA_PATCH}`);
   }
   return to;

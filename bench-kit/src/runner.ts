@@ -46,6 +46,8 @@ export type Part = {
   compile?: boolean;
   /** The output directory of `bundle`, relative to the half. */
   out?: string;
+  /** The bundler matches paths below its project root, so a scratch holds Arena's packages as real directories, as an npm install does. */
+  arenaCopy?: boolean;
 };
 
 /** The runs every half builds for the figures, whatever its observations ask. */
@@ -185,7 +187,7 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
 
     for (const key of keys) {
       const { mutation, variant } = spec(key);
-      scratch(dir, 'm', mutation, root);
+      scratch(dir, 'm', mutation, root, part.arenaCopy === true);
       let built: Built;
       if (key === 'twice') {
         // One outdir, built twice: `recipe`, then the app's text changed in place, as `app-text` does, then `twice`.

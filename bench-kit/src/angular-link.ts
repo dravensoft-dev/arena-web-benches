@@ -33,8 +33,8 @@ function linkerOf(from: string): unknown {
 /**
  * The Angular linker over a partially compiled file, as `ng build` runs it: `null` when the file carries no
  * `ɵɵngDeclare`, otherwise Babel's output with every declaration linked. `from` is the half (or scratch) whose
- * `@angular/compiler-cli` runs, the working directory by default. This is the one place the rollup-family, Parcel, Bun
- * and esbuild drivers call the linker; the webpack family's loader runs in its bundler's process and keeps the same call.
+ * `@angular/compiler-cli` runs, the working directory by default. This is the one place the Bun and esbuild
+ * drivers call the linker; the webpack family's loader runs in its bundler's process and keeps the same call.
  */
 export function linkPartial(code: string, path: string, from: string = process.cwd()): string | null {
   if (!code.includes('ɵɵngDeclare')) return null;
