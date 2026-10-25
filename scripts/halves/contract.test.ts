@@ -9,6 +9,7 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { BASE } from '../build.ts';
 import { script } from '../../bench-kit/src/run.ts';
+import { hasScript } from '../../bench-kit/src/runner.ts';
 import { layerOf, scratch } from '../../bench-kit/src/scratch.ts';
 import { firstSelectors, sheetOrder } from '../../bench-kit/src/static.ts';
 import { ownHalves, partOf } from './halves.ts';
@@ -32,10 +33,11 @@ describe.each(ownHalves())('%s', (dir) => {
   test('builds with its own scripts, keeps the base, the sprite and both sheets, and writes nothing into the tree', async () => {
     const part = await partOf(dir);
     const before = status();
-    const path = scratch(dir, 'contract', 'none', '.', part.arenaCopy === true);
+    const path = scratch(dir, 'contract', 'none', '.', part.arenaCopy === true, part.hardlinkModules === true);
     made.push(path);
     let log = '';
     for (const step of part.compile ? ['compile', 'bundle', 'finish'] : ['bundle', 'finish']) {
+      if (step === 'finish' && !hasScript(path, 'finish')) continue;
       const done = script(path, step);
       if (!done.ok) throw new Error(`${dir}: ${step} failed:\n${done.log}`);
       log += done.log;
@@ -48,6 +50,8 @@ describe.each(ownHalves())('%s', (dir) => {
     const { packageSelector, appSelector } = firstSelectors(path, layer);
     const page = readFileSync(join(out, 'index.html'), 'utf8');
     expect(page).toMatch(BASE);
+    // Review Focus 1: Next's `assetPrefix: './'` keeps every chunk relative; a rooted `/_next/` loads nothing below the half's route.
+    if (part.bundler === 'next') expect(page).not.toContain('"/_next/');
     expect(readdirSync(out).filter((name) => /^icons-.*\.svg$/.test(name))).toHaveLength(1);
 
     const css = filesText(out, '.css').join('\n').replace(/\s+/g, '');
@@ -58,8 +62,8 @@ describe.each(ownHalves())('%s', (dir) => {
       const linked = [...page.matchAll(/<link rel="stylesheet" href="\.\/([^"]+)">/g)].map((match) => match[1]);
       expect(linked).toEqual(sheetOrder(path, layer));
     }
-    // Every file the page loads is in the output (a quote around the value is optional: Parcel minifies the page).
-    const loads = [...page.matchAll(/<(?:link|script)\b[^>]*?\b(?:href|src)=["']?([^"' >]+)/g)].map((match) => match[1]!);
+    // Every file the page loads is in the output (a quote around the value is optional: Parcel minifies the page); a remote address, such as a font, is not a file of the half.
+    const loads = [...page.matchAll(/<(?:link|script)\b[^>]*?\b(?:href|src)=["']?([^"' >]+)/g)].map((match) => match[1]!).filter((file) => !/^[a-z][a-z0-9+.-]*:/i.test(file));
     expect(loads.length).toBeGreaterThan(0);
     for (const file of loads) expect(existsSync(join(out, file.replace(/^\.\//, ''))), `${dir}: the page loads ${file}`).toBe(true);
     expect(status()).toBe(before);

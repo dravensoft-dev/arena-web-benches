@@ -1,18 +1,16 @@
-/* The sixteen halves built into one shape, or none of them. bundlers.json names the pairs, and the path each
- * half writes into is its assigned driver's, because Next writes out, Angular dist/browser and the rest dist
- * and no convention holds them, and the exit code is the whole of the claim: the first half that fails stops the run
- * and leaves nothing behind. Three things are asserted rather than trusted. The `./` base, since
- * the flag that sets it is in each half's own script and a half published against the domain root
- * answers 200 at every href under a subdirectory and loads none of its own code. That every raster
- * is asked for relative to the half, since a root-absolute one is the domain root wherever the half
- * sits and nothing downstream reads a bundle. That only the browser output travels. A half's own
- * output is cleared first: `bun build` does not empty the directory it writes into, so every
- * earlier hashed bundle stays there, published and loaded by nothing. */
+/* The sixteen halves built into one shape, or none of them. bundlers.json names the pairs; each half is an adopter of its
+ * bundler, installs its own frozen lockfile, builds with its own `build` script into its own `dist`, and the exit code
+ * is the whole of the claim: the first half that fails stops the run and leaves nothing behind. Three things are asserted
+ * rather than trusted. The `./` base, since the flag that sets it is in each half's own config and a half published
+ * against the domain root answers 200 at every href under a subdirectory and loads none of its own code. That every
+ * raster is asked for relative to the half, since a root-absolute one is the domain root wherever the half sits and
+ * nothing downstream reads a bundle. That only the browser output travels. A half's own output is cleared first: some
+ * bundlers do not empty the directory they write into, so every earlier hashed bundle would stay there, published and
+ * loaded by nothing. */
 
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { assigned, table } from './bundlers/rotation.ts';
-import type { Driver, Layer, Product } from './bundlers/types.ts';
+import type { Layer, Product } from './bundlers/types.ts';
 
 export const ADOPTER = 'arena-adopter.json';
 
@@ -25,6 +23,9 @@ export const REPOSITORY = 'https://github.com/dravensoft-dev/arena-web-benches';
 export const ARENA = '12.1.1';
 
 export const OUT = 'dist';
+
+/** The directory a half's `build` writes its browser output into. */
+export const DIST = 'dist';
 
 export const LAYERS = ['react', 'angular'] as const satisfies readonly Layer[];
 
@@ -115,16 +116,6 @@ export function copyResults(root: string, out: string): boolean {
   return true;
 }
 
-/** The half carries its own build and measuring: `measure.ts` at its root. It is an adopter of its bundler, with an install of its own. */
-export const own = (dir: string, root = '.'): boolean => existsSync(join(root, dir, 'measure.ts'));
-
-/** The directory `dir` writes its browser output into: `dist` for a half with its own build, else its assigned driver's. */
-async function outOf(dir: string): Promise<string> {
-  if (own(dir)) return 'dist';
-  const { bundler } = assigned(table(), dir);
-  return ((await import(`./bundlers/drivers/${bundler}.ts`)).default as Driver).out;
-}
-
 function run(command: string[]) {
   const done = Bun.spawnSync(command, { stdout: 'inherit', stderr: 'inherit' });
   return done.exitCode === 0;
@@ -140,20 +131,18 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
 
   for (const { product, layer, dir } of all) {
-    const out = await outOf(dir);
     console.log(`\nbuild: ${dir}`);
-    rmSync(join(dir, out.split('/')[0] ?? out), { recursive: true, force: true });
-    // A half with its own build installs its own frozen lockfile first (D15): what it declares is what it builds with.
-    if ((own(dir) && !run(['bun', 'install', '--frozen-lockfile', '--cwd', dir])) || !run(['bun', 'run', '--cwd', dir, 'build'])) {
+    rmSync(join(dir, DIST), { recursive: true, force: true });
+    // A half installs its own frozen lockfile first (D15): what it declares is what it builds with.
+    if (!run(['bun', 'install', '--frozen-lockfile', '--cwd', dir]) || !run(['bun', 'run', '--cwd', dir, 'build'])) {
       for (const one of pairs) rmSync(join(OUT, one.product), { recursive: true, force: true });
       console.error(`\nbuild: ${dir} did not build, and a site carrying fifteen halves is never `
         + 'published, so nothing is left under ' + OUT + '/');
       process.exit(1);
     }
-    const from = join(dir, out);
+    const from = join(dir, DIST);
     if (!existsSync(from)) {
-      console.error(`\nbuild: ${dir} built and wrote no ${out}, which is the path the ${layer} `
-        + 'layer writes into');
+      console.error(`\nbuild: ${dir} built and wrote no ${DIST}, which is the path every half writes into`);
       process.exit(1);
     }
     const into = join(OUT, product, layer);

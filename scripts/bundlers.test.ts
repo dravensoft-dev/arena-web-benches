@@ -4,7 +4,6 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { contradictions, measureHalves, run } from './bundlers.ts';
 import type { Results } from './bundlers.ts';
-import { own } from './build.ts';
 import { table } from './bundlers/rotation.ts';
 
 const made: string[] = [];
@@ -32,13 +31,15 @@ describe('contradictions', () => {
 });
 
 describe('run', () => {
-  test('a wrong pin stops the run before any build, naming the pin', async () => {
+  test('a wrong pin stops the run before any half measures, naming the half and the pin', async () => {
     const root = mkdtempSync(join(tmpdir(), 'bundlers-run-'));
     made.push(root);
-    const t = { ...table(), pins: { rollup: '0.0.0' } };
-    // the root holds no tree, so `rollup` is installed as nothing
-    mkdirTree(root, t.products[0]!.react);
-    await expect(run(t, root, t.products[0]!.react)).rejects.toThrow(/rollup: pinned 0\.0\.0, installed nothing/);
+    const t = table();
+    const first = t.products[0]!.react;
+    mkdirTree(root, first);
+    // the half declares rollup at its pin and its install holds nothing of it
+    writeFileSync(join(root, first, 'package.json'), JSON.stringify({ devDependencies: { rollup: t.pins['rollup'] } }));
+    await expect(run(t, root, first)).rejects.toThrow(new RegExp(`${first}: rollup: pinned ${t.pins['rollup']!.replace(/\./g, '\\.')}, installed nothing`));
     expect(readdirSync(root).filter((name) => name.startsWith('.run-'))).toEqual([]);
     expect(existsSync(join(root, 'dist'))).toBe(false);
   });
@@ -72,11 +73,6 @@ describe('measureHalves', () => {
     made.push(root);
     half(root, 'react-a', `echo '{"dir":"react-a","observations":[{"holds":true}]}' > bundlers-result.json; exit 1`);
     await expect(measureHalves(['react-a'], root, 1)).rejects.toThrow(/react-a: measure exited 1 with no contradiction in bundlers-result\.json/);
-  });
-
-  test('a half carries its own measuring when it has a measure.ts', () => {
-    expect(own('react-etsy')).toBe(true);
-    expect(own('react-calendly')).toBe(false);
   });
 });
 

@@ -39,17 +39,16 @@ was drawn after; the marks and the artwork are its own.
 ## Building all of them
 
 ```bash
-bun install        # the root's workspaces; a half with its own install (see below) installs itself in `build`
 bun run build      # dist/<product>/<layer>/, and arena-adopter.json beside them
 bun run bundlers   # every bundler page's claim, checked; writes bundlers-results.json
 bun run compare    # the eight pairs, each as two frames, on http://localhost:5100
 ```
 
 `build` runs each half's build, which is the bundler its product is assigned (see
-[Measuring the bundlers](#measuring-the-bundlers)): a half that is an adopter of its bundler runs
-`bun install --frozen-lockfile` in itself and then its own `build`, and the rest build through the
-driver of their bundler. It stops on the first that fails, so its exit code is the
-whole of the claim that a published gallery holds sixteen halves or none. It normalises the two
+[Measuring the bundlers](#measuring-the-bundlers)): every half is an adopter of its bundler, with a
+config, a lockfile and an install of its own, so `build` runs `bun install --frozen-lockfile` in the
+half and then its own `build`. The root installs nothing and carries no bundler. It stops on the
+first that fails, so its exit code is the whole of the claim that a published gallery holds sixteen halves or none. It normalises the two
 output paths into one shape, asserts the `./` base every half needs to be served from a
 subdirectory, and asserts that every raster a half asks for is a raster it carries. That directory
 is the only thing [Arena](https://github.com/dravensoft-dev/arena) reads, and it publishes it at
@@ -77,15 +76,32 @@ two consecutive rotations build all eleven.
 bun run bundlers
 ```
 
-runs the `measure` of each half that is an adopter of its bundler (the Etsy, ClickUp, Duolingo, Grafana and
-Superhuman halves, which carry their own config, install, lockfile, README and the machinery of
-[`bench-kit/`](./bench-kit)), halves in
-parallel, and gathers what each wrote into `bundlers-results.json`; the other halves are built here through
-the driver of their bundler. For each half, the runs its bundler's claims need (the page's recipe, the app's text
-changed, the app's sheet changed, one Arena module patched, and each probe), checks every claim
-against what the bundler wrote, weighs the outputs, and writes `bundlers-results.json`. It exits 1
-after printing each claim a build contradicts. `bun scripts/bundlers.ts --only react-etsy` runs one
-half and prints its result without writing the file.
+runs the `measure` of each half, halves in parallel, and gathers what each wrote into
+`bundlers-results.json`. A half carries its own config, install, lockfile, README and the part of
+[`bench-kit/`](./bench-kit) its bundler needs: the page's snippets, the variants (the half's config
+with a snippet removed or swapped, in a scratch copy) and the observation rows. For each half, the
+runs its bundler's claims need (the page's recipe, the app's text changed, the app's sheet changed,
+one Arena module patched, and each probe) are built at a scratch copy of the half, every claim is
+checked against what the bundler wrote, and the outputs are weighed. A scratch holds the half's
+install as links, except where the bundler cannot resolve through one: Parcel matches its globs
+against paths below its project root, so the Parcel halves ask for Arena's package as a real
+directory (`arenaCopy`), and Turbopack refuses a link that points out of its root, so the Next.js
+half asks for the whole install as hardlinks (`hardlinkModules`). `bun run bundlers` exits 1 after
+printing each claim a build contradicts. `bun scripts/bundlers.ts --only react-etsy` runs one half
+and prints its result without writing the file.
+
+Bun and esbuild hold no half in rotation 0. Their part (the page's snippets, the variants and the
+rows) is in [`bench-kit/parts/`](./bench-kit/parts), with the config a half of each carries, and a
+test holds the snippets in that config.
+
+```bash
+bun run rotate 1
+```
+
+moves each half to the bundler rotation 1 assigns it: the half takes the config, `measure.ts`, scripts
+and devDependencies of a half of its layer that holds that bundler now, keeps its name, dev flow and
+sources, and gets a lockfile of its own from `bun install`. A bundler no half holds yet (Bun and
+esbuild in rotation 0) has no donor, and the rotation stops naming it before it writes anything.
 
 ## Measuring one
 
