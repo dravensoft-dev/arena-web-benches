@@ -10,7 +10,7 @@ import type { HalfResult } from '../../bench-kit/src/runner.ts';
 import type { Assignment, BundlerId, Layer, Table } from './types.ts';
 
 /** The committed results as an earlier run left them; a file from before the draw records no seed, assignment or left-out entries. */
-export type Previous = { seed?: number | null; assignment?: Record<string, string> | null; leftOut?: string[]; date?: string; commit?: string; halves: (HalfResult & { seconds?: number })[] };
+export type Previous = { seed?: number | null; assignment?: Record<string, string> | null; leftOut?: string[]; date?: string; commit?: string; carried?: { date: string; commit: string; seed: number | null; halves: (HalfResult & { seconds?: number })[] } | null; halves: (HalfResult & { seconds?: number })[] };
 
 export function table(root = '.'): Table {
   return JSON.parse(readFileSync(join(root, TABLE), 'utf8')) as Table;
@@ -54,6 +54,15 @@ export function draw(t: Table, seed: number, forced: string[] = []): Assignment 
   const chosen = shuffle([...forced, ...free.slice(0, t.products.length - forced.length)], random);
   const entries = Object.fromEntries(t.products.map((one, at) => [one.product, chosen[at]!]));
   return { seed, entries, leftOut: names.filter((name) => !chosen.includes(name)) };
+}
+
+/**
+ * The draw of a run told `seed`: the committed results' own draw when they were drawn with that seed (the run measures it
+ * again, and the left-out entries are those it recorded), else `draw` with the previous run's left-out entries forced in.
+ */
+export function drawFor(t: Table, seed: number, previous: Previous | null): Assignment {
+  if (previous?.seed === seed && previous.assignment && previous.leftOut) return { seed, entries: previous.assignment, leftOut: previous.leftOut };
+  return draw(t, seed, leftOutOf(t, previous));
 }
 
 /** Product to the bundler of each layer, for an assignment. */

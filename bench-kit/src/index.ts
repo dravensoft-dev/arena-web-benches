@@ -1,6 +1,6 @@
 export * from './observations.ts';
 export { exec, script } from './run.ts';
-export { FIGURE_RUNS, PLAIN_TEXT, RESULT, checkSnippets, configOf, contradictionsOf, figures, hasScript, measureMain, runMeasure, spec, withCache } from './runner.ts';
+export { FIGURE_RUNS, PLAIN_TEXT, RESULT, checkSnippets, configOf, contradictionsOf, figures, hasScript, measureMain, runMeasure, spec } from './runner.ts';
 export type { HalfResult, Key, Part } from './runner.ts';
 export { ARENA_PATCH, entryOf, hold, layerOf, rebase, scratch, scratchPath } from './scratch.ts';
 export { occurrences, removeSnippet, replaceSnippet, requireSnippet } from './snippets.ts';

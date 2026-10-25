@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fixture } from './fixture.ts';
-import { configOf, pinProblem, runMeasure, spec, withCache } from '../src/runner.ts';
+import { configOf, pinProblem, runMeasure, spec } from '../src/runner.ts';
 import type { Part } from '../src/runner.ts';
 
 const made: string[] = [];
@@ -82,19 +82,5 @@ describe('runMeasure', () => {
     expect(result.figuresError).toContain("run 'plain' did not build");
     expect(result.figuresError).toContain("the rollup part carries no variant 'plain'");
     expect(JSON.parse(readFileSync(join(abs, 'bundlers-result.json'), 'utf8')).figuresError).toBe(result.figuresError);
-  });
-});
-
-describe('withCache', () => {
-  const webpack = { ...part({}), bundler: 'webpack' as const, config: 'webpack.config.mjs' };
-
-  test('adds webpack\'s filesystem cache at the top of the config, and leaves every other bundler\'s config as it is', () => {
-    const config = "import x from 'x';\nexport default {\n  mode: 'production',\n};\n";
-    expect(withCache(webpack, config, '/tmp/c')).toBe("import x from 'x';\nexport default {\n  cache: { type: 'filesystem', cacheDirectory: \"/tmp/c\" },\n  mode: 'production',\n};\n");
-    expect(withCache(part({}), config, '/tmp/c')).toBe(config);
-  });
-
-  test('a webpack config with no `export default {` is a throw naming the config', () => {
-    expect(() => withCache(webpack, 'module.exports = {};', '/tmp/c')).toThrow('webpack.config.mjs has no `export default {`');
   });
 });

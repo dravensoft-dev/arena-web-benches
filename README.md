@@ -78,7 +78,7 @@ and one entry per measured half with the seconds its measuring took, so the next
 ```bash
 bun run build                  # installs each half's lockfile first
 bun run bundlers               # draws, moves the halves to the draw, measures them
-bun run bundlers --seed 123    # the same draw again
+bun run bundlers --seed 123    # that seed's draw, whether or not the results hold it
 bun run rotate --seed 123      # only the move: the draw's halves, no measuring
 ```
 
@@ -89,9 +89,9 @@ carries its own config, install, lockfile, README and the part of [`bench-kit/`]
 page's snippets, the variants (the half's config with a snippet removed or swapped, in a scratch copy) and the
 observation rows. For each half, the runs its bundler's claims need (the page's recipe, the app's text changed, the
 app's sheet changed, one Arena module patched, and each probe) are built at a scratch copy of the half, every claim is
-checked against what the bundler wrote, and the outputs are weighed. webpack builds with a persistent filesystem cache
-shared by the runs of one half, since its outputs are byte-identical with and without it (`bun run test:contract`
-checks that); Rspack builds without one. A scratch holds the half's install as links, except where the bundler cannot
+checked against what the bundler wrote, and the outputs are weighed. No bundler builds with a persistent cache shared by
+the runs of one half: webpack's does not see a patch applied to a file below `node_modules`, so a patched Arena build
+would not differ from the unpatched one, and Rspack's React builds take under a second. A scratch holds the half's install as links, except where the bundler cannot
 resolve through one: Parcel matches its globs against paths below its project root, so the Parcel halves ask for
 Arena's package as a real directory (`arenaCopy`), and Turbopack refuses a link that points out of its root, so the
 Next.js half asks for the whole install as hardlinks (`hardlinkModules`). `bun run bundlers` exits 1 after printing
@@ -108,7 +108,7 @@ from the half of its layer that last held it, in the history of this repository.
 ```bash
 bun test scripts           # the build, the draw and the move, the runner, the rows of every half (fast, builds nothing)
 bun test bench-kit         # the shared machinery: snippets, scratch copies, weigher, runner
-bun run test:contract      # what a build of each half holds, and of a Bun and an esbuild template, and webpack's cache (slow: it builds)
+bun run test:contract      # what a build of each half holds, and of a Bun and an esbuild template (slow: it builds)
 ```
 
 `bun run test`, `bun run test:kit` and `bun run test:contract` are the same three lines. The contract test

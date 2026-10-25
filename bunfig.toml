@@ -1,4 +1,4 @@
 [test]
-# scripts/halves/contract.test.ts and cache.test.ts build the halves and are skipped by `bun test scripts`; run them with the ignore overridden:
-#   bun run test:contract
-pathIgnorePatterns = ["scripts/halves/contract.test.ts", "scripts/halves/cache.test.ts"]
+# scripts/halves/contract.test.ts builds the halves and is skipped by `bun test scripts`; run it with the ignore overridden:
+#   bun test --timeout 900000 --path-ignore-patterns 'nothing/**' scripts/halves/contract.test.ts
+pathIgnorePatterns = ["scripts/halves/contract.test.ts"]

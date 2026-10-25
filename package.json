@@ -10,7 +10,7 @@
     "compare": "bun scripts/compare.ts",
     "test": "bun test scripts",
     "test:kit": "bun test bench-kit",
-    "test:contract": "bun test --timeout 900000 --path-ignore-patterns 'nothing/**' scripts/halves/contract.test.ts scripts/halves/cache.test.ts",
+    "test:contract": "bun test --timeout 900000 --path-ignore-patterns 'nothing/**' scripts/halves/contract.test.ts",
     "pack": "bun scripts/pack.ts",
     "rotate": "bun scripts/rotate.ts"
   }

@@ -135,19 +135,6 @@ export function checkSnippets(part: Part, config: string): void {
   for (const [name, snippet] of Object.entries(part.snippets)) requireSnippet(config, name, snippet, part.config);
 }
 
-/**
- * webpack's persistent filesystem cache for the runs of one half, which share one directory and one scratch path: the
- * config of a run is the half's with a `cache` option added at the top. The page prints no cache, so a rewrite of the
- * scratch's config is where it goes, and a half whose config has no `export default {` is a throw naming it. Rspack
- * takes none: its build of a half is under a second, and the Angular builds are `ngc`'s time. A run's output is the
- * same with the cache and without it (checked in `bench-kit/test/cache.test.ts` on one half).
- */
-export function withCache(part: Part, config: string, directory: string): string {
-  if (part.bundler !== 'webpack') return config;
-  if (!config.includes('export default {')) throw new Error(`the ${part.bundler} config ${part.config} has no \`export default {\` to add the cache to`);
-  return config.replace('export default {', `export default {\n  cache: { type: 'filesystem', cacheDirectory: ${JSON.stringify(directory)} },`);
-}
-
 /** The text of `variant` for the half's config: a variant the part does not carry is a throw naming it. */
 export function configOf(part: Part, variant: Variant, config: string): string {
   if (variant === 'recipe') return config;
@@ -181,14 +168,12 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
     // webpack's module ids, so runs compared by name and bytes must share it (D11).
     const building = scratchPath(dir, 'm', root);
     made.push(building);
-    const cacheDirectory = scratchPath(dir, 'cache', root);
-    made.push(cacheDirectory);
 
     /** `bundle` at the building path, with the config of `variant`, after `compile` (once per distinct source). */
     const attempt = (mutation: Mutation, variant: Variant): Built => {
       const built = (log: string, ok = false): Built => ({ ok, out: ok ? join(building, out) : '', log });
       try {
-        writeFileSync(join(building, part.config), withCache(part, configOf(part, variant, config), cacheDirectory));
+        writeFileSync(join(building, part.config), configOf(part, variant, config));
         let log = '';
         if (part.compile) {
           // The source `ngc` reads differs only in the app marker: one compile per marker.

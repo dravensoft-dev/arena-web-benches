@@ -8,7 +8,7 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { halves, RESULTS } from './build.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
-import { draw, freshSeed, held, leftOutOf, previousResults, table } from './bundlers/rotation.ts';
+import { drawFor, freshSeed, held, previousResults, table } from './bundlers/rotation.ts';
 import type { Previous } from './bundlers/rotation.ts';
 import type { Assignment, BundlerId, Layer, Table } from './bundlers/types.ts';
 import { rotate } from './rotate.ts';
@@ -107,7 +107,7 @@ export async function run(t: Table, root = '.', only?: string, drawn?: Assignmen
   const measured = await measureHalves(schedule(all, root, previous), root);
   const commit = commitOf(root);
   return {
-    arena, arenaSource: t.arenaSource, seed: drawn?.seed ?? null, assignment: drawn?.entries ?? null, leftOut: drawn?.leftOut ?? [], carried: drawn ? carry(t, previous, drawn.leftOut) : null, date: new Date().toISOString().slice(0, 10), commit,
+    arena, arenaSource: t.arenaSource, seed: drawn?.seed ?? null, assignment: drawn?.entries ?? null, leftOut: drawn?.leftOut ?? [], carried: drawn ? (previous?.seed === drawn.seed ? previous.carried ?? null : carry(t, previous, drawn.leftOut)) : null, date: new Date().toISOString().slice(0, 10), commit,
     pins: t.pins, halves: all.map((one) => measured.get(one.dir)!),
   };
 }
@@ -139,7 +139,7 @@ async function main() {
   if (only === undefined) {
     const seed = seedAt < 0 ? freshSeed() : Number(process.argv[seedAt + 1]);
     if (!Number.isInteger(seed) || seed < 0) throw new Error('usage: bun run bundlers [--seed <n>] [--only <half>]');
-    drawn = draw(t, seed, leftOutOf(t, previous));
+    drawn = drawFor(t, seed, previous);
     console.log(`bundlers: seed ${seed}, left out ${drawn.leftOut.join(', ')}`);
     for (const move of rotate('.', drawn)) console.log(`bundlers: ${move.dir}: ${move.from} -> ${move.to}`);
   }

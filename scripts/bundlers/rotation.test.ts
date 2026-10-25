@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { assigned, assignment, current, draw, leftOutOf, table } from './rotation.ts';
+import { assigned, assignment, current, draw, drawFor, leftOutOf, table } from './rotation.ts';
 import type { Assignment } from './types.ts';
 
 const t = table();
@@ -60,6 +60,16 @@ describe('assignment', () => {
   test('an assignment naming an entry the table lacks is a throw naming it', () => {
     const bad: Assignment = { seed: 1, entries: { ...draw(t, 1).entries, etsy: 'nope' }, leftOut: [] };
     expect(() => assignment(t, bad)).toThrow("etsy the entry 'nope'");
+  });
+});
+
+describe('drawFor', () => {
+  test('is the committed draw for the seed the results were drawn with, and a fresh draw with the previous left-outs for any other', () => {
+    const first = draw(t, 5);
+    const previous = { seed: 5, assignment: first.entries, leftOut: first.leftOut, halves: [] };
+    expect(drawFor(t, 5, previous)).toEqual(first);
+    expect(drawFor(t, 6, previous)).toEqual(draw(t, 6, first.leftOut));
+    expect(drawFor(t, 6, null)).toEqual(draw(t, 6));
   });
 });
 
