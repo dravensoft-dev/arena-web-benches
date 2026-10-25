@@ -156,6 +156,14 @@ export function swap(root: string, move: Move, label: string, source: Source): v
   rmSync(join(root, move.dir, 'bun.lock'), { force: true });
 }
 
+/** The lockfile of each moved half, made by `bun install` in it: what the swap removed, the install writes again from the half's new devDependencies. */
+export function installMoved(root: string, moves: Move[]): void {
+  for (const move of moves) {
+    const done = Bun.spawnSync(['bun', 'install', '--cwd', join(root, move.dir)], { stdout: 'inherit', stderr: 'inherit' });
+    if (done.exitCode !== 0) throw new Error(`${move.dir}: bun install exited ${done.exitCode}`);
+  }
+}
+
 /** Rotation `rotation`: every move, then the lockfile of each moved half (`install`), then the table's rotation. */
 export function rotate(root: string, rotation: number, install = true): Move[] {
   const t = table(root);
@@ -175,12 +183,7 @@ export function rotate(root: string, rotation: number, install = true): Move[] {
     rmSync(staged, { recursive: true, force: true });
   }
   writeFileSync(join(root, TABLE), readFileSync(join(root, TABLE), 'utf8').replace(/"rotation": \d+/, `"rotation": ${rotation}`));
-  if (install) {
-    for (const move of moves) {
-      const done = Bun.spawnSync(['bun', 'install', '--cwd', join(root, move.dir)], { stdout: 'inherit', stderr: 'inherit' });
-      if (done.exitCode !== 0) throw new Error(`${move.dir}: bun install exited ${done.exitCode}`);
-    }
-  }
+  if (install) installMoved(root, moves);
   return moves;
 }
 

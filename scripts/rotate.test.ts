@@ -7,7 +7,7 @@ import { assigned, assignment, table } from './bundlers/rotation.ts';
 import { pinFor } from './bundlers/pins.ts';
 import { ownHalves, partOf } from './halves/halves.ts';
 import { cpSync } from 'node:fs';
-import { bundlerFiles, donorSource, plan, rotate, swap, templateSource } from './rotate.ts';
+import { bundlerFiles, donorSource, installMoved, plan, rotate, swap, templateSource } from './rotate.ts';
 
 const t = table();
 const made: string[] = [];
@@ -135,6 +135,20 @@ describe('swap', () => {
     // the donor is as it was
     expect(readFileSync(join(root, 'react-b', 'README.md'), 'utf8')).toBe('react-b is the B bench on 5102 with new\n');
   });
+
+  test('the lockfile is made again after a swap by a real `bun install`: it names the donor\'s devDependency and none of the old half\'s', () => {
+    const root = fixture();
+    const donor = join(root, 'react-b', 'package.json');
+    writeFileSync(donor, JSON.stringify({ ...JSON.parse(readFileSync(donor, 'utf8')), devDependencies: { 'is-number': '7.0.0' } }));
+    writeFileSync(join(root, 'react-a', 'package.json'), JSON.stringify({ name: 'react-a-bench', scripts: { dev: 'bun --hot ./Server.ts', bundle: 'old', build: 'old' }, devDependencies: { 'is-odd': '3.0.1' } }));
+    const move = { dir: 'react-a', product: 'a', layer: 'react' as const, from: 'rollup' as const, to: 'vite7' as const, donor: 'react-b' };
+    swap(root, move, 'A', donorSource(root, 'react-b', 'react', ['rollup', 'vite7'], 'B'));
+    expect(existsSync(join(root, 'react-a', 'bun.lock'))).toBe(false);
+    installMoved(root, [move]);
+    const lock = readFileSync(join(root, 'react-a', 'bun.lock'), 'utf8');
+    expect(lock).toContain('is-number');
+    expect(lock).not.toContain('is-odd');
+  }, 120000);
 
   test('a bundler with no donor and no template is a throw naming it', () => {
     expect(() => templateSource('vite7', 'react', t.pins)).toThrow('no half holds vite7 and bench-kit/parts has no template for it');

@@ -47,7 +47,8 @@ bun run compare    # the eight pairs, each as two frames, on http://localhost:51
 `build` runs each half's build, which is the bundler its product is assigned (see
 [Measuring the bundlers](#measuring-the-bundlers)): every half is an adopter of its bundler, with a
 config, a lockfile and an install of its own, so `build` runs `bun install --frozen-lockfile` in the
-half and then its own `build`. The root installs nothing and carries no bundler. It stops on the
+half and then its own `build`. The root installs nothing and carries no bundler, so a fresh clone runs
+`bun run build` with nothing installed. It stops on the
 first that fails, so its exit code is the whole of the claim that a published gallery holds sixteen halves or none. It normalises the two
 output paths into one shape, asserts the `./` base every half needs to be served from a
 subdirectory, and asserts that every raster a half asks for is a raster it carries. That directory

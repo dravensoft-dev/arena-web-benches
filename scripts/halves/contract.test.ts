@@ -97,6 +97,11 @@ describe.each(['bun', 'esbuild'] as const)('the %s template', (id) => {
       made.push(path);
       const t = table();
       swap('.', { dir: path, product: 'etsy', layer, from: 'rollup', to: id, donor: null }, 'Etsy', templateSource(id, layer, t.pins));
+      // The scratch's links are Etsy's install, which holds rollup and not what the template declares: a real install of the
+      // template's own package.json makes a devDependency it forgot a failure here, not something Etsy's tree answers.
+      rmSync(join(path, 'node_modules'), { recursive: true, force: true });
+      const installed = Bun.spawnSync(['bun', 'install'], { cwd: path });
+      if (installed.exitCode !== 0) throw new Error(`${id} ${layer}: bun install failed:\n${installed.stdout}${installed.stderr}`);
 
       let log = '';
       for (const step of layer === 'angular' ? ['compile', 'bundle', 'finish'] : ['bundle', 'finish']) {
