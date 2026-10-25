@@ -34,9 +34,9 @@ is in [`CLAUDE.md`](./CLAUDE.md).
 
 ## The measurement
 
-Every half is read with `bun run measure`, which runs `arena build`, `arena check`, `arena audit`
+Every half is read with `bun run report`, which runs `arena build`, `arena check`, `arena audit`
 and `arena usage` over `src` and `design`, against Arena 12.1.1 packed from the Arena working tree
-on `develop` at `08d6ea51b`. The two halves of every pair agree on both figures below, which is the
+on `develop` at `40c82585b`. The two halves of every pair agree on both figures below, which is the
 claim the paired mock exists to test.
 
 | Product | Components drawn | Parts the plugin paints |

@@ -7,7 +7,7 @@
     "start": "ng serve --port 5202",
     "prebuild": "arena build --src src --src design && arena audit --src src --src design --strict=audit && arena usage --src src --src design",
     "build": "bun ../scripts/bundlers/half.ts",
-    "measure": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
+    "report": "arena build --src src --src design && arena check --src src --src design && arena audit --src src --src design && arena usage --src src --src design"
   },
   "dependencies": {
     "@angular/common": "^22.0.0",

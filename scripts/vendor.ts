@@ -7,7 +7,8 @@
  * local tarball's cached extraction by its path and not by its content, so a repack under the same
  * version is installed as the old one unless the cache entry, the extraction under node_modules and
  * the lockfile's integrity are all dropped. This does that after packing, so bun scripts/vendor.ts
- * <arena> && bun install --force reads the tarballs just written. */
+ * <arena> && bun install --force reads the tarballs just written, at the root and inside each half that has an install of
+ * its own (`bun install --force` in that half). */
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -17,8 +18,17 @@ export const VENDOR = 'vendor';
 
 const NAMES = ['@dravensoft/arena-react', '@dravensoft/arena-angular'];
 
+/** The projects that install Arena from the tarballs: the root, and each half with an install of its own (a `bun.lock` of its own). */
+export function projects(): string[] {
+  const own = readdirSync('.', { withFileTypes: true })
+    .filter((one) => one.isDirectory() && existsSync(join(one.name, 'bun.lock')) && existsSync(join(one.name, 'package.json')))
+    .map((one) => one.name);
+  return ['.', ...own.sort()];
+}
+
 /* Forget what bun holds of the previous pack of each package: its cached extraction (and the link
- * to it), its extraction under the root node_modules, and the integrity the lockfile records. */
+ * to it), its extraction under each project's node_modules (the isolated store, or the hoisted copy), and the
+ * integrity the project's lockfile records. */
 function forget(done: Map<string, string>) {
   const cache = run(['bun', 'pm', 'cache'], '.').trim();
   if (cache && existsSync(cache)) {
@@ -34,18 +44,22 @@ function forget(done: Map<string, string>) {
       for (const one of readdirSync(folder).filter((link) => link.startsWith('@T@'))) rmSync(join(folder, one), { force: true });
     }
   }
-  const store = join('node_modules', '.bun');
-  if (existsSync(store)) {
-    for (const one of readdirSync(store).filter((dir) => dir.includes('+vendor+'))) {
-      rmSync(join(store, one), { recursive: true, force: true });
+  for (const project of projects()) {
+    const store = join(project, 'node_modules', '.bun');
+    if (existsSync(store)) {
+      for (const one of readdirSync(store).filter((dir) => dir.includes('+vendor+'))) {
+        rmSync(join(store, one), { recursive: true, force: true });
+      }
     }
-  }
-  if (existsSync('bun.lock')) {
-    const lines = readFileSync('bun.lock', 'utf8').split('\n').map((line) => {
-      const name = NAMES.find((one) => line.includes(`"${one}": ["${one}@../vendor/`));
-      return name && done.has(name) ? line.replace(/sha512-[A-Za-z0-9+/=]+/, done.get(name)!) : line;
-    });
-    writeFileSync('bun.lock', lines.join('\n'));
+    for (const name of NAMES) rmSync(join(project, 'node_modules', name), { recursive: true, force: true });
+    const lock = join(project, 'bun.lock');
+    if (existsSync(lock)) {
+      const lines = readFileSync(lock, 'utf8').split('\n').map((line) => {
+        const name = NAMES.find((one) => line.includes(`"${one}": ["${one}@../vendor/`));
+        return name && done.has(name) ? line.replace(/sha512-[A-Za-z0-9+/=]+/, done.get(name)!) : line;
+      });
+      writeFileSync(lock, lines.join('\n'));
+    }
   }
 }
 
