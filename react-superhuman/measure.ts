@@ -30,7 +30,7 @@ export const part: Part = {
     'no-package-exports': (config) => removeSnippet(config, 'package-exports', SNIPPETS['package-exports']),
   },
   observations: [
-    row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'an import of an Arena subpath, or Angular\'s `@angular/common/http`, fails without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports') }),
+    row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'Angular\'s `@angular/common/http` does not resolve without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports', "Failed to resolve '@angular/common/http'") }),
     row({ id: 'parcel.first-import-resolves', bundler: 'parcel', layers: ['react'], claim: 'the first Arena import resolves through the package\'s `module` field without `packageExports`', needs: ['no-package-exports'], check: builds('no-package-exports') }),
     jsRow('parcel', '`manualSharedBundles` keeps Arena\'s JS apart once `packageExports` is on', false),
     sheetRow('parcel', SHEET_APART),

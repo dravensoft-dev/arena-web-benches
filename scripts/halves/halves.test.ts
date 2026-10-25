@@ -164,8 +164,8 @@ describe('the halves of one bundler', () => {
     vite8: ['vite8.js-apart', 'vite8.sheet-apart', 'vite8.sheet-by-name'],
     rolldown: ['rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied', 'rolldown.linked-sheets'],
     parcel: ['parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem'],
-    webpack: ['webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type'],
-    rspack: ['rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular'],
+    webpack: ['webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type', 'webpack.extension-alias'],
+    rspack: ['rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular', 'rspack.extension-alias'],
   };
 
   /** Next.js builds the React layer only, the Angular builder the Angular layer only (the mixed product). */
@@ -195,9 +195,10 @@ describe('the halves of one bundler', () => {
     for (const bundler of Object.keys(rows)) {
       const dirs = own.filter((dir) => assigned(t, dir).bundler === bundler);
       const [react, angular] = await Promise.all(['react-', 'angular-'].map((prefix) => partOf(dirs.find((dir) => dir.startsWith(prefix))!)));
-      expect(Object.keys(react!.variants).sort(), bundler).toEqual(Object.keys(angular!.variants).sort());
-      // rspack's `styles` option is the one snippet of the page that only the Angular half carries.
-      expect(Object.keys(react!.snippets).sort(), bundler).toEqual(Object.keys(angular!.snippets).filter((name) => !(bundler === 'rspack' && name === 'styles')).sort());
+      // `extensionAlias` and rspack's `styles` option are what only an Angular half's config carries (`main.ts` imports the icon list `arena build` writes, as `.js`).
+      const alias = ['webpack', 'rspack'].includes(bundler);
+      expect(Object.keys(react!.variants).sort(), bundler).toEqual(Object.keys(angular!.variants).filter((name) => !(alias && name === 'no-extension-alias')).sort());
+      expect(Object.keys(react!.snippets).sort(), bundler).toEqual(Object.keys(angular!.snippets).filter((name) => !(alias && name === 'extension-alias') && !(bundler === 'rspack' && name === 'styles')).sort());
     }
   });
 });

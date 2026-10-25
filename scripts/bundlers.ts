@@ -52,8 +52,21 @@ export async function measureHalves(dirs: string[], root = '.', width = Math.max
   return done;
 }
 
+/**
+ * The short commit of `root`, with `-dirty` after it when the tree holds anything the commit does not: a figure read from a
+ * tree that differs from its commit names a commit that cannot reproduce it. The results file itself does not count, since
+ * the run is about to write it.
+ */
+export function commitOf(root = '.'): string {
+  const head = Bun.spawnSync(['git', 'rev-parse', '--short', 'HEAD'], { cwd: root }).stdout.toString().trim();
+  const changed = Bun.spawnSync(['git', 'status', '--porcelain'], { cwd: root }).stdout.toString().split('\n')
+    .filter((line) => line.trim() !== '' && line.slice(3) !== RESULTS);
+  return changed.length > 0 ? `${head}-dirty` : head;
+}
+
 export async function run(t: Table, root = '.', only?: string): Promise<Results> {
   const all = halves(t.products).filter((one) => only === undefined || one.dir === only);
+  if (all.length === 0) throw new Error(`--only ${only}: no such half; the halves are ${halves(t.products).map((one) => one.dir).join(', ')}`);
   const first = t.products[0]!.react;
   const arena = installedVersion('@dravensoft/arena-react', join(root, first));
   if (!arena) throw new Error(`@dravensoft/arena-react is not installed under ${first}: install the halves first, which \`bun run build\` does (\`bun install --frozen-lockfile\` in each half), or \`bun install\` in each`);
@@ -61,7 +74,7 @@ export async function run(t: Table, root = '.', only?: string): Promise<Results>
   if (problems.length > 0) throw new Error(`the installed trees are not the pinned ones, nothing is measured:\n  ${problems.join('\n  ')}`);
 
   const measured = await measureHalves(all.map((one) => one.dir), root);
-  const commit = Bun.spawnSync(['git', 'rev-parse', '--short', 'HEAD'], { cwd: root }).stdout.toString().trim();
+  const commit = commitOf(root);
   return {
     arena, arenaSource: t.arenaSource, rotation: t.rotation, date: new Date().toISOString().slice(0, 10), commit,
     pins: t.pins, halves: all.map((one) => measured.get(one.dir)!),

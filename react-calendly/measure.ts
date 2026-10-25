@@ -19,7 +19,7 @@ export const part: Part = {
   },
   observations: [
     row({ id: 'next.js-apart', bundler: 'next', layers: ['react'], claim: 'Next.js picks its chunks itself', expect: 'record', needs: ['recipe'], check: recordJsApart }),
-    row({ id: 'next.sheet-apart', bundler: 'next', layers: ['react'], claim: 'not exercised', expect: 'record', needs: ['recipe'], check: recordSheetApart }),
+    row({ id: 'next.sheet-apart', bundler: 'next', layers: ['react'], claim: 'a CSS file holds the package sheet alone', expect: 'record', needs: ['recipe'], check: recordSheetApart }),
     row({ id: 'next.sprite-public', bundler: 'next', layers: ['react'], claim: 'a sprite copied into `public/` is served at the root under its own name', expect: 'record', needs: ['recipe'], check: recordSprite }),
   ],
 };

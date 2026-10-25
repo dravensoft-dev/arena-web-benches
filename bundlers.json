@@ -33,7 +33,6 @@
     "@ngtools/webpack": "22.2.4",
     "@nx/angular-rspack": "24.0.1",
     "@parcel/plugin": "2.16.4",
-    "@rollup/plugin-babel": "7.1.0",
     "@rollup/plugin-commonjs": "29.0.3",
     "@rollup/plugin-node-resolve": "16.0.3",
     "@rollup/plugin-replace": "6.0.3",

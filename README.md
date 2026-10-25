@@ -106,6 +106,17 @@ bundler devDependencies of a half of its layer that holds that bundler now, or, 
 template in `bench-kit/parts/`; it keeps its name, dev flow, sources and the packages every bundler shares, and
 gets a lockfile of its own from `bun install`.
 
+## Testing the plumbing
+
+```bash
+bun test scripts           # the build, the rotation, the runner, the rows of every half (fast, builds nothing)
+bun test bench-kit         # the shared machinery: snippets, scratch copies, weigher, runner
+bun run test:contract      # what a build of each half holds, and of a Bun and an esbuild template (slow: it builds)
+```
+
+`bun run test`, `bun run test:kit` and `bun run test:contract` are the same three lines. The contract test
+needs every half installed (`bun run build` first) and takes a few minutes.
+
 ## Measuring one
 
 ```bash

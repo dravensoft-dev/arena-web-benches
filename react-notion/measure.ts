@@ -46,6 +46,7 @@ export const part: Part = {
     sheetRow('rspack', `${SHEET_APART}, with the \`css/auto\` rule and, on Angular, the sheet as its own \`styles\` entry`),
     row({ id: 'rspack.needs-css-auto', bundler: 'rspack', layers: ['react'], claim: 'on React, without the `css/auto` rule the build stops on the package sheet\'s `@layer properties;`', needs: ['no-css-auto'], check: fails('no-css-auto', '@layer properties') }),
     row({ id: 'rspack.css-auto-angular', bundler: 'rspack', layers: ['angular'], claim: 'on Angular through @nx/angular-rspack the `styles` entry places the sheet without `css/auto`', expect: 'record', needs: ['no-css-auto'], check: recordSheetAlone('no-css-auto') }),
+    row({ id: 'rspack.extension-alias', bundler: 'rspack', layers: ['angular'], claim: 'without `resolve.extensionAlias`, the build cannot resolve `main.ts`\'s import of `./arena.icons.generated.js`', needs: ['no-extension-alias'], check: fails('no-extension-alias', "Can't resolve './arena.icons.generated.js'") }),
   ],
 };
 

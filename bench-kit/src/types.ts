@@ -21,6 +21,7 @@ export type Probe =
   | 'js-recipe'
   | 'untyped-group'
   | 'no-css-auto'
+  | 'no-extension-alias'
   | 'no-package-exports'
   | 'twice'
   | 'no-define';

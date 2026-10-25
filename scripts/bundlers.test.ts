@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { contradictions, measureHalves, run } from './bundlers.ts';
+import { commitOf, contradictions, measureHalves, run } from './bundlers.ts';
 import type { Results } from './bundlers.ts';
 import { table } from './bundlers/rotation.ts';
 
@@ -30,7 +30,31 @@ describe('contradictions', () => {
   });
 });
 
+describe('commitOf', () => {
+  const git = (root: string, ...args: string[]) => Bun.spawnSync(['git', '-c', 'user.name=t', '-c', 'user.email=t@t', ...args], { cwd: root });
+
+  test('is the short commit on a clean tree, with -dirty after it when anything else changed, and the results file alone does not count', () => {
+    const root = mkdtempSync(join(tmpdir(), 'bundlers-git-'));
+    made.push(root);
+    git(root, 'init', '-q');
+    writeFileSync(join(root, 'a.txt'), 'a');
+    writeFileSync(join(root, 'bundlers-results.json'), '{}');
+    git(root, 'add', '.');
+    git(root, 'commit', '-q', '-m', 'one');
+    const head = git(root, 'rev-parse', '--short', 'HEAD').stdout.toString().trim();
+    expect(commitOf(root)).toBe(head);
+    writeFileSync(join(root, 'bundlers-results.json'), '{"a":1}');
+    expect(commitOf(root)).toBe(head);
+    writeFileSync(join(root, 'a.txt'), 'b');
+    expect(commitOf(root)).toBe(`${head}-dirty`);
+  });
+});
+
 describe('run', () => {
+  test('--only a half that is not there throws naming it and the halves', async () => {
+    await expect(run(table(), '.', 'react-nope')).rejects.toThrow(/--only react-nope: no such half; the halves are react-calendly, angular-calendly/);
+  });
+
   test('a wrong pin stops the run before any half measures, naming the half and the pin', async () => {
     const root = mkdtempSync(join(tmpdir(), 'bundlers-run-'));
     made.push(root);

@@ -20,8 +20,6 @@ export const RESULTS = 'bundlers-results.json';
 
 export const REPOSITORY = 'https://github.com/dravensoft-dev/arena-web-benches';
 
-export const ARENA = '12.1.1';
-
 export const OUT = 'dist';
 
 /** The directory a half's `build` writes its browser output into. */

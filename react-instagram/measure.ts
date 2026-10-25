@@ -2,7 +2,7 @@
  * `webpack.config.mjs`, and the claims the webpack page makes. `bun run measure` builds each variant at a scratch copy
  * of this half and writes `bundlers-result.json`. */
 
-import { JS_CLAIM, SHEET_APART, jsRow, measureMain, oneCss, recordSheetAlone, removeSnippet, replaceSnippet, row, sheetRow } from '@benches/kit';
+import { JS_CLAIM, SHEET_APART, fails, jsRow, measureMain, oneCss, recordSheetAlone, removeSnippet, replaceSnippet, row, sheetRow } from '@benches/kit';
 import type { Part } from '@benches/kit';
 
 /** The snippets of the webpack page, verbatim: each is in the config exactly once. */
@@ -53,6 +53,7 @@ export const part: Part = {
     sheetRow('webpack', SHEET_APART),
     row({ id: 'webpack.one-css-without', bundler: 'webpack', claim: 'without the sheet config, one CSS file for the entry', needs: ['plain'], check: oneCss('plain') }),
     row({ id: 'webpack.group-needs-type', bundler: 'webpack', claim: 'without `type`, where the sheet goes', expect: 'record', needs: ['untyped-group'], check: recordSheetAlone('untyped-group') }),
+    row({ id: 'webpack.extension-alias', bundler: 'webpack', layers: ['angular'], claim: 'without `resolve.extensionAlias`, the build cannot resolve `main.ts`\'s import of `./arena.icons.generated.js`', needs: ['no-extension-alias'], check: fails('no-extension-alias', "Can't resolve './arena.icons.generated.js'") }),
   ],
 };
 

@@ -8,6 +8,9 @@
     "build": "bun scripts/build.ts",
     "bundlers": "bun scripts/bundlers.ts",
     "compare": "bun scripts/compare.ts",
+    "test": "bun test scripts",
+    "test:kit": "bun test bench-kit",
+    "test:contract": "bun test --timeout 900000 --path-ignore-patterns 'nothing/**' scripts/halves/contract.test.ts",
     "pack": "bun scripts/pack.ts",
     "rotate": "bun scripts/rotate.ts"
   }

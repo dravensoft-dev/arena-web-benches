@@ -19,8 +19,8 @@ const ROWS = [
   'rolldown.js-apart', 'rolldown.css-refused', 'rolldown.sprite-not-copied', 'rolldown.linked-sheets',
   'parcel.needs-package-exports', 'parcel.first-import-resolves', 'parcel.js-apart', 'parcel.sheet-apart', 'parcel.react-with-app', 'parcel.shared-stem',
   'rollup.js-apart', 'rollup.no-css', 'rollup.sprite-not-copied', 'rollup.linked-sheets',
-  'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type',
-  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular',
+  'webpack.js-apart', 'webpack.sheet-apart', 'webpack.one-css-without', 'webpack.group-needs-type', 'webpack.extension-alias',
+  'rspack.js-apart', 'rspack.sheet-apart', 'rspack.needs-css-auto', 'rspack.css-auto-angular', 'rspack.extension-alias',
   'angular.arena-in-main', 'angular.one-styles-file', 'angular.side-effects-false',
   'bun.no-js-apart', 'bun.one-css', 'bun.outdir-kept', 'bun.sprite-not-copied',
   'esbuild.no-js-apart', 'esbuild.one-css', 'esbuild.ng-dev-mode',
@@ -206,7 +206,8 @@ test('the parcel probe reads Angular as a failure to build and React as a build 
   const first = one('parcel.first-import-resolves');
   expect(needs.layers).toEqual(['angular']);
   expect(first.layers).toEqual(['react']);
-  expect(judge(needs, ctx({ 'no-package-exports': output({}, false, 'Failed to resolve') })).holds).toBe(true);
+  expect(judge(needs, ctx({ 'no-package-exports': output({}, false, "Failed to resolve '@angular/common/http'") })).holds).toBe(true);
+  expect(judge(needs, ctx({ 'no-package-exports': output({}, false, 'Error: other') })).holds).toBe(false);
   expect(judge(needs, ctx({ 'no-package-exports': output({}) })).holds).toBe(false);
   expect(judge(first, ctx({ 'no-package-exports': output({}) })).holds).toBe(true);
   expect(judge(first, ctx({ 'no-package-exports': output({}, false, 'Failed to resolve') })).holds).toBe(false);
@@ -229,4 +230,17 @@ test('rspack.needs-css-auto holds on React when the probe stops on `@layer prope
   expect([a.layers, a.expect]).toEqual([['angular'], 'record']);
   const yes = judge(a, ctx({ 'no-css-auto': output({ 'arena-sheet.css': PKG, 'styles.css': APPCSS }) }));
   expect([yes.outcome, yes.holds]).toEqual([true, true]);
+});
+
+test('rollup.no-css holds only when rollup stops on the CSS it cannot import, and the extension-alias rows only on the resolve error of the icon list', () => {
+  const css = one('rollup.no-css');
+  expect(judge(css, ctx({ 'css-import': output({}, false, 'Note that you need plugins to import files that are not JavaScript') })).holds).toBe(true);
+  expect(judge(css, ctx({ 'css-import': output({}, false, 'Error: other') })).holds).toBe(false);
+  for (const id of ['webpack.extension-alias', 'rspack.extension-alias']) {
+    const o = one(id);
+    expect(o.layers).toEqual(['angular']);
+    expect(judge(o, ctx({ 'no-extension-alias': output({}, false, "Can't resolve './arena.icons.generated.js'") })).holds).toBe(true);
+    expect(judge(o, ctx({ 'no-extension-alias': output({}, false, 'Error: other') })).holds).toBe(false);
+    expect(judge(o, ctx({ 'no-extension-alias': output({}) })).holds).toBe(false);
+  }
 });

@@ -27,7 +27,7 @@ export const part: Part = {
   },
   observations: [
     jsRow('rollup', JS_CLAIM('`manualChunks`')),
-    row({ id: 'rollup.no-css', bundler: 'rollup', claim: 'rollup imports no CSS by itself', needs: ['css-import'], check: fails('css-import') }),
+    row({ id: 'rollup.no-css', bundler: 'rollup', claim: 'rollup imports no CSS by itself', needs: ['css-import'], check: fails('css-import', 'you need plugins to import files that are not JavaScript') }),
     noSprite_('rollup', 'rollup moves no file it does not import'),
     row({ id: 'rollup.linked-sheets', bundler: 'rollup', claim: 'link the sheets `arena build` writes from your page', expect: 'record', needs: [], check: linkedSheets }),
   ],
