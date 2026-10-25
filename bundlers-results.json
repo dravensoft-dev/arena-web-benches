@@ -268,7 +268,7 @@
     ]
   },
   "date": "2026-10-25",
-  "commit": "3b8c11a",
+  "commit": "5872eb4",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -355,7 +355,7 @@
           "fonts": 0
         }
       },
-      "seconds": 68.9
+      "seconds": 72.1
     },
     {
       "product": "calendly",
@@ -415,7 +415,7 @@
           "fonts": 0
         }
       },
-      "seconds": 296.4
+      "seconds": 306.5
     },
     {
       "product": "clickup",
@@ -459,7 +459,7 @@
           "fonts": 0
         }
       },
-      "seconds": 13.9
+      "seconds": 14.8
     },
     {
       "product": "clickup",
@@ -511,7 +511,7 @@
           "fonts": 0
         }
       },
-      "seconds": 112.5
+      "seconds": 115.5
     },
     {
       "product": "duolingo",
@@ -571,7 +571,7 @@
           "fonts": 0
         }
       },
-      "seconds": 15.8
+      "seconds": 15.7
     },
     {
       "product": "duolingo",
@@ -631,7 +631,7 @@
           "fonts": 0
         }
       },
-      "seconds": 138.4
+      "seconds": 129.5
     },
     {
       "product": "etsy",
@@ -683,7 +683,7 @@
           "fonts": 0
         }
       },
-      "seconds": 47.6
+      "seconds": 49.3
     },
     {
       "product": "etsy",
@@ -735,7 +735,7 @@
           "fonts": 0
         }
       },
-      "seconds": 144.8
+      "seconds": 171.7
     },
     {
       "product": "grafana",
@@ -787,7 +787,7 @@
           "fonts": 0
         }
       },
-      "seconds": 148.1
+      "seconds": 134.4
     },
     {
       "product": "grafana",
@@ -839,7 +839,7 @@
           "fonts": 0
         }
       },
-      "seconds": 103.6
+      "seconds": 107.4
     },
     {
       "product": "instagram",
@@ -855,6 +855,14 @@
           "outcome": true,
           "holds": true,
           "detail": "arena-9a3d2ceb.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "webpack.sprite-at-root",
+          "claim": "after the recipe the root of the output holds `icons-*.svg`, copied by the config",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg at the root of 'recipe': icons-a228b954bd.svg"
         },
         {
           "id": "webpack.sheet-apart",
@@ -899,7 +907,7 @@
           "fonts": 0
         }
       },
-      "seconds": 78.3
+      "seconds": 81.2
     },
     {
       "product": "instagram",
@@ -915,6 +923,14 @@
           "outcome": true,
           "holds": true,
           "detail": "arena-9520c993.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "webpack.sprite-at-root",
+          "claim": "after the recipe the root of the output holds `icons-*.svg`, copied by the config",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg at the root of 'recipe': icons-a228b954bd.svg"
         },
         {
           "id": "webpack.sheet-apart",
@@ -967,7 +983,7 @@
           "fonts": 0
         }
       },
-      "seconds": 442.9
+      "seconds": 458.3
     },
     {
       "product": "notion",
@@ -1019,7 +1035,7 @@
           "fonts": 0
         }
       },
-      "seconds": 18.4
+      "seconds": 19
     },
     {
       "product": "notion",
@@ -1071,7 +1087,7 @@
           "fonts": 0
         }
       },
-      "seconds": 120.2
+      "seconds": 123.6
     },
     {
       "product": "superhuman",
@@ -1087,6 +1103,14 @@
           "outcome": true,
           "holds": true,
           "detail": "arena-98b06d1b.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+        },
+        {
+          "id": "rspack.sprite-at-root",
+          "claim": "after the recipe the root of the output holds `icons-*.svg`, copied by the config",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg at the root of 'recipe': icons-0427c4608a.svg"
         },
         {
           "id": "rspack.sheet-apart",
@@ -1141,6 +1165,14 @@
           "detail": "arena-32ba7015.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
+          "id": "rspack.sprite-at-root",
+          "claim": "after the recipe the root of the output holds `icons-*.svg`, copied by the config",
+          "expect": "holds",
+          "outcome": true,
+          "holds": true,
+          "detail": "icons-*.svg at the root of 'recipe': icons-0427c4608a.svg"
+        },
+        {
           "id": "rspack.sheet-apart",
           "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes, with the `css/auto` rule and, on Angular, the sheet as its own `styles` entry",
           "expect": "holds",
@@ -1183,7 +1215,7 @@
           "fonts": 0
         }
       },
-      "seconds": 145.9
+      "seconds": 167.7
     }
   ]
 }
