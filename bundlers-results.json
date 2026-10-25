@@ -268,7 +268,7 @@
     ]
   },
   "date": "2026-10-25",
-  "commit": "29817da",
+  "commit": "290d244",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -355,7 +355,7 @@
           "fonts": 0
         }
       },
-      "seconds": 66.6
+      "seconds": 71.3
     },
     {
       "product": "calendly",
@@ -415,7 +415,7 @@
           "fonts": 0
         }
       },
-      "seconds": 324
+      "seconds": 322
     },
     {
       "product": "clickup",
@@ -459,7 +459,7 @@
           "fonts": 0
         }
       },
-      "seconds": 13.7
+      "seconds": 14.2
     },
     {
       "product": "clickup",
@@ -511,7 +511,7 @@
           "fonts": 0
         }
       },
-      "seconds": 112.8
+      "seconds": 117.2
     },
     {
       "product": "duolingo",
@@ -571,7 +571,7 @@
           "fonts": 0
         }
       },
-      "seconds": 17
+      "seconds": 15.8
     },
     {
       "product": "duolingo",
@@ -631,7 +631,7 @@
           "fonts": 0
         }
       },
-      "seconds": 148.4
+      "seconds": 142.8
     },
     {
       "product": "etsy",
@@ -683,7 +683,7 @@
           "fonts": 0
         }
       },
-      "seconds": 45.5
+      "seconds": 49.5
     },
     {
       "product": "etsy",
@@ -735,7 +735,7 @@
           "fonts": 0
         }
       },
-      "seconds": 180.4
+      "seconds": 167.8
     },
     {
       "product": "grafana",
@@ -787,7 +787,7 @@
           "fonts": 0
         }
       },
-      "seconds": 158
+      "seconds": 153.6
     },
     {
       "product": "grafana",
@@ -839,7 +839,7 @@
           "fonts": 0
         }
       },
-      "seconds": 118.3
+      "seconds": 107.9
     },
     {
       "product": "instagram",
@@ -890,8 +890,8 @@
           "plain": 57.86,
           "recipe": 5.56
         },
-        "patch": 0,
-        "dictionary": 0,
+        "patch": 21.31,
+        "dictionary": 0.49,
         "total": {
           "js": 59.49,
           "css": 16.06,
@@ -899,7 +899,7 @@
           "fonts": 0
         }
       },
-      "seconds": 79.3
+      "seconds": 82.1
     },
     {
       "product": "instagram",
@@ -967,7 +967,7 @@
           "fonts": 0
         }
       },
-      "seconds": 475.7
+      "seconds": 475.6
     },
     {
       "product": "notion",
@@ -1019,7 +1019,7 @@
           "fonts": 0
         }
       },
-      "seconds": 19.1
+      "seconds": 19.5
     },
     {
       "product": "notion",
@@ -1071,7 +1071,7 @@
           "fonts": 0
         }
       },
-      "seconds": 124.5
+      "seconds": 126
     },
     {
       "product": "superhuman",
@@ -1123,7 +1123,7 @@
           "fonts": 0
         }
       },
-      "seconds": 12.4
+      "seconds": 9.4
     },
     {
       "product": "superhuman",
@@ -1183,7 +1183,7 @@
           "fonts": 0
         }
       },
-      "seconds": 180
+      "seconds": 169
     }
   ]
 }
