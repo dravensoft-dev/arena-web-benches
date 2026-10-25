@@ -3,7 +3,7 @@
   "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 40c82585b",
   "rotation": 0,
   "date": "2026-10-25",
-  "commit": "86f451c",
+  "commit": "c6309d3",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -199,7 +199,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "assets/arena-C6Y7jJAQ.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "assets/arena-BcVhBSF3.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "vite7.sheet-apart",
@@ -220,17 +220,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 187.38,
-          "recipe": 189.79
+          "plain": 144.3,
+          "recipe": 146.57
         },
         "appRelease": {
-          "plain": 187.51,
-          "recipe": 10.61
+          "plain": 144.3,
+          "recipe": 10.62
         },
-        "patch": 189.83,
-        "dictionary": 0.08,
+        "patch": 146.62,
+        "dictionary": 0.09,
         "total": {
-          "js": 189.79,
+          "js": 146.57,
           "css": 19.31,
           "sprite": 9.01,
           "fonts": 0
@@ -301,7 +301,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "assets/arena-CnyZsXWp.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "assets/arena-DZ3hpCYq.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "vite8.sheet-apart",
@@ -322,17 +322,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 85.73,
-          "recipe": 87.33
+          "plain": 56.08,
+          "recipe": 57.55
         },
         "appRelease": {
-          "plain": 85.74,
+          "plain": 56.1,
           "recipe": 9.47
         },
-        "patch": 87.33,
-        "dictionary": 0.09,
+        "patch": 57.51,
+        "dictionary": 0.08,
         "total": {
-          "js": 87.33,
+          "js": 57.55,
           "css": 14.41,
           "sprite": 3.78,
           "fonts": 0
@@ -529,7 +529,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-DPkdqX19.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          "detail": "arena-C9qm_wK-.js holds Arena's modules and keeps its name and bytes in 'app-text'"
         },
         {
           "id": "rolldown.css-refused",
@@ -558,17 +558,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 254.08,
-          "recipe": 256.35
+          "plain": 255.95,
+          "recipe": 257.9
         },
         "appRelease": {
-          "plain": 254.05,
-          "recipe": 10.84
+          "plain": 255.76,
+          "recipe": 10.87
         },
-        "patch": 256.31,
+        "patch": 257.95,
         "dictionary": 0.09,
         "total": {
-          "js": 256.35,
+          "js": 257.9,
           "css": 31.59,
           "sprite": 4.56,
           "fonts": 0
@@ -816,7 +816,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.4db08801.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          "detail": "run-react-superhuman-m.91793e21.js holds Arena's modules and keeps its name and bytes in 'app-text'"
         },
         {
           "id": "parcel.sheet-apart",
@@ -824,7 +824,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.72db1997.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "run-react-superhuman-m.72db1997.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "parcel.react-with-app",
@@ -832,7 +832,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.8aef47dc.js holds React DOM's code and the app's"
+          "detail": "run-react-superhuman-m.d6e7f6dd.js holds React DOM's code and the app's"
         },
         {
           "id": "parcel.shared-stem",
@@ -840,22 +840,22 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.4db08801.js, bundler.parcel.8aef47dc.js share the stem 'bundler.parcel'"
+          "detail": "run-react-superhuman-m.91793e21.js, run-react-superhuman-m.d6e7f6dd.js share the stem 'run-react-superhuman-m'"
         }
       ],
       "figures": {
         "firstVisit": {
-          "plain": 55.67,
-          "recipe": 58.34
+          "plain": 55.66,
+          "recipe": 58.38
         },
         "appRelease": {
-          "plain": 55.65,
-          "recipe": 42.5
+          "plain": 55.64,
+          "recipe": 42.43
         },
         "patch": 58.39,
         "dictionary": 58.39,
         "total": {
-          "js": 58.34,
+          "js": 58.38,
           "css": 14.86,
           "sprite": 3.98,
           "fonts": 0
@@ -883,7 +883,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.3ae94693.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          "detail": "run-angular-superhuman-m.8650237a.js holds Arena's modules and keeps its name and bytes in 'app-text'"
         },
         {
           "id": "parcel.sheet-apart",
@@ -891,7 +891,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.69b56922.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "run-angular-superhuman-m.69b56922.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "parcel.shared-stem",
@@ -899,22 +899,22 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "bundler.parcel.3ae94693.js, bundler.parcel.b377cb19.js share the stem 'bundler.parcel'"
+          "detail": "run-angular-superhuman-m.5f42d59b.js, run-angular-superhuman-m.8650237a.js share the stem 'run-angular-superhuman-m'"
         }
       ],
       "figures": {
         "firstVisit": {
-          "plain": 276.5,
-          "recipe": 283.02
+          "plain": 278.26,
+          "recipe": 284.98
         },
         "appRelease": {
-          "plain": 276.59,
-          "recipe": 172.28
+          "plain": 278.47,
+          "recipe": 174.2
         },
-        "patch": 283.26,
-        "dictionary": 283.26,
+        "patch": 285.04,
+        "dictionary": 285.04,
         "total": {
-          "js": 283.02,
+          "js": 284.98,
           "css": 15.23,
           "sprite": 3.98,
           "fonts": 0
