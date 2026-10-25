@@ -118,6 +118,39 @@ rather than a sheet.
 - **The bench**: draws every glyph through `ArenaIcon`, binds `activate` and `valueChange`, names
   its row checkboxes and answers no heat step, which is how it asks for what it already draws.
 
+### 2. A component's hidden part escapes the scroller it sits in and lengthens the page
+
+- **In Arena**: the slots of `frameworks/tailwind/components/*/arena-*/Arena*.manifest.json` that
+  position a part absolutely inside a root that is not positioned: `ArenaTimeline` `name`,
+  `ArenaLink` `external`, `ArenaStepper` `name`, `ArenaCombobox` `announcement`, `ArenaCopyButton`
+  `announcement` and `ArenaKbd` `name` (`sr-only`), and `ArenaCheckbox` `input`
+  (`absolute opacity-0 size-0`).
+- **What it does**: the hidden part's containing block is the nearest positioned ancestor outside
+  the component, so a component inside a scroller that is not positioned has its hidden text placed
+  against the page instead of the scroller. The scroller does not clip it, and the document grows to
+  reach it: the page scrolls past its own frame into blank space. Chart frames are `relative` and
+  their hidden descriptions stay inside, so the pattern is not uniform across Arena.
+- **What it should do**: a component lays out inside its own box. Text kept for assistive technology
+  changes nothing a sighted user sees, and that includes how far the page scrolls.
+- **Reproduce**: a page whose frame is `100dvh`, holding a scroller with `overflow: auto` and no
+  `position`, with an `ArenaTimeline` or an external `ArenaLink` below the scroller's fold.
+  `document.scrollingElement.scrollHeight` exceeds `innerHeight`, and it falls back to `innerHeight`
+  once the `timeline.name` and `link.external` parts are given `display: none`.
+- **Benches**: ClickUp's palette screen, both halves: 2225px scrollable at a 1080px window, 1080px
+  with the hidden parts removed (the last `timeline.name` ends at 2225). Notion's doc and tasks
+  screens, both halves: 1947px against 1080px, through `link.external`. Both halves of each pair
+  agree. ClickUp's list (`combobox.announcement`, `checkbox.input`) and Calendly's booking
+  (`stepper.name`) carry escaping parts that happen to land inside the window today.
+- **Correction**: the root of every component with such a part becomes a containing block
+  (`relative`), as chart frames already are. It costs a positioning context on roots that had none,
+  which a plugin positioning a child absolutely would notice. Alternatively Arena's hidden-text rule
+  itself stops depending on the ancestor chain, which touches every consumer of `sr-only` at once.
+- **Closed when**: in every half, no Arena part positioned absolutely has its containing block
+  outside its component's root, and ClickUp's palette screen and Notion's doc and tasks screens
+  scroll exactly as far as their frames.
+- **The bench**: nothing. ClickUp's studio stage and Notion's page body stay unpositioned, since
+  positioning them would hide what an adopter meets.
+
 ## Answered
 
 Kept so the next reader does not raise them again. Each is a decision Arena has taken with its
