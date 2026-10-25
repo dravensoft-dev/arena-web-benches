@@ -1,9 +1,9 @@
 {
   "arena": "12.1.1",
-  "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 08d6ea51b",
+  "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 40c82585b",
   "rotation": 0,
-  "date": "2026-10-24",
-  "commit": "38c52c2",
+  "date": "2026-10-25",
+  "commit": "d5ac1ac",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -54,7 +54,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "yes: _next/static/chunks/343iyxabexqsk.css"
+          "detail": "yes: _next/static/chunks/350a26zc5o_iw.css"
         },
         {
           "id": "next.sprite-public",
@@ -78,7 +78,7 @@
         "dictionary": 20.42,
         "total": {
           "js": 167.79,
-          "css": 16.26,
+          "css": 15.88,
           "sprite": 1.69,
           "fonts": 0
         }
@@ -97,7 +97,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "main-*.js holding Arena's modules: main-IHR2LJST.js; .js holding them alone: none"
+          "detail": "main-*.js holding Arena's modules: main-WFB5JNPG.js; .js holding them alone: none"
         },
         {
           "id": "angular.one-styles-file",
@@ -105,7 +105,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": ".css in 'recipe': styles-J4KV5T7L.css; holding the package sheet's rules: 1"
+          "detail": ".css in 'recipe': styles-IWYIUBQT.css; holding the package sheet's rules: 1"
         },
         {
           "id": "angular.side-effects-false",
@@ -129,7 +129,7 @@
         "dictionary": 0.06,
         "total": {
           "js": 69.23,
-          "css": 16.13,
+          "css": 16.08,
           "sprite": 1.69,
           "fonts": 0
         }
@@ -156,7 +156,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "assets/arena-TXlBmRvv.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "assets/arena-D_HA4Mfo.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "vite7.sheet-by-name",
@@ -170,17 +170,17 @@
       "figures": {
         "firstVisit": {
           "plain": 74.56,
-          "recipe": 74.93
+          "recipe": 74.94
         },
         "appRelease": {
           "plain": 74.45,
           "recipe": 5.74
         },
-        "patch": 36.19,
+        "patch": 36.2,
         "dictionary": 0.38,
         "total": {
-          "js": 74.93,
-          "css": 19.59,
+          "js": 74.94,
+          "css": 19.57,
           "sprite": 9.01,
           "fonts": 0
         }
@@ -207,7 +207,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "assets/arena-dehq4Ptq.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "assets/arena-ej_X2ZlR.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "vite7.sheet-by-name",
@@ -221,17 +221,17 @@
       "figures": {
         "firstVisit": {
           "plain": 187.38,
-          "recipe": 189.81
+          "recipe": 189.79
         },
         "appRelease": {
           "plain": 187.51,
           "recipe": 10.61
         },
-        "patch": 189.87,
+        "patch": 189.83,
         "dictionary": 0.08,
         "total": {
-          "js": 189.81,
-          "css": 19.32,
+          "js": 189.79,
+          "css": 19.31,
           "sprite": 9.01,
           "fonts": 0
         }
@@ -258,7 +258,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "assets/arena-Bm7wFcaf.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "assets/arena-D56DWHSM.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "vite8.sheet-by-name",
@@ -282,7 +282,7 @@
         "dictionary": 0.1,
         "total": {
           "js": 50.75,
-          "css": 13.99,
+          "css": 14.01,
           "sprite": 3.78,
           "fonts": 0
         }
@@ -309,7 +309,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "assets/arena-DEedIFUo.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "assets/arena-BStHRbK1.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "vite8.sheet-by-name",
@@ -323,17 +323,17 @@
       "figures": {
         "firstVisit": {
           "plain": 85.73,
-          "recipe": 87.31
+          "recipe": 87.33
         },
         "appRelease": {
           "plain": 85.74,
           "recipe": 9.47
         },
-        "patch": 87.31,
+        "patch": 87.33,
         "dictionary": 0.09,
         "total": {
-          "js": 87.31,
-          "css": 14.39,
+          "js": 87.33,
+          "css": 14.41,
           "sprite": 3.78,
           "fonts": 0
         }
@@ -376,7 +376,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds 64 @import of a package specifier (first: @dravensoft/arena-react/css/reset.css); the page serves it only after linkSheets inlined them"
+          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -392,7 +392,7 @@
         "dictionary": 0.2,
         "total": {
           "js": 59.37,
-          "css": 31.34,
+          "css": 31.68,
           "sprite": 2.67,
           "fonts": 0
         }
@@ -435,7 +435,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds 65 @import of a package specifier (first: @dravensoft/arena-angular/css/reset.css); the page serves it only after linkSheets inlined them"
+          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -451,7 +451,7 @@
         "dictionary": 0.08,
         "total": {
           "js": 260.62,
-          "css": 32.43,
+          "css": 32.84,
           "sprite": 2.67,
           "fonts": 0
         }
@@ -494,7 +494,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds 65 @import of a package specifier (first: @dravensoft/arena-react/css/reset.css); the page serves it only after linkSheets inlined them"
+          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -510,7 +510,7 @@
         "dictionary": 0.09,
         "total": {
           "js": 71.99,
-          "css": 30.01,
+          "css": 30.39,
           "sprite": 4.56,
           "fonts": 0
         }
@@ -553,7 +553,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds 66 @import of a package specifier (first: @dravensoft/arena-angular/css/reset.css); the page serves it only after linkSheets inlined them"
+          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -569,7 +569,7 @@
         "dictionary": 0.09,
         "total": {
           "js": 256.35,
-          "css": 31.18,
+          "css": 31.59,
           "sprite": 4.56,
           "fonts": 0
         }
@@ -588,7 +588,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-f63d0a99.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-4ab0b008.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "webpack.sheet-apart",
@@ -618,16 +618,16 @@
       "figures": {
         "firstVisit": {
           "plain": 57.88,
-          "recipe": 59.52
+          "recipe": 59.44
         },
         "appRelease": {
           "plain": 57.86,
-          "recipe": 5.57
+          "recipe": 5.54
         },
         "patch": 21.31,
-        "dictionary": 0.56,
+        "dictionary": 0.47,
         "total": {
-          "js": 59.52,
+          "js": 59.44,
           "css": 16.06,
           "sprite": 4.99,
           "fonts": 0
@@ -647,7 +647,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-6a396cd1.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-8f27d3bb.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "webpack.sheet-apart",
@@ -655,7 +655,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-sheet-d5a2df3a.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "arena-sheet-c0e6661b.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "webpack.one-css-without",
@@ -671,23 +671,23 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet is alone in arena-sheet-d5a2df3a.css"
+          "detail": "the package sheet is alone in arena-sheet-c0e6661b.css"
         }
       ],
       "figures": {
         "firstVisit": {
           "plain": 256.05,
-          "recipe": 265.67
+          "recipe": 265.65
         },
         "appRelease": {
           "plain": 256.02,
-          "recipe": 156.07
+          "recipe": 156.14
         },
-        "patch": 265.71,
-        "dictionary": 0.11,
+        "patch": 265.69,
+        "dictionary": 0.1,
         "total": {
-          "js": 265.67,
-          "css": 16.42,
+          "js": 265.65,
+          "css": 16.43,
           "sprite": 4.99,
           "fonts": 0
         }
@@ -727,7 +727,7 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 62.87,
+          "plain": 62.78,
           "recipe": 64.96
         },
         "appRelease": {
@@ -765,7 +765,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-sheet-655d544a.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          "detail": "arena-sheet-151f8956.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
         },
         {
           "id": "rspack.css-auto-angular",
@@ -773,23 +773,23 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet is alone in arena-sheet.b8b54667.css"
+          "detail": "the package sheet is alone in arena-sheet.151f8956.css"
         }
       ],
       "figures": {
         "firstVisit": {
-          "plain": 86.99,
-          "recipe": 93.79
+          "plain": 87.01,
+          "recipe": 93.85
         },
         "appRelease": {
-          "plain": 86.81,
-          "recipe": 65.42
+          "plain": 86.84,
+          "recipe": 65.46
         },
-        "patch": 93.56,
-        "dictionary": 0.16,
+        "patch": 93.48,
+        "dictionary": 0.15,
         "total": {
-          "js": 93.79,
-          "css": 20,
+          "js": 93.85,
+          "css": 20.09,
           "sprite": 6.53,
           "fonts": 0
         }
@@ -821,10 +821,10 @@
         {
           "id": "parcel.sheet-stops",
           "claim": "the build stops on the package sheet's first `@import`",
-          "expect": "holds",
-          "outcome": true,
+          "expect": "record",
+          "outcome": false,
           "holds": true,
-          "detail": "'css-import' exits non-zero"
+          "detail": "'css-import' built"
         },
         {
           "id": "parcel.react-with-app",
@@ -848,7 +848,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds 56 @import of a package specifier (first: @dravensoft/arena-react/css/reset.css); the page serves it only after linkSheets inlined them"
+          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -864,7 +864,7 @@
         "dictionary": 58.39,
         "total": {
           "js": 58.34,
-          "css": 29.17,
+          "css": 29.47,
           "sprite": 3.98,
           "fonts": 0
         }
@@ -896,10 +896,10 @@
         {
           "id": "parcel.sheet-stops",
           "claim": "the build stops on the package sheet's first `@import`",
-          "expect": "holds",
-          "outcome": true,
+          "expect": "record",
+          "outcome": false,
           "holds": true,
-          "detail": "'css-import' exits non-zero"
+          "detail": "'css-import' built"
         },
         {
           "id": "parcel.shared-stem",
@@ -915,7 +915,7 @@
           "expect": "record",
           "outcome": true,
           "holds": true,
-          "detail": "the package sheet as written holds 57 @import of a package specifier (first: @dravensoft/arena-angular/css/reset.css); the page serves it only after linkSheets inlined them"
+          "detail": "the package sheet as written holds no @import of a package specifier, so a page links it as it is"
         }
       ],
       "figures": {
@@ -931,7 +931,7 @@
         "dictionary": 283.26,
         "total": {
           "js": 283.02,
-          "css": 30.26,
+          "css": 30.64,
           "sprite": 3.98,
           "fonts": 0
         }

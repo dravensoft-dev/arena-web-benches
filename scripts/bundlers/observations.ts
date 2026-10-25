@@ -37,7 +37,8 @@ export const OBSERVATIONS: Observation[] = [
   row({ id: 'parcel.needs-package-exports', bundler: 'parcel', layers: ['angular'], claim: 'an import of an Arena subpath, or Angular\'s `@angular/common/http`, fails without `packageExports: true`', needs: ['no-package-exports'], check: fails('no-package-exports') }),
   row({ id: 'parcel.first-import-resolves', bundler: 'parcel', layers: ['react'], claim: 'the first Arena import resolves through the package\'s `module` field without `packageExports`', needs: ['no-package-exports'], check: builds('no-package-exports') }),
   jsRow('parcel', '`manualSharedBundles` keeps Arena\'s JS apart once `packageExports` is on', false),
-  row({ id: 'parcel.sheet-stops', bundler: 'parcel', claim: 'the build stops on the package sheet\'s first `@import`', needs: ['css-import'], check: fails('css-import') }),
+  // The package sheet is flat (no `@import` of a package specifier), so a build that keeps Parcel's own CSS no longer stops on it: recorded, until the page says what Parcel does with it.
+  row({ id: 'parcel.sheet-stops', bundler: 'parcel', claim: 'the build stops on the package sheet\'s first `@import`', expect: 'record', needs: ['css-import'], check: fails('css-import') }),
   row({ id: 'parcel.react-with-app', bundler: 'parcel', layers: ['react'], claim: 'React stays with the app', needs: ['recipe'], check: reactWithApp }),
   row({ id: 'parcel.shared-stem', bundler: 'parcel', claim: 'its two shared bundles share one name stem', needs: ['recipe'], check: sharedStem }),
 

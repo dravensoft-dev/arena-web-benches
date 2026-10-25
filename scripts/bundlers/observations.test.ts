@@ -49,7 +49,7 @@ test('the ids are the rows of F6 and F6b, each prefixed by its bundler and a dot
   expect(OBSERVATIONS.map((o) => o.id).sort()).toEqual([...F6, ...F6B].sort());
   for (const o of OBSERVATIONS) expect(o.id.startsWith(`${o.bundler}.`)).toBe(true);
   expect(OBSERVATIONS.filter((o) => o.expect === 'record').map((o) => o.id).sort()).toEqual(
-    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'webpack.group-needs-type', 'rspack.css-auto-angular', ...F6B].sort(),
+    ['next.js-apart', 'next.sheet-apart', 'next.sprite-public', 'parcel.sheet-stops', 'webpack.group-needs-type', 'rspack.css-auto-angular', ...F6B].sort(),
   );
 });
 
