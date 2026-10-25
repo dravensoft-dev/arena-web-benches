@@ -53,7 +53,7 @@
 
     "@discoveryjs/json-ext": ["@discoveryjs/json-ext@1.1.0", "", {}, "sha512-Xc3VhU02wqZ1HvHRJUwL09HkZSTvidqY5Ya0NXBSYOxAp+Ln9dcJr9fySI+CkONzP3PekQo9WdzCv0PGER/mOA=="],
 
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-YQ5r5tJeh7Ap+YPwDTUZYUA9I9+cTBhZFsH7GaXbAUVMDg2DUIx4HzBJPgXGD/NvSG42i5WxGM8eb3a5T8Tcvw=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-lYN+FNWlSEuHjJZO7F7Z6oxgP1eGIfz1KqYl4E2g6u/oD4A1rlKVKpwGjClsZYuEUjp2Iv1b5mG9M5aFmtPJHw=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.28.2", "", { "os": "aix", "cpu": "ppc64" }, "sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ=="],
 

@@ -18,7 +18,7 @@
   "packages": {
     "@benches/kit": ["@benches/kit@file:../bench-kit/src", {}],
 
-    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-YQ5r5tJeh7Ap+YPwDTUZYUA9I9+cTBhZFsH7GaXbAUVMDg2DUIx4HzBJPgXGD/NvSG42i5WxGM8eb3a5T8Tcvw=="],
+    "@dravensoft/arena-react": ["@dravensoft/arena-react@../vendor/dravensoft-arena-react-12.1.1.tgz", { "dependencies": { "@phosphor-icons/core": "^2.1.1", "harfbuzzjs": "^1.6.4", "wawoff2": "^2.0.1" }, "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }, "bin": { "arena": "./bin/arena.mjs" } }, "sha512-lYN+FNWlSEuHjJZO7F7Z6oxgP1eGIfz1KqYl4E2g6u/oD4A1rlKVKpwGjClsZYuEUjp2Iv1b5mG9M5aFmtPJHw=="],
 
     "@oxc-project/types": ["@oxc-project/types@0.155.0", "", {}, "sha512-SeE8JPwW1xs1tHeNycjUtUBdhorRa8o4jlvjwk49R7/Z291i+4DQa7JJIgOm/TaYQZx+QrPQbVJ/9c8dMIZN8Q=="],
 
