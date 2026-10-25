@@ -33,6 +33,10 @@ run side by side without colliding. A React half reads `PORT` if you want it som
 | Notion | `react-notion` on 5101, [published](https://arena.dravensoft.org/web-benches/notion/react/) | `angular-notion` on 5201, [published](https://arena.dravensoft.org/web-benches/notion/angular/) |
 | Superhuman | `react-superhuman` on 5106, [published](https://arena.dravensoft.org/web-benches/superhuman/react/) | `angular-superhuman` on 5206, [published](https://arena.dravensoft.org/web-benches/superhuman/angular/) |
 
+Which bundler builds each half moves with every run of [the bundler measurements](#measuring-the-bundlers), so this
+table names none. Each half's own README names its bundler and the version it is pinned at, and every link of the
+published listing says the same, from `arena-adopter.json`, which `rotate` writes again whenever it moves a half.
+
 Each bench is a mock written to exercise Arena. The product names say which interface a bench
 was drawn after; the marks and the artwork are its own.
 

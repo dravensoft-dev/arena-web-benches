@@ -10,7 +10,7 @@
 
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Layer, Product } from './bundlers/types.ts';
+import type { BundlerId, Layer, Product } from './bundlers/types.ts';
 
 export const ADOPTER = 'arena-adopter.json';
 
@@ -63,20 +63,52 @@ export function halves(all: Product[]) {
   })));
 }
 
-export function adopterManifest(all: Product[], arena: string): AdopterManifest {
+/** The name a published link gives each bundler, and the key of `bundlers.json` pins holding the version it builds with. */
+export const BUILT_WITH: Record<BundlerId, { name: string; pin: string }> = {
+  rollup: { name: 'Rollup', pin: 'rollup' },
+  vite7: { name: 'Vite', pin: 'vite7' },
+  vite8: { name: 'Vite', pin: 'vite' },
+  rolldown: { name: 'Rolldown', pin: 'rolldown' },
+  webpack: { name: 'webpack', pin: 'webpack' },
+  rspack: { name: 'Rspack', pin: '@rspack/core' },
+  parcel: { name: 'Parcel', pin: 'parcel' },
+  angular: { name: 'the Angular application builder', pin: '@angular/build' },
+  bun: { name: 'Bun', pin: 'bun' },
+  esbuild: { name: 'esbuild', pin: 'esbuild' },
+  next: { name: 'Next.js', pin: 'next' },
+};
+
+export function builtWith(bundler: BundlerId, pins: Record<string, string>) {
+  const { name, pin } = BUILT_WITH[bundler];
+  return `${name} ${pins[pin]}`;
+}
+
+/** The manifest Arena publishes: one section per product, each link naming the layer and the bundler its half holds in `built`. */
+export function adopterManifest(all: Product[], arena: string, built: Map<string, Record<Layer, BundlerId>>, pins: Record<string, string>): AdopterManifest {
   return {
     arena,
     name: 'web-benches',
     title: 'Web benches',
     description: 'Eight products, each mocked twice, once in React and once in Angular, from the '
       + 'same arena.config.json and the same design directory, so a difference between a pair is '
-      + 'Arena answering the two layers differently.',
+      + 'Arena answering the two layers differently. Each link names the bundler its half is built with, '
+      + 'which moves with every run of the bundler measurements.',
     repository: REPOSITORY,
     sections: all.map(({ product, label }) => ({
       heading: label,
-      links: LAYERS.map((layer) => ({ label: LABELS[layer], href: `${product}/${layer}/` })),
+      links: LAYERS.map((layer) => ({
+        label: `${LABELS[layer]}, built with ${builtWith(built.get(product)![layer], pins)}`,
+        href: `${product}/${layer}/`,
+      })),
     })),
   };
+}
+
+/** Rewrites `arena-adopter.json` under `root` for the bundlers `built` gives the halves, keeping the Arena version it declares. */
+export function writeAdopter(root: string, all: Product[], built: Map<string, Record<Layer, BundlerId>>, pins: Record<string, string>) {
+  const file = join(root, ADOPTER);
+  const { arena } = JSON.parse(readFileSync(file, 'utf8')) as AdopterManifest;
+  writeFileSync(file, `${JSON.stringify(adopterManifest(all, arena, built, pins), null, 2)}\n`);
 }
 
 export function baseProblems(rel: string, html: string) {

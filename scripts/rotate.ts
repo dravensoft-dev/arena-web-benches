@@ -10,7 +10,7 @@
 
 import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { halves } from './build.ts';
+import { halves, writeAdopter } from './build.ts';
 import { assignment, current, draw, freshSeed, leftOutOf, previousResults, table } from './bundlers/rotation.ts';
 import type { Assignment, BundlerId, Layer, Table } from './bundlers/types.ts';
 import { template as bunTemplate } from '../bench-kit/parts/bun.ts';
@@ -252,6 +252,7 @@ export function rotate(root: string, next: Assignment, install = true, gitRoot =
   } finally {
     rmSync(staged, { recursive: true, force: true });
   }
+  writeAdopter(root, t.products, current(t, root), t.pins);
   if (install) installMoved(root, moves);
   return moves;
 }

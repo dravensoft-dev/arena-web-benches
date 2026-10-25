@@ -2,13 +2,15 @@ import { describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ADOPTER, RESULTS, TABLE, adopterManifest, baseProblems, copyResults, halves, products } from './build.ts';
+import { ADOPTER, RESULTS, TABLE, adopterManifest, baseProblems, builtWith, copyResults, halves, products } from './build.ts';
+import { current, table } from './bundlers/rotation.ts';
 
 const HREF = /^(?:[A-Za-z0-9._-]+\/)+$/;
 
 describe('adopterManifest', () => {
   const all = products();
-  const manifest = adopterManifest(all, '12.1.1');
+  const built = current(table());
+  const manifest = adopterManifest(all, '12.1.1', built, table().pins);
 
   test('names the site and the repository', () => {
     expect(manifest.name).toBe('web-benches');
@@ -21,12 +23,23 @@ describe('adopterManifest', () => {
     expect(manifest.sections.map(({ heading }) => heading)).toEqual(all.map(({ label }) => label));
   });
 
-  test('links each section to the two layers, by directory', () => {
+  test('links each section to the two layers, by directory, each naming the bundler and version its half holds', () => {
     for (const [at, { product }] of all.entries()) {
+      const held = built.get(product)!;
       expect(manifest.sections[at]?.links).toEqual([
-        { label: 'React', href: `${product}/react/` },
-        { label: 'Angular', href: `${product}/angular/` },
+        { label: `React, built with ${builtWith(held.react, table().pins)}`, href: `${product}/react/` },
+        { label: `Angular, built with ${builtWith(held.angular, table().pins)}`, href: `${product}/angular/` },
       ]);
+    }
+  });
+
+  test('every bundler is named with the version bundlers.json pins for it', () => {
+    const { pins } = table();
+    expect(builtWith('vite7', pins)).toBe(`Vite ${pins['vite7']}`);
+    expect(builtWith('vite8', pins)).toBe(`Vite ${pins['vite']}`);
+    expect(builtWith('angular', pins)).toBe(`the Angular application builder ${pins['@angular/build']}`);
+    for (const entry of table().entries) {
+      for (const bundler of [entry.react, entry.angular]) expect(builtWith(bundler, pins)).not.toContain('undefined');
     }
   });
 
@@ -37,7 +50,7 @@ describe('adopterManifest', () => {
   });
 
   test('the file on disk is what the function returns', () => {
-    expect(JSON.parse(readFileSync(ADOPTER, 'utf8'))).toEqual(adopterManifest(products(), manifest.arena));
+    expect(JSON.parse(readFileSync(ADOPTER, 'utf8'))).toEqual(adopterManifest(products(), manifest.arena, current(table()), table().pins));
   });
 });
 

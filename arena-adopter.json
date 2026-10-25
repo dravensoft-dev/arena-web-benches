@@ -2,18 +2,18 @@
   "arena": "12.1.1",
   "name": "web-benches",
   "title": "Web benches",
-  "description": "Eight products, each mocked twice, once in React and once in Angular, from the same arena.config.json and the same design directory, so a difference between a pair is Arena answering the two layers differently.",
+  "description": "Eight products, each mocked twice, once in React and once in Angular, from the same arena.config.json and the same design directory, so a difference between a pair is Arena answering the two layers differently. Each link names the bundler its half is built with, which moves with every run of the bundler measurements.",
   "repository": "https://github.com/dravensoft-dev/arena-web-benches",
   "sections": [
     {
       "heading": "Calendly",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with Rollup 4.65.0",
           "href": "calendly/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with Rollup 4.65.0",
           "href": "calendly/angular/"
         }
       ]
@@ -22,11 +22,11 @@
       "heading": "ClickUp",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with esbuild 0.28.2",
           "href": "clickup/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with esbuild 0.28.2",
           "href": "clickup/angular/"
         }
       ]
@@ -35,11 +35,11 @@
       "heading": "Duolingo",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with Bun 1.4.0",
           "href": "duolingo/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with Bun 1.4.0",
           "href": "duolingo/angular/"
         }
       ]
@@ -48,11 +48,11 @@
       "heading": "Etsy",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with Vite 7.3.7",
           "href": "etsy/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with Vite 7.3.7",
           "href": "etsy/angular/"
         }
       ]
@@ -61,11 +61,11 @@
       "heading": "Grafana",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with Next.js 16.4.3",
           "href": "grafana/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with the Angular application builder 22.2.4",
           "href": "grafana/angular/"
         }
       ]
@@ -74,11 +74,11 @@
       "heading": "Instagram",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with webpack 5.112.2",
           "href": "instagram/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with webpack 5.112.2",
           "href": "instagram/angular/"
         }
       ]
@@ -87,11 +87,11 @@
       "heading": "Notion",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with Vite 8.3.5",
           "href": "notion/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with Vite 8.3.5",
           "href": "notion/angular/"
         }
       ]
@@ -100,11 +100,11 @@
       "heading": "Superhuman",
       "links": [
         {
-          "label": "React",
+          "label": "React, built with Rspack 2.2.9",
           "href": "superhuman/react/"
         },
         {
-          "label": "Angular",
+          "label": "Angular, built with Rspack 2.2.9",
           "href": "superhuman/angular/"
         }
       ]
