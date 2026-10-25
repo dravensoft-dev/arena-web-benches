@@ -3,7 +3,7 @@
   "arenaSource": "the tree that becomes 13.0.0, packed from Arena develop at 40c82585b",
   "rotation": 0,
   "date": "2026-10-25",
-  "commit": "c6309d3",
+  "commit": "051e8cf",
   "pins": {
     "@analogjs/vite-plugin-angular": "2.9.2",
     "@angular/build": "22.2.4",
@@ -67,17 +67,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 167.79,
-          "recipe": 167.79
+          "plain": 167.9,
+          "recipe": 167.9
         },
         "appRelease": {
-          "plain": 20.32,
-          "recipe": 20.32
+          "plain": 20.4,
+          "recipe": 20.4
         },
-        "patch": 20.42,
-        "dictionary": 20.42,
+        "patch": 20.38,
+        "dictionary": 20.38,
         "total": {
-          "js": 167.79,
+          "js": 167.9,
           "css": 15.88,
           "sprite": 1.69,
           "fonts": 0
@@ -97,7 +97,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "main-*.js holding Arena's modules: main-WFB5JNPG.js; .js holding them alone: none"
+          "detail": "main-*.js holding Arena's modules: main-O2GSNG4P.js; .js holding them alone: none"
         },
         {
           "id": "angular.one-styles-file",
@@ -113,22 +113,22 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "sideEffects is false in angular-calendly/node_modules/@dravensoft/arena-angular/package.json"
+          "detail": "sideEffects is false in /home/juan/Dravensoft/arena-web-benches/angular-calendly/node_modules/@dravensoft/arena-angular/package.json"
         }
       ],
       "figures": {
         "firstVisit": {
-          "plain": 69.23,
-          "recipe": 69.23
+          "plain": 68.75,
+          "recipe": 68.75
         },
         "appRelease": {
-          "plain": 69.3,
-          "recipe": 69.3
+          "plain": 68.73,
+          "recipe": 68.73
         },
-        "patch": 69.3,
+        "patch": 68.82,
         "dictionary": 0.06,
         "total": {
-          "js": 69.23,
+          "js": 68.75,
           "css": 16.08,
           "sprite": 1.69,
           "fonts": 0
@@ -411,7 +411,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-CrT_y_p_.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          "detail": "arena-CJW1660B.js holds Arena's modules and keeps its name and bytes in 'app-text'"
         },
         {
           "id": "rollup.no-css",
@@ -440,17 +440,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 259.38,
-          "recipe": 260.62
+          "plain": 260.89,
+          "recipe": 262.31
         },
         "appRelease": {
-          "plain": 259.19,
-          "recipe": 10.19
+          "plain": 260.92,
+          "recipe": 10.13
         },
-        "patch": 260.74,
+        "patch": 262.36,
         "dictionary": 0.08,
         "total": {
-          "js": 260.62,
+          "js": 262.31,
           "css": 32.84,
           "sprite": 2.67,
           "fonts": 0
@@ -588,7 +588,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-4ab0b008.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-9a3d2ceb.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "webpack.sheet-apart",
@@ -618,16 +618,16 @@
       "figures": {
         "firstVisit": {
           "plain": 57.88,
-          "recipe": 59.44
+          "recipe": 59.49
         },
         "appRelease": {
           "plain": 57.86,
-          "recipe": 5.54
+          "recipe": 5.56
         },
         "patch": 21.31,
-        "dictionary": 0.47,
+        "dictionary": 0.49,
         "total": {
-          "js": 59.44,
+          "js": 59.49,
           "css": 16.06,
           "sprite": 4.99,
           "fonts": 0
@@ -647,7 +647,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-8f27d3bb.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-9520c993.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "webpack.sheet-apart",
@@ -676,17 +676,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 256.05,
-          "recipe": 265.65
+          "plain": 257.78,
+          "recipe": 267.52
         },
         "appRelease": {
-          "plain": 256.02,
-          "recipe": 156.14
+          "plain": 257.81,
+          "recipe": 157.86
         },
-        "patch": 265.69,
-        "dictionary": 0.1,
+        "patch": 267.68,
+        "dictionary": 0.09,
         "total": {
-          "js": 265.65,
+          "js": 267.52,
           "css": 16.43,
           "sprite": 4.99,
           "fonts": 0
@@ -706,7 +706,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-51b673c8.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-83653ddd.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "rspack.sheet-apart",
@@ -727,17 +727,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 62.78,
-          "recipe": 64.96
+          "plain": 62.92,
+          "recipe": 64.91
         },
         "appRelease": {
-          "plain": 62.82,
-          "recipe": 6.12
+          "plain": 62.81,
+          "recipe": 6.08
         },
-        "patch": 26.78,
+        "patch": 26.73,
         "dictionary": 0.7,
         "total": {
-          "js": 64.96,
+          "js": 64.91,
           "css": 19.14,
           "sprite": 6.53,
           "fonts": 0
@@ -757,7 +757,7 @@
           "expect": "holds",
           "outcome": true,
           "holds": true,
-          "detail": "arena-6d493292.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
+          "detail": "arena-fe71b1af.js holds Arena's modules and keeps its name and bytes in 'js-recipe:app-text'"
         },
         {
           "id": "rspack.sheet-apart",
@@ -778,17 +778,17 @@
       ],
       "figures": {
         "firstVisit": {
-          "plain": 87.01,
-          "recipe": 93.85
+          "plain": 86.94,
+          "recipe": 93.84
         },
         "appRelease": {
-          "plain": 86.84,
-          "recipe": 65.46
+          "plain": 86.68,
+          "recipe": 65.47
         },
-        "patch": 93.48,
-        "dictionary": 0.15,
+        "patch": 93.54,
+        "dictionary": 0.16,
         "total": {
-          "js": 93.85,
+          "js": 93.84,
           "css": 20.09,
           "sprite": 6.53,
           "fonts": 0
