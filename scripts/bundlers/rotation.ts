@@ -6,7 +6,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { halves, RESULTS, TABLE } from '../build.ts';
+import type { HalfResult } from '../../bench-kit/src/runner.ts';
 import type { Assignment, BundlerId, Layer, Table } from './types.ts';
+
+/** The committed results as an earlier run left them; a file from before the draw records no seed, assignment or left-out entries. */
+export type Previous = { seed?: number | null; assignment?: Record<string, string> | null; leftOut?: string[]; date?: string; commit?: string; halves: (HalfResult & { seconds?: number })[] };
 
 export function table(root = '.'): Table {
   return JSON.parse(readFileSync(join(root, TABLE), 'utf8')) as Table;
@@ -93,7 +97,7 @@ export function leftOutOf(t: Table, previous: { leftOut?: string[]; halves: { la
 }
 
 /** The committed results, or null when there are none. */
-export function previousResults(root = '.'): { seed?: number; assignment?: Record<string, string>; leftOut?: string[]; halves: { dir: string; layer: Layer; bundler: BundlerId; seconds?: number }[] } | null {
+export function previousResults(root = '.'): Previous | null {
   const file = join(root, RESULTS);
   return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : null;
 }

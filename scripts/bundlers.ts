@@ -9,6 +9,7 @@ import { join } from 'node:path';
 import { halves, RESULTS } from './build.ts';
 import { installedVersion, pinProblems } from './bundlers/pins.ts';
 import { draw, freshSeed, held, leftOutOf, previousResults, table } from './bundlers/rotation.ts';
+import type { Previous } from './bundlers/rotation.ts';
 import type { Assignment, BundlerId, Layer, Table } from './bundlers/types.ts';
 import { rotate } from './rotate.ts';
 import { RESULT, contradictionsOf } from '../bench-kit/src/runner.ts';
@@ -26,6 +27,8 @@ export type Results = {
   seed: number | null;
   assignment: Record<string, string> | null;
   leftOut: string[];
+  /** The halves of the entries this run left out, as the previous run measured them: a bundler's row keeps the date of the run that measured it, and has its entry here. */
+  carried: { date: string; commit: string; seed: number | null; halves: TimedResult[] } | null;
   date: string;
   commit: string;
   pins: Record<string, string>;
@@ -71,7 +74,7 @@ const DEFAULT_SECONDS: Record<Layer, Partial<Record<BundlerId, number>>> = {
  * `dirs` slowest first, so no half runs alone at the end: by the seconds an earlier run recorded for the half's layer and
  * bundler, else by `DEFAULT_SECONDS`.
  */
-export function schedule(dirs: { dir: string; layer: Layer }[], root: string, previous: ReturnType<typeof previousResults> = null): string[] {
+export function schedule(dirs: { dir: string; layer: Layer }[], root: string, previous: Previous | null = null): string[] {
   const estimate = ({ dir, layer }: { dir: string; layer: Layer }): number => {
     const bundler = held(root, dir);
     const before = previous?.halves.find((half) => half.layer === layer && half.bundler === bundler)?.seconds;
@@ -92,7 +95,7 @@ export function commitOf(root = '.'): string {
   return changed.length > 0 ? `${head}-dirty` : head;
 }
 
-export async function run(t: Table, root = '.', only?: string, drawn?: Assignment, previous: ReturnType<typeof previousResults> = null): Promise<Results> {
+export async function run(t: Table, root = '.', only?: string, drawn?: Assignment, previous: Previous | null = null): Promise<Results> {
   const all = halves(t.products).filter((one) => only === undefined || one.dir === only);
   if (all.length === 0) throw new Error(`--only ${only}: no such half; the halves are ${halves(t.products).map((one) => one.dir).join(', ')}`);
   const first = t.products[0]!.react;
@@ -104,9 +107,18 @@ export async function run(t: Table, root = '.', only?: string, drawn?: Assignmen
   const measured = await measureHalves(schedule(all, root, previous), root);
   const commit = commitOf(root);
   return {
-    arena, arenaSource: t.arenaSource, seed: drawn?.seed ?? null, assignment: drawn?.entries ?? null, leftOut: drawn?.leftOut ?? [], date: new Date().toISOString().slice(0, 10), commit,
+    arena, arenaSource: t.arenaSource, seed: drawn?.seed ?? null, assignment: drawn?.entries ?? null, leftOut: drawn?.leftOut ?? [], carried: drawn ? carry(t, previous, drawn.leftOut) : null, date: new Date().toISOString().slice(0, 10), commit,
     pins: t.pins, halves: all.map((one) => measured.get(one.dir)!),
   };
+}
+
+/** The halves of the entries `leftOut` names, as `previous` holds them: null when there are none to carry. */
+export function carry(t: Table, previous: Previous | null, leftOut: string[]): Results['carried'] {
+  if (previous === null || leftOut.length === 0) return null;
+  const left = t.entries.filter((entry) => leftOut.includes(entry.name));
+  const halves = previous.halves.filter((half) => left.some((entry) => entry[half.layer] === half.bundler));
+  if (halves.length === 0) return null;
+  return { date: previous.date ?? '', commit: previous.commit ?? '', seed: previous.seed ?? null, halves };
 }
 
 /** One line per `holds` observation that failed: `<id> (<dir>): <claim>: <detail>`. */

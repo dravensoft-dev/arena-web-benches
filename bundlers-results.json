@@ -16,6 +16,257 @@
     "rolldown",
     "parcel"
   ],
+  "carried": {
+    "date": "2026-10-25",
+    "commit": "a9e459e",
+    "seed": null,
+    "halves": [
+      {
+        "product": "grafana",
+        "layer": "react",
+        "dir": "react-grafana",
+        "bundler": "rolldown",
+        "version": "1.2.15",
+        "observations": [
+          {
+            "id": "rolldown.js-apart",
+            "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "arena-CNCe2w8p.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          },
+          {
+            "id": "rolldown.css-refused",
+            "claim": "the build stops on a CSS import with \"Bundling CSS is no longer supported (experimental support has been removed)\"",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "'css-import' exits non-zero with \"Bundling CSS is no longer supported (experimental support has been removed)\""
+          },
+          {
+            "id": "rolldown.sprite-not-copied",
+            "claim": "rolldown moves no file it does not import",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "icons-*.svg in 'recipe': none"
+          },
+          {
+            "id": "rolldown.linked-sheets",
+            "claim": "the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written",
+            "expect": "record",
+            "outcome": true,
+            "holds": true,
+            "detail": "the package sheet as written holds no @import of a package specifier"
+          }
+        ],
+        "figures": {
+          "firstVisit": {
+            "plain": 70.42,
+            "recipe": 71.99
+          },
+          "appRelease": {
+            "plain": 70.34,
+            "recipe": 40
+          },
+          "patch": 71.66,
+          "dictionary": 0.09,
+          "total": {
+            "js": 71.99,
+            "css": 30.39,
+            "sprite": 4.56,
+            "fonts": 0
+          }
+        }
+      },
+      {
+        "product": "grafana",
+        "layer": "angular",
+        "dir": "angular-grafana",
+        "bundler": "rolldown",
+        "version": "1.2.15",
+        "observations": [
+          {
+            "id": "rolldown.js-apart",
+            "claim": "Arena's JS sits in a chunk of its own with `codeSplitting.groups`",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "arena-C9qm_wK-.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          },
+          {
+            "id": "rolldown.css-refused",
+            "claim": "the build stops on a CSS import with \"Bundling CSS is no longer supported (experimental support has been removed)\"",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "'css-import' exits non-zero with \"Bundling CSS is no longer supported (experimental support has been removed)\""
+          },
+          {
+            "id": "rolldown.sprite-not-copied",
+            "claim": "rolldown moves no file it does not import",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "icons-*.svg in 'recipe': none"
+          },
+          {
+            "id": "rolldown.linked-sheets",
+            "claim": "the package sheet `arena build` writes holds no `@import` of a package specifier, so a page links it as written",
+            "expect": "record",
+            "outcome": true,
+            "holds": true,
+            "detail": "the package sheet as written holds no @import of a package specifier"
+          }
+        ],
+        "figures": {
+          "firstVisit": {
+            "plain": 255.95,
+            "recipe": 257.9
+          },
+          "appRelease": {
+            "plain": 255.76,
+            "recipe": 10.87
+          },
+          "patch": 257.95,
+          "dictionary": 0.09,
+          "total": {
+            "js": 257.9,
+            "css": 31.59,
+            "sprite": 4.56,
+            "fonts": 0
+          }
+        }
+      },
+      {
+        "product": "superhuman",
+        "layer": "react",
+        "dir": "react-superhuman",
+        "bundler": "parcel",
+        "version": "2.16.4",
+        "observations": [
+          {
+            "id": "parcel.first-import-resolves",
+            "claim": "the first Arena import resolves through the package's `module` field without `packageExports`",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "'no-package-exports' built"
+          },
+          {
+            "id": "parcel.js-apart",
+            "claim": "`manualSharedBundles` keeps Arena's JS apart once `packageExports` is on",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-react-superhuman-m.91793e21.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          },
+          {
+            "id": "parcel.sheet-apart",
+            "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-react-superhuman-m.72db1997.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          },
+          {
+            "id": "parcel.react-with-app",
+            "claim": "React stays with the app",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-react-superhuman-m.d6e7f6dd.js holds React DOM's code and the app's"
+          },
+          {
+            "id": "parcel.shared-stem",
+            "claim": "its two shared bundles share one name stem",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-react-superhuman-m.91793e21.js, run-react-superhuman-m.d6e7f6dd.js share the stem 'run-react-superhuman-m'"
+          }
+        ],
+        "figures": {
+          "firstVisit": {
+            "plain": 55.66,
+            "recipe": 58.38
+          },
+          "appRelease": {
+            "plain": 55.64,
+            "recipe": 42.43
+          },
+          "patch": 58.39,
+          "dictionary": 58.39,
+          "total": {
+            "js": 58.38,
+            "css": 14.86,
+            "sprite": 3.98,
+            "fonts": 0
+          }
+        }
+      },
+      {
+        "product": "superhuman",
+        "layer": "angular",
+        "dir": "angular-superhuman",
+        "bundler": "parcel",
+        "version": "2.16.4",
+        "observations": [
+          {
+            "id": "parcel.needs-package-exports",
+            "claim": "Angular's `@angular/common/http` does not resolve without `packageExports: true`",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "'no-package-exports' exits non-zero with \"Failed to resolve '@angular/common/http'\""
+          },
+          {
+            "id": "parcel.js-apart",
+            "claim": "`manualSharedBundles` keeps Arena's JS apart once `packageExports` is on",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-angular-superhuman-m.8650237a.js holds Arena's modules and keeps its name and bytes in 'app-text'"
+          },
+          {
+            "id": "parcel.sheet-apart",
+            "claim": "the package sheet sits in a CSS file of its own on both layers, which keeps its bytes and name when the app changes",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-angular-superhuman-m.69b56922.css holds the package sheet alone and keeps its name and bytes in app-text and app-sheet"
+          },
+          {
+            "id": "parcel.shared-stem",
+            "claim": "its two shared bundles share one name stem",
+            "expect": "holds",
+            "outcome": true,
+            "holds": true,
+            "detail": "run-angular-superhuman-m.5f42d59b.js, run-angular-superhuman-m.8650237a.js share the stem 'run-angular-superhuman-m'"
+          }
+        ],
+        "figures": {
+          "firstVisit": {
+            "plain": 278.26,
+            "recipe": 284.98
+          },
+          "appRelease": {
+            "plain": 278.47,
+            "recipe": 174.2
+          },
+          "patch": 285.04,
+          "dictionary": 285.04,
+          "total": {
+            "js": 284.98,
+            "css": 15.23,
+            "sprite": 3.98,
+            "fonts": 0
+          }
+        }
+      }
+    ]
+  },
   "date": "2026-10-25",
   "commit": "29817da",
   "pins": {

@@ -73,7 +73,7 @@ entry's bundler, except the mixed pair, whose React half builds with Next.js and
 `application` builder. The draw is a function of its seed: `--seed <n>` reproduces it, and a run told no seed draws
 one. The halves commit the assignment (config, devDependencies, bundler part and lockfile move together), and
 [`bundlers-results.json`](./bundlers-results.json) records the seed, the assignment, the entries the draw left out,
-and one entry per measured half with the seconds its measuring took, so the next run starts the slowest halves first.
+and one entry per measured half with the seconds its measuring took, so the next run starts the slowest halves first. The two entries a run leaves out have their halves in `carried`, as the previous run measured them with that run's date, commit and seed, so every bundler a page names has an entry in the file and keeps the date of the run that measured it.
 
 ```bash
 bun run build                  # installs each half's lockfile first

@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { commitOf, contradictions, measureHalves, run } from './bundlers.ts';
+import { carry, commitOf, contradictions, measureHalves, run, schedule } from './bundlers.ts';
 import type { Results } from './bundlers.ts';
 import { table } from './bundlers/rotation.ts';
 
@@ -15,7 +15,7 @@ const row = (id: string, expectation: 'holds' | 'record', outcome: boolean) =>
   ({ id, claim: `claim of ${id}`, expect: expectation, outcome, holds: expectation === 'record' ? true : outcome, detail: `detail of ${id}` });
 
 const results = (observations: ReturnType<typeof row>[]): Results => ({
-  arena: '12.1.1', arenaSource: 's', seed: 1, assignment: {}, leftOut: [], date: '2026-10-24', commit: 'abc', pins: {},
+  arena: '12.1.1', arenaSource: 's', seed: 1, assignment: {}, leftOut: [], carried: null, date: '2026-10-24', commit: 'abc', pins: {},
   halves: [{ product: 'etsy', layer: 'react', dir: 'react-etsy', bundler: 'rollup', version: '4.65.0', observations, figures: FIGURES }],
 });
 
@@ -105,3 +105,36 @@ function mkdirTree(root: string, half: string): void {
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: '@dravensoft/arena-react', version: '12.1.1' }));
 }
+
+describe('carry', () => {
+  const t = table();
+  const half = (layer: 'react' | 'angular', bundler: string) => ({ ...results([]).halves[0]!, layer, bundler, dir: `${layer}-x` }) as Results['halves'][number];
+  const previous = { date: '2026-10-25', commit: 'abc', seed: 3, halves: [half('react', 'rolldown'), half('angular', 'rolldown'), half('react', 'vite7'), half('react', 'next'), half('angular', 'angular')] } as never;
+
+  test('holds the halves of the entries left out as the previous run measured them, with its date, commit and seed', () => {
+    const carried = carry(t, previous, ['rolldown', 'next+angular'])!;
+    expect(carried.halves.map((one) => `${one.layer}:${one.bundler}`)).toEqual(['react:rolldown', 'angular:rolldown', 'react:next', 'angular:angular']);
+    expect([carried.date, carried.commit, carried.seed]).toEqual(['2026-10-25', 'abc', 3]);
+  });
+
+  test('is null when nothing was left out, there is no previous run, or the previous run measured none of them', () => {
+    expect(carry(t, previous, [])).toBeNull();
+    expect(carry(t, null, ['rolldown'])).toBeNull();
+    expect(carry(t, previous, ['parcel'])).toBeNull();
+  });
+});
+
+describe('schedule', () => {
+  test('puts the half a previous run recorded as slowest first, and the slow Angular halves first when none recorded anything', () => {
+    const dirs = [{ dir: 'react-calendly', layer: 'react' as const }, { dir: 'angular-calendly', layer: 'angular' as const }, { dir: 'react-etsy', layer: 'react' as const }];
+    const root = mkdtempSync(join(tmpdir(), 'bundlers-schedule-'));
+    made.push(root);
+    for (const [dir, bundler] of [['react-calendly', 'rollup'], ['angular-calendly', 'rollup'], ['react-etsy', 'webpack']]) {
+      mkdirSync(join(root, dir), { recursive: true });
+      writeFileSync(join(root, dir, 'measure.ts'), `export const part = { bundler: '${bundler}' };\n`);
+    }
+    expect(schedule(dirs, root)).toEqual(['angular-calendly', 'react-etsy', 'react-calendly']);
+    const previous = { halves: [{ layer: 'react', bundler: 'rollup', seconds: 900 }, { layer: 'angular', bundler: 'rollup', seconds: 10 }] } as never;
+    expect(schedule(dirs, root, previous)).toEqual(['react-calendly', 'react-etsy', 'angular-calendly']);
+  });
+});
