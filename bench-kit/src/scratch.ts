@@ -1,4 +1,4 @@
-import { appendFileSync, cpSync, existsSync, lstatSync, mkdirSync, readdirSync, realpathSync, renameSync, rmSync, symlinkSync } from 'node:fs';
+import { appendFileSync, copyFileSync, cpSync, existsSync, linkSync, lstatSync, mkdirSync, readdirSync, readlinkSync, realpathSync, renameSync, rmSync, symlinkSync } from 'node:fs';
 import { basename, join, relative } from 'node:path';
 import type { Layer, Mutation } from './types.ts';
 
@@ -36,14 +36,47 @@ function buttonModule(pkgDir: string, layer: Layer): string {
   return findFile(join(pkgDir, 'components'), 'ArenaButton.js');
 }
 
+/** `from` as a tree of hardlinks (a file that cannot be linked is copied) with its symbolic links as they are. */
+function hardlinkTree(from: string, to: string): void {
+  mkdirSync(to, { recursive: true });
+  for (const entry of readdirSync(from, { withFileTypes: true })) {
+    const source = join(from, entry.name);
+    const target = join(to, entry.name);
+    if (entry.isSymbolicLink()) symlinkSync(readlinkSync(source), target);
+    else if (entry.isDirectory()) hardlinkTree(source, target);
+    else {
+      try {
+        linkSync(source, target);
+      } catch {
+        copyFileSync(source, target);
+      }
+    }
+  }
+}
+
 /**
  * `to` as a directory holding a link to the real path of each package of `from`, one level below a scope (`@scope/*`),
  * and `.bin` as it is (its links are relative to `node_modules`, so they resolve through the new links). The packages
  * stay where the install put them, so a scratch resolves what the half resolves, whatever the install's layout. With
  * `copyArena`, Arena's own packages (`@dravensoft/*`) are real directories below the scratch, as an npm install makes
  * them: a bundler that matches paths below its project root (Parcel's `manualSharedBundles`) finds no link's target there.
+ * With `hardlink`, the whole install is a tree of hardlinks below the scratch (Next's Turbopack refuses a link that points
+ * out of its root), Arena's packages real copies, so a patch of one never reaches the half's install.
  */
-function linkModules(from: string, to: string, copyArena: boolean): void {
+function linkModules(from: string, to: string, copyArena: boolean, hardlink: boolean): void {
+  if (hardlink) {
+    if (!existsSync(from)) return mkdirSync(to, { recursive: true });
+    hardlinkTree(from, to);
+    const arena = join(to, '@dravensoft');
+    if (existsSync(arena)) {
+      for (const inner of readdirSync(arena)) {
+        const real = realpathSync(join(from, '@dravensoft', inner));
+        rmSync(join(arena, inner), { recursive: true, force: true });
+        cpSync(real, join(arena, inner), { recursive: true });
+      }
+    }
+    return;
+  }
   mkdirSync(to, { recursive: true });
   if (!existsSync(from)) return;
   for (const entry of readdirSync(from, { withFileTypes: true })) {
@@ -68,7 +101,7 @@ function linkModules(from: string, to: string, copyArena: boolean): void {
  * paths resolve, with the app marker on the entry and the mutation applied. The scratch's `node_modules` holds one link
  * per package of the half's, pointing at the half's own tree (the half and its install are only read).
  */
-export function scratch(dir: string, tag: string, mutation: Mutation, root = '.', copyArena = false): string {
+export function scratch(dir: string, tag: string, mutation: Mutation, root = '.', copyArena = false, hardlink = false): string {
   const layer = layerOf(dir);
   const from = join(root, dir);
   const to = join(root, `.run-${dir}-${tag}`);
@@ -78,7 +111,7 @@ export function scratch(dir: string, tag: string, mutation: Mutation, root = '.'
     verbatimSymlinks: true,
     filter: (src) => !(SKIPPED.has(basename(src)) && relative(from, src) === basename(src)),
   });
-  linkModules(join(from, 'node_modules'), join(to, 'node_modules'), copyArena);
+  linkModules(join(from, 'node_modules'), join(to, 'node_modules'), copyArena, hardlink);
 
   appendFileSync(join(to, entryOf(layer)), marker(mutation === 'app-text' ? `${dir} ·` : dir));
   if (mutation === 'app-sheet') {

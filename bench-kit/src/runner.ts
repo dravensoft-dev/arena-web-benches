@@ -48,6 +48,8 @@ export type Part = {
   out?: string;
   /** The bundler matches paths below its project root, so a scratch holds Arena's packages as real directories, as an npm install does. */
   arenaCopy?: boolean;
+  /** The bundler refuses a link that points out of its project root, so a scratch holds the whole install as hardlinks (Arena's packages as copies). */
+  hardlinkModules?: boolean;
 };
 
 /** The runs every half builds for the figures, whatever its observations ask. */
@@ -106,14 +108,26 @@ export function figures(out: Record<string, string>): Figures {
   };
 }
 
-/** The version the half declares for `pkg`, which must be exact, and the one its install holds. */
-export function pinProblem(half: string, pkg: string): string | null {
-  const declared = (JSON.parse(readFileSync(join(half, 'package.json'), 'utf8')) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> });
-  const wanted = declared.devDependencies?.[pkg] ?? declared.dependencies?.[pkg];
+/** The version of `pkg` the half's install holds; `bun` is the running binary. */
+export function installed(half: string, pkg: string): string | null {
+  if (pkg === 'bun') return Bun.version;
   const file = join(half, 'node_modules', pkg, 'package.json');
-  const found = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as { version: string }).version : null;
+  return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as { version: string }).version : null;
+}
+
+/** The version the half declares for `pkg`, which must be exact, and the one its install holds; `bun` is declared by `packageManager`. */
+export function pinProblem(half: string, pkg: string): string | null {
+  const declared = (JSON.parse(readFileSync(join(half, 'package.json'), 'utf8')) as { packageManager?: string; dependencies?: Record<string, string>; devDependencies?: Record<string, string> });
+  const wanted = pkg === 'bun' ? declared.packageManager?.match(/^bun@(.+)$/)?.[1] : declared.devDependencies?.[pkg] ?? declared.dependencies?.[pkg];
+  const found = installed(half, pkg);
   if (wanted === undefined || wanted !== found) return `${pkg}: declared ${wanted ?? 'nothing'}, installed ${found ?? 'nothing'}`;
   return null;
+}
+
+/** The package at `dir` has a script `name`: a half whose bundler makes its own copies has no `finish`. */
+export function hasScript(dir: string, name: string): boolean {
+  const { scripts } = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as { scripts?: Record<string, string> };
+  return scripts?.[name] !== undefined;
 }
 
 /** Every snippet of the part is in the half's config exactly once: a throw names the first that is not. */
@@ -187,7 +201,7 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
 
     for (const key of keys) {
       const { mutation, variant } = spec(key);
-      scratch(dir, 'm', mutation, root, part.arenaCopy === true);
+      scratch(dir, 'm', mutation, root, part.arenaCopy === true, part.hardlinkModules === true);
       let built: Built;
       if (key === 'twice') {
         // One outdir, built twice: `recipe`, then the app's text changed in place, as `app-text` does, then `twice`.
@@ -207,7 +221,7 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
     const ctx: Context = { dir: abs, layer, ...firstSelectors(abs, layer), runs: runs as Partial<Record<RunKey, Built>> };
     const observations = mine.map((o) => judge(o, ctx));
 
-    // Only now: the half's own `finish` (the sheets its page links, the sprite, its statics) over the runs the figures read.
+    // Only now: the half's own `finish` (the sheets its page links, the sprite, its statics), when it has one, over the runs the figures read.
     const outs: Record<string, string> = {};
     let figuresError: string | undefined;
     for (const key of FIGURE_RUNS.concat(PLAIN_TEXT)) {
@@ -216,7 +230,7 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
         figuresError = `run '${key}' did not build, so no figure is measured: ${built.log.trim().split('\n').slice(-5).join(' | ')}`;
         break;
       }
-      const done = script(roots[key]!, 'finish');
+      const done = hasScript(roots[key]!, 'finish') ? script(roots[key]!, 'finish') : { ok: true, log: '' };
       if (!done.ok) {
         figuresError = `run '${key}' built and its finish did not: ${done.log.trim().split('\n').slice(-5).join(' | ')}`;
         break;
@@ -224,7 +238,7 @@ export async function runMeasure(half: string, part: Part): Promise<HalfResult> 
       outs[key] = built.out;
     }
 
-    const version = (JSON.parse(readFileSync(join(abs, 'node_modules', part.pin, 'package.json'), 'utf8')) as { version: string }).version;
+    const version = installed(abs, part.pin)!;
     const result: HalfResult = { product: dir.replace(/^(react|angular)-/, ''), layer, dir, bundler: part.bundler, version, observations, figures: figuresError ? null : figures(outs), ...(figuresError ? { figuresError } : {}) };
     writeFileSync(join(abs, RESULT), `${JSON.stringify(result, null, 2)}\n`);
     return result;

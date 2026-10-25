@@ -73,6 +73,22 @@ describe('scratch', () => {
     for (const left of ['.angular', '.ngc', 'dist']) expect(existsSync(join(path, left))).toBe(false);
   });
 
+  test('with hardlink, the install is a tree below the scratch with no link out of it, its files the half\'s own inodes and Arena\'s package a real copy', () => {
+    const { root, dir } = fixtures.angular;
+    const path = scratch(dir, 't-hard', 'arena-patch', root, false, true);
+    made.push(path);
+    const rollup = join(path, 'node_modules/rollup');
+    expect(lstatSync(rollup).isSymbolicLink()).toBe(false);
+    expect(lstatSync(join(rollup, 'package.json')).ino).toBe(lstatSync(join(root, dir, 'node_modules/rollup/package.json')).ino);
+    expect(readlinkSync(join(path, 'node_modules/.bin/rollup'))).toBe('../rollup/bin.js');
+    const arena = join(path, 'node_modules/@dravensoft/arena-angular');
+    expect(lstatSync(arena).isSymbolicLink()).toBe(false);
+    expect(lstatSync(join(arena, 'package.json')).ino).not.toBe(lstatSync(join(root, dir, 'node_modules/@dravensoft/arena-angular/package.json')).ino);
+    // the patch landed in the copy and not in the half's install
+    expect(readFileSync(join(arena, PATCHED.angular), 'utf8')).toContain('__arenaPatch');
+    expect(readFileSync(join(root, dir, 'node_modules/@dravensoft/arena-angular', PATCHED.angular), 'utf8')).not.toContain('__arenaPatch');
+  });
+
   test('with copyArena, Arena\'s package is a real directory below the scratch (an npm install\'s layout) and the other packages stay links', () => {
     const { root, dir } = fixtures.angular;
     const path = make('angular', 't-copy', 'none', true);

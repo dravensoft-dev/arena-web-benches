@@ -54,6 +54,15 @@ describe('pinProblem', () => {
     expect(pinProblem(half('2.0.0').abs, 'rollup')).toBe('rollup: declared 2.0.0, installed 1.0.0');
     expect(pinProblem(abs, 'webpack')).toBe('webpack: declared nothing, installed nothing');
   });
+
+  test('bun is declared by `packageManager` and installed as the running binary', () => {
+    const { abs } = half();
+    expect(pinProblem(abs, 'bun')).toBe(`bun: declared nothing, installed ${Bun.version}`);
+    writeFileSync(join(abs, 'package.json'), JSON.stringify({ packageManager: `bun@${Bun.version}` }));
+    expect(pinProblem(abs, 'bun')).toBeNull();
+    writeFileSync(join(abs, 'package.json'), JSON.stringify({ packageManager: 'bun@0.0.1' }));
+    expect(pinProblem(abs, 'bun')).toBe(`bun: declared 0.0.1, installed ${Bun.version}`);
+  });
 });
 
 describe('runMeasure', () => {
